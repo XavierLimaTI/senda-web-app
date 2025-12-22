@@ -1,0 +1,249 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================
+// USUÁRIOS E AUTENTICAÇÃO
+// ============================================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("CLIENT") // CLIENT, THERAPIST, SPACE, ADMIN
+  phone     String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  emailVerified DateTime?
+
+  // Relações
+  clientProfile    ClientProfile?
+  therapistProfile TherapistProfile?
+  spaceProfile     SpaceProfile?
+  bookings         Booking[]       @relation("ClientBookings")
+  payments         Payment[]
+  emailVerificationTokens EmailVerificationToken[]
+}
+
+// ============================================
+// PERFIS ESPECIALIZADOS
+// ============================================
+
+model ClientProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  preferences String?  // JSON: intenções, preferências
+  createdAt   DateTime @default(now())
+  
+  trailProgress TrailProgress[]
+}
+
+model TherapistProfile {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio          String?
+  specialty    String   // Ex: "Reiki, Acupuntura"
+  license      String?  // CRP, certificados
+  experience   Int?     // Anos de experiência
+  rating       Float    @default(0)
+  verified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  
+  services     Service[]
+  availability Availability[]
+  bookings     Booking[]       @relation("TherapistBookings")
+  trails       Trail[]
+}
+
+model SpaceProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  address     String
+  cnpj        String?
+  phone       String?
+  amenities   String?  // JSON: comodidades
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  rooms       Room[]
+  packages    Package[]
+}
+
+// ============================================
+// SERVIÇOS E DISPONIBILIDADE
+// ============================================
+
+model Service {
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String?
+  duration     Int      // Minutos
+  price        Float
+  therapistId  Int
+  therapist    TherapistProfile @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  
+  bookings     Booking[]
+}
+
+model Availability {
+  id          Int      @id @default(autoincrement())
+  therapistId Int
+  therapist   TherapistProfile @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int      // 0-6 (Dom-Sáb)
+  startTime   String   // "09:00"
+  endTime     String   // "18:00"
+}
+
+// ============================================
+// ESPAÇOS: SALAS E PACOTES
+// ============================================
+
+model Room {
+  id          Int      @id @default(autoincrement())
+  spaceId     Int
+  space       SpaceProfile @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  name        String
+  type        String   // "Sala de Massagem", "Studio Yoga"
+  pricePerHour Float
+  amenities   String?  // JSON
+  active      Boolean  @default(true)
+  
+  roomBookings RoomBooking[]
+}
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  spaceId     Int
+  space       SpaceProfile @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  duration    Int      // Minutos
+  price       Float
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// ============================================
+// AGENDAMENTOS
+// ============================================
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  client      User     @relation("ClientBookings", fields: [clientId], references: [id], onDelete: Cascade)
+  therapistId Int
+  therapist   TherapistProfile @relation("TherapistBookings", fields: [therapistId], references: [id])
+  serviceId   Int
+  service     Service  @relation(fields: [serviceId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  status      String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED
+  notes       String?
+  createdAt   DateTime @default(now())
+  
+  payment     Payment?
+}
+
+model RoomBooking {
+  id          Int      @id @default(autoincrement())
+  roomId      Int
+  room        Room     @relation(fields: [roomId], references: [id])
+  therapistId Int      // Terapeuta que alugou
+  startTime   DateTime
+  endTime     DateTime
+  status      String   @default("CONFIRMED")
+  price       Float
+  createdAt   DateTime @default(now())
+}
+
+// ============================================
+// PAGAMENTOS
+// ============================================
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  bookingId     Int      @unique
+  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  amount        Float
+  sendaFee      Float    // Taxa do Senda
+  professionalAmount Float // Valor líquido do profissional
+  status        String   @default("PENDING") // PENDING, APPROVED, FAILED, REFUNDED
+  method        String   // "credit_card", "pix"
+  transactionId String?
+  createdAt     DateTime @default(now())
+}
+
+// ============================================
+// TRILHAS DE CUIDADO
+// ============================================
+
+model Trail {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  coverImage  String?
+  category    String   // "Mindfulness", "Yoga"
+  duration    Int      // Dias
+  authorId    Int?
+  author      TherapistProfile? @relation(fields: [authorId], references: [id])
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  lessons     Lesson[]
+  progress    TrailProgress[]
+}
+
+model Lesson {
+  id          Int     @id @default(autoincrement())
+  trailId     Int
+  trail       Trail   @relation(fields: [trailId], references: [id], onDelete: Cascade)
+  title       String
+  content     String  // Markdown ou HTML
+  contentType String  // "text", "audio", "video"
+  mediaUrl    String?
+  order       Int
+}
+
+model TrailProgress {
+  id               Int      @id @default(autoincrement())
+  clientId         Int
+  client           ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  trailId          Int
+  trail            Trail    @relation(fields: [trailId], references: [id])
+  completedLessons Int      @default(0)
+  status           String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+}
+
+// Tokens de verificação de e-mail
+model EmailVerificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

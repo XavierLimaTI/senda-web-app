@@ -1,0 +1,36 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+import { signIn, signOut } from 'next-auth/client';
+
+export default async function authHandler(req: NextApiRequest, res: NextApiResponse) {
+    switch (req.method) {
+        case 'POST':
+            return await handleSignIn(req, res);
+        case 'DELETE':
+            return await handleSignOut(req, res);
+        default:
+            res.setHeader('Allow', ['POST', 'DELETE']);
+            res.status(405).end(`Method ${req.method} Not Allowed`);
+    }
+}
+
+async function handleSignIn(req: NextApiRequest, res: NextApiResponse) {
+    const { email, password } = req.body;
+
+    // Implement your sign-in logic here
+    const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+    });
+
+    if (result?.error) {
+        return res.status(401).json({ error: result.error });
+    }
+
+    return res.status(200).json({ message: 'Signed in successfully' });
+}
+
+async function handleSignOut(req: NextApiRequest, res: NextApiResponse) {
+    await signOut({ redirect: false });
+    return res.status(200).json({ message: 'Signed out successfully' });
+}

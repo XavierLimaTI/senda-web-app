@@ -1,0 +1,21 @@
+name: Cleanup expired email verification tokens
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # every day at 02:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger cleanup endpoint
+        run: |
+          if [ -n "$CLEANUP_BEARER_TOKEN" ]; then
+            curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CLEANUP_BEARER_TOKEN" -X POST "$CLEANUP_URL"
+          else
+            curl -s -o /dev/null -w "%{http_code}" -X POST "$CLEANUP_URL"
+          fi
+        env:
+          CLEANUP_URL: ${{ secrets.CLEANUP_URL }}
+          CLEANUP_BEARER_TOKEN: ${{ secrets.CLEANUP_BEARER_TOKEN }}

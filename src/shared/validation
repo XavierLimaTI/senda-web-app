@@ -1,0 +1,44 @@
+import * as Yup from 'yup';
+
+export const registrationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Name is required')
+    .min(2, 'Name must be at least 2 characters long'),
+  email: Yup.string()
+    .required('Email is required')
+    .email('Invalid email format'),
+  password: Yup.string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters long'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+});
+
+export const loginSchema = Yup.object().shape({
+  email: Yup.string()
+    .required('Email is required')
+    .email('Invalid email format'),
+  password: Yup.string()
+    .required('Password is required')
+});
+
+export const therapistProfileSchema = Yup.object().shape({
+  bio: Yup.string()
+    .required('Bio is required')
+    .max(500, 'Bio must be at most 500 characters long'),
+  specialties: Yup.array()
+    .of(Yup.string().required('Specialty is required'))
+    .min(1, 'At least one specialty is required')
+});
+
+export const spaceSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Space name is required')
+    .min(2, 'Space name must be at least 2 characters long'),
+  address: Yup.string()
+    .required('Address is required'),
+  capacity: Yup.number()
+    .required('Capacity is required')
+    .positive('Capacity must be a positive number')
+    .integer('Capacity must be an integer'),
+});

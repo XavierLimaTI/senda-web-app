@@ -1,0 +1,56 @@
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings   Booking[]
+}
+
+model Therapist {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings   Booking[]
+  trails     Trail[]
+}
+
+model Space {
+  id        Int      @id @default(autoincrement())
+  name      String
+  location  String
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  therapists Therapist[]
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  therapistId Int
+  spaceId     Int
+  dateTime    DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  client     Client     @relation(fields: [clientId], references: [id])
+  therapist  Therapist  @relation(fields: [therapistId], references: [id])
+  space      Space      @relation(fields: [spaceId], references: [id])
+}
+
+model Trail {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  therapistId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
