@@ -67,8 +67,9 @@ export default function ServicesManager({ initialServices, isVerified }: Service
     <div>
       {/* Botão criar novo */}
       <button
-        onClick={() => setIsModalOpen(true)}
-        className="mb-6 bg-salvia text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
+        onClick={() => isVerified ? setIsModalOpen(true) : alert('Seu perfil ainda não está verificado. Aguarde aprovação para criar serviços.')}
+        disabled={!isVerified}
+        className={`mb-6 px-6 py-3 rounded-lg font-semibold transition-opacity flex items-center gap-2 ${isVerified ? 'bg-salvia text-white hover:opacity-90' : 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-70'}`}
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -87,8 +88,9 @@ export default function ServicesManager({ initialServices, isVerified }: Service
             Comece criando seu primeiro serviço para que clientes possam agendar com você
           </p>
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="mt-6 bg-salvia text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90"
+            onClick={() => isVerified ? setIsModalOpen(true) : alert('Seu perfil ainda não está verificado. Aguarde aprovação para criar serviços.')}
+            disabled={!isVerified}
+            className={`mt-6 px-6 py-2 rounded-lg font-semibold ${isVerified ? 'bg-salvia text-white hover:opacity-90' : 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-70'}`}
           >
             Criar Primeiro Serviço
           </button>
