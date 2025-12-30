@@ -163,4 +163,8 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 Sempre que o agente solicitar que o analista execute uma ação e o analista confirmar a conclusão, o agente deve verificar que a ação foi realmente realizada — por exemplo: rodando comandos de validação, inspecionando arquivos/diffs, conferindo a saída do terminal, ou validando que o PR/branch foi criado — e reportar evidências (saída do terminal, hashes de arquivo, link do PR, etc.) ao analista.
 
+### Escolha de próximo passo (preferência)
+
+Quando o agente oferecer opções de próximo passo, ele deve automaticamente seguir com a opção mais recomendada para o projeto (ou seja, a ação que maximiza progresso e minimiza risco), salvo instrução contrária do analista. O agente deve registrar brevemente por que escolheu essa opção ao reportar progresso.
+
 Essas regras ajudam a manter autonomia do agente com transparência e controle pelo analista.

@@ -323,3 +323,5 @@ CLEANUP_BEARER_TOKEN=<strong-random-token>  # Protect cleanup endpoint
  - **Verificação pós-confirmação:** Sempre que o agente solicitar uma ação ao analista (por exemplo: executar um comando, aplicar uma migração, criar um PR) e o analista confirmar que concluiu a ação, o agente deve verificar que a ação foi realmente realizada (ex.: rodando comandos de validação, checando arquivos/ diffs, conferindo saída do terminal, ou conferindo o PR/branch) e reportar evidências ao analista.
 
 Essas regras ajudam o agente a agir com autonomia mantendo transparência e controle do analista.
+
+- **Escolha de próximo passo (preferência):** Quando o agente oferecer opções de próximo passo, ele deve automaticamente seguir com a opção mais recomendada para o projeto (i.e., a ação que maximiza progresso e minimiza risco), salvo instrução contrária do analista. Sempre documente brevemente por que a opção foi escolhida.

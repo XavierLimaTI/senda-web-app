@@ -306,18 +306,13 @@ curl.exe -H "Authorization: Bearer $env:CLEANUP_BEARER_TOKEN" -X POST https://yo
 
 ## Regras de Colaboração Agente ↔ Analista
 
-- **Papel:** O agente atua como dev expert; o analista toma decisões de negócio quando solicitado.
-- **Autonomia:** O agente pode criar código e arquivos autonomamente e pede confirmação apenas quando uma decisão de domínio/sensível é necessária (ex.: `auth`, `pagamentos`, `migrations`).
-- **Execução e Análise de Terminal:** Antes e depois de rodar comandos relevantes (builds, migrations, testes, scripts), o agente sempre executa os comandos, copia a saída do terminal, analisa erros/warnings e resume os resultados para o analista.
-- **Planejamento e Rastreio:** O agente usa `manage_todo_list` para planejar e registrar progresso em cada tarefa — uma lista de tarefas atualizada por operação.
-- **DB Schema & Migrations:** Ao alterar `prisma/schema.prisma`, o agente executa `npx prisma generate` e `npx prisma migrate dev --name description` (localmente), e reporta a saída do terminal; pede confirmação antes de aplicar migrations em produção.
-- **Edição de Auth/Email/Pagamentos:** Alterações nessas áreas exigem uma confirmação explícita do analista antes de merge/deploy.
-- **Comandos em Comunicação:** Sempre incluir comandos de terminal em blocos de código (bash/powershell) e instruções copy-paste.
-- **Commits/PRs:** Ao finalizar uma tarefa, o agente sugere uma mensagem de commit e resumo do PR com arquivos alterados e motivos das mudanças.
-- **Idioma:** Comunicação técnica preferencialmente em Português (pt-BR) a menos que o analista solicite outro idioma.
 
 ### Verificação pós-confirmação
 
 Sempre que o agente solicitar que o analista execute uma ação e o analista confirmar a conclusão, o agente deve verificar que a ação foi realmente realizada — por exemplo: rodando comandos de validação, inspecionando arquivos/diffs, conferindo a saída do terminal, ou validando que o PR/branch foi criado — e reportar evidências (saída do terminal, hashes de arquivo, link do PR, etc.) ao analista.
+
+### Escolha de próximo passo (preferência)
+
+Quando o agente oferecer opções de próximo passo, ele deve automaticamente seguir com a opção mais recomendada para o projeto (ou seja, a ação que maximiza progresso e minimiza risco), salvo instrução contrária do analista. O agente deve registrar brevemente por que escolheu essa opção ao reportar progresso.
 
 Essas regras ajudam a manter autonomia do agente com transparência e controle pelo analista.
