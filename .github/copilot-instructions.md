@@ -320,4 +320,6 @@ CLEANUP_BEARER_TOKEN=<strong-random-token>  # Protect cleanup endpoint
 - **Commits/PRs:** Ao finalizar uma tarefa, o agente sugere uma mensagem de commit e resumo do PR com arquivos alterados e motivos das mudanças.
 - **Idioma:** Comunicação técnica preferencialmente em Português (pt-BR) a menos que o analista solicite outro idioma.
 
+ - **Verificação pós-confirmação:** Sempre que o agente solicitar uma ação ao analista (por exemplo: executar um comando, aplicar uma migração, criar um PR) e o analista confirmar que concluiu a ação, o agente deve verificar que a ação foi realmente realizada (ex.: rodando comandos de validação, checando arquivos/ diffs, conferindo saída do terminal, ou conferindo o PR/branch) e reportar evidências ao analista.
+
 Essas regras ajudam o agente a agir com autonomia mantendo transparência e controle do analista.

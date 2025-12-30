@@ -159,4 +159,8 @@ This project is licensed under the MIT License. See the LICENSE file for details
 - **Commits/PRs:** Ao finalizar uma tarefa, o agente sugere uma mensagem de commit e resumo do PR com arquivos alterados e motivos das mudanças.
 - **Idioma:** Comunicação técnica preferencialmente em Português (pt-BR) a menos que o analista solicite outro idioma.
 
+### Verificação pós-confirmação
+
+Sempre que o agente solicitar que o analista execute uma ação e o analista confirmar a conclusão, o agente deve verificar que a ação foi realmente realizada — por exemplo: rodando comandos de validação, inspecionando arquivos/diffs, conferindo a saída do terminal, ou validando que o PR/branch foi criado — e reportar evidências (saída do terminal, hashes de arquivo, link do PR, etc.) ao analista.
+
 Essas regras ajudam a manter autonomia do agente com transparência e controle pelo analista.
