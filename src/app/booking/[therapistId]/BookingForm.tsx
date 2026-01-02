@@ -112,13 +112,9 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
         return
       }
 
-      setPaymentUrl(data.payment.checkoutUrl)
-      // Redirecionar para Asaas após 2s para o usuário ver a transição
-      setTimeout(() => {
-        if (data.payment.checkoutUrl) {
-          window.location.href = data.payment.checkoutUrl
-        }
-      }, 2000)
+      // Redirecionar para checkout interno do Senda
+      const paymentId = data.payment.id
+      router.push(`/checkout/${paymentId}`)
     } catch (err: any) {
       setError(err.message || 'Erro ao processar pagamento')
     } finally {

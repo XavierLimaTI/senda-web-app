@@ -114,6 +114,10 @@ export async function createAsaasPayment(params: CreatePaymentParams): Promise<P
 
     const paymentData = await paymentRes.json()
 
+    // O Asaas retorna invoiceUrl que é a página pública de pagamento
+    // Essa URL já funciona sem login e permite escolher forma de pagamento
+    const checkoutUrl = paymentData.invoiceUrl
+
     return {
       id: paymentData.id,
       customer: customerId,
@@ -121,8 +125,8 @@ export async function createAsaasPayment(params: CreatePaymentParams): Promise<P
       netValue: netValue,
       status: paymentData.status,
       invoiceUrl: paymentData.invoiceUrl,
-      trackingUrl: paymentData.trackingUrl,
-      paymentUrl: paymentData.checkoutUrl // URL para checkout
+      trackingUrl: paymentData.invoiceUrl, // invoiceUrl serve como tracking
+      paymentUrl: checkoutUrl // URL pública de pagamento
     }
   } catch (error) {
     console.error('Erro Asaas:', error)

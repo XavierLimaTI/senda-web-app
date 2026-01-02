@@ -141,7 +141,7 @@ export async function GET(req: Request) {
           lte: endOfDay
         },
         status: {
-          in: ['PENDING', 'CONFIRMED']
+          in: ['PENDING', 'CONFIRMED', 'COMPLETED']
         }
       },
       select: {
@@ -151,7 +151,24 @@ export async function GET(req: Request) {
     })
     
     // 5. Filtrar slots que conflitam com agendamentos
+    const now = new Date()
+    const today = new Date(date)
+    today.setHours(0, 0, 0, 0)
+    const isToday = now.toDateString() === today.toDateString()
+
     const freeSlots = allSlots.filter(slot => {
+      // Filtrar horários no passado (se for hoje)
+      if (isToday) {
+        const [hours, minutes] = slot.split(':').map(Number)
+        const slotDateTime = new Date(date)
+        slotDateTime.setHours(hours, minutes, 0, 0)
+        
+        if (slotDateTime <= now) {
+          return false // Slot no passado
+        }
+      }
+
+      // Filtrar conflitos com agendamentos existentes
       return !bookings.some(booking =>
         isSlotConflicting(slot, date, service.duration, booking)
       )

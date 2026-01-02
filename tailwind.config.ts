@@ -1,25 +1,2 @@
-import type { Config } from 'tailwindcss'
-
-const config: Config = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        salvia: '#B2B8A3',
-        terracota: '#D99A8B',
-        areia: '#F0EBE3',
-        dourado: '#C8963E',
-      },
-      fontFamily: {
-        serif: ['Lora', 'serif'],
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-      },
-    },
-  },
-  plugins: [],
-}
-export default config
+// Redirect to the JavaScript Tailwind config to avoid TS/CommonJS resolution issues
+module.exports = require('./tailwind.config.js')

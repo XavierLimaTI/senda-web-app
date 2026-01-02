@@ -8,7 +8,8 @@
  Note: This script reads the local SQLite DB via Prisma client to fetch token.
  Make sure `NODE_ENV` and `DATABASE_URL` point to the dev DB used by your app.
 */
-const fetch = require('node-fetch')
+const _nodeFetch = require('node-fetch')
+const fetch = _nodeFetch.default || _nodeFetch
 const { PrismaClient } = require('@prisma/client')
 
 ;(async function main(){
@@ -17,12 +18,28 @@ const { PrismaClient } = require('@prisma/client')
   const email = `test+${Date.now()}@example.com`
   const password = 'password123'
   console.log('Signing up', email)
-  const res = await fetch(`${base}/api/auth/signup`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: 'E2E Tester', email, password, role: 'CLIENT' })
+  let res
+  try {
+    res = await fetch(`${base}/api/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'E2E Tester', email, password, role: 'CLIENT' })
+    })
+  } catch (err) {
+    // fallback if dev server started on 3001
+    const fallback = base.replace(':3000', ':3001')
+    console.log('Primary request failed, trying fallback', fallback)
+    res = await fetch(`${fallback}/api/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'E2E Tester', email, password, role: 'CLIENT' })
+    })
+  }
+  const body = await res.json().catch(async () => {
+    const text = await res.text().catch(()=>'')
+    console.error('Non-JSON response from signup:', text.substring(0,200))
+    throw new Error('Signup did not return JSON')
   })
-  const body = await res.json()
   console.log('Signup response:', body)
 
   // wait a moment for token to be written

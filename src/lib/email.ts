@@ -66,10 +66,15 @@ export async function sendVerificationEmail(userId: number, email: string, token
 
   // send mail (prefer SendGrid via fetch to avoid extra deps)
   try {
-    if (process.env.SENDGRID_API_KEY) {
+    const hasSendGrid = Boolean(process.env.SENDGRID_API_KEY)
+    const hasSmtp = Boolean(process.env.SMTP_HOST || (process.env.SMTP_USER && process.env.SMTP_PASS))
+
+    if (hasSendGrid) {
       await sendViaSendGrid(email, subject, html)
-    } else {
+    } else if (hasSmtp) {
       await sendViaNodemailer(email, subject, html)
+    } else {
+      console.warn('No email provider configured: set SENDGRID_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS. Skipping sending email.')
     }
   } catch (err) {
     console.error('Error sending verification email', err)

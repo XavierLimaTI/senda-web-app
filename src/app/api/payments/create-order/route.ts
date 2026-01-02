@@ -64,9 +64,10 @@ export async function POST(req: Request) {
       )
     }
 
-    // Buscar dados do cliente
+    // Buscar dados do cliente (clientId na tabela Booking é o User.id)
     const client = await prisma.clientProfile.findUnique({
-      where: { id: booking.clientId }
+      where: { userId: booking.clientId },
+      include: { user: true }
     })
 
     if (!client) {
@@ -76,10 +77,7 @@ export async function POST(req: Request) {
       )
     }
 
-    // Buscar usuário do cliente
-    const clientUser = await prisma.user.findUnique({
-      where: { id: client.userId }
-    })
+    const clientUser = client.user
 
     // Buscar terapeuta
     const therapist = await prisma.therapistProfile.findUnique({
@@ -150,7 +148,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       payment: {
-        id: asaasPayment.id,
+        id: asaasPayment.id, // Transaction ID para o checkout
+        transactionId: asaasPayment.id,
         value: asaasPayment.value,
         netValue: asaasPayment.netValue,
         status: asaasPayment.status,

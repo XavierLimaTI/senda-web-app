@@ -11,10 +11,10 @@ export default function Home() {
           Sua jornada de bem-estar começa aqui
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/signin" className="bg-salvia text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+          <Link href="/auth/signin" className="bg-salvia text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-center">
             Entrar
           </Link>
-          <Link href="/auth/role-selection" className="border-2 border-salvia text-salvia px-8 py-3 rounded-lg font-semibold hover:bg-salvia hover:text-white transition-all">
+          <Link href="/auth/signup" className="border-2 border-salvia text-salvia px-8 py-3 rounded-lg font-semibold hover:bg-salvia hover:text-white transition-all text-center">
             Criar Conta
           </Link>
         </div>

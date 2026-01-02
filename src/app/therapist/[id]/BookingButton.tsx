@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   therapistId: number
@@ -8,10 +8,11 @@ interface Props {
 }
 
 export default function BookingButton({ therapistId, therapistName }: Props) {
-  const handleBooking = useCallback(() => {
-    // TODO: Implementar modal de booking ou redirecionar para /booking/[therapistId]
-    alert(`Agendar sessão com ${therapistName}\n\nFluxo de booking em desenvolvimento`)
-  }, [therapistId, therapistName])
+  const router = useRouter()
+
+  const handleBooking = () => {
+    router.push(`/booking/${therapistId}`)
+  }
 
   return (
     <div className="fixed bottom-6 right-6 md:static md:mt-12">
