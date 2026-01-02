@@ -54,20 +54,27 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
     setError('')
 
     try {
-      // TODO: Implementar criação de booking via API
-      // const res = await fetch('/api/bookings', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     therapistId: therapist.id,
-      //     serviceId: selectedService.id,
-      //     dateTime: new Date(`${selectedDate}T${selectedTime}`),
-      //   })
-      // })
+      // Construir datetime ISO
+      const dateTime = new Date(`${selectedDate}T${selectedTime}`).toISOString()
 
-      // Simulação: mostrar sucesso
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          therapistId: therapist.id,
+          serviceId: selectedService.id,
+          dateTime
+        })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Erro ao criar agendamento')
+        return
+      }
+
       setStep('confirmation')
-      alert(`Agendamento realizado com sucesso!\n\nServiço: ${selectedService.name}\nData: ${selectedDate}\nHorário: ${selectedTime}`)
     } catch (err: any) {
       setError(err.message || 'Erro ao agendar')
     } finally {
