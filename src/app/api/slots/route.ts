@@ -123,7 +123,8 @@ export async function GET(req: Request) {
     }
     
     // Remover duplicatas e ordenar
-    allSlots = [...new Set(allSlots)].sort()
+    const uniqueSlots = Array.from(new Set(allSlots))
+    allSlots = uniqueSlots.sort()
     
     // 4. Buscar agendamentos já existentes para aquele dia
     const startOfDay = new Date(date)
