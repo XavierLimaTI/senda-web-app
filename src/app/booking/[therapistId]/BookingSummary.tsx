@@ -124,11 +124,11 @@ export default function BookingSummary({
           {loading ? (
             <>
               <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Confirmando...
+              Criando agendamento...
             </>
           ) : (
             <>
-              ✓ Confirmar Agendamento
+              ✓ Confirmar e Pagar
             </>
           )}
         </button>

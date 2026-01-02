@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Service, Availability, TherapistProfile, User } from '@prisma/client'
 import ServiceSelector from './ServiceSelector'
 import DateTimeSelector from './DateTimeSelector'
@@ -15,13 +16,16 @@ interface BookingFormProps {
   clientEmail: string
 }
 
-type Step = 'service' | 'datetime' | 'summary' | 'confirmation'
+type Step = 'service' | 'datetime' | 'summary' | 'payment' | 'confirmation'
 
 export default function BookingForm({ therapist, clientEmail }: BookingFormProps) {
+  const router = useRouter()
   const [step, setStep] = useState<Step>('service')
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
+  const [bookingId, setBookingId] = useState<number | null>(null)
+  const [paymentUrl, setPaymentUrl] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -57,6 +61,7 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
       // Construir datetime ISO
       const dateTime = new Date(`${selectedDate}T${selectedTime}`).toISOString()
 
+      // Criar agendamento
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,9 +79,48 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
         return
       }
 
-      setStep('confirmation')
+      // Ir para pagamento
+      setBookingId(data.booking.id)
+      setStep('payment')
     } catch (err: any) {
       setError(err.message || 'Erro ao agendar')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleCreatePayment = async () => {
+    if (!bookingId) {
+      setError('ID do agendamento não encontrado')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Erro ao criar pagamento')
+        return
+      }
+
+      setPaymentUrl(data.payment.checkoutUrl)
+      // Redirecionar para Asaas após 2s para o usuário ver a transição
+      setTimeout(() => {
+        if (data.payment.checkoutUrl) {
+          window.location.href = data.payment.checkoutUrl
+        }
+      }, 2000)
+    } catch (err: any) {
+      setError(err.message || 'Erro ao processar pagamento')
     } finally {
       setLoading(false)
     }
@@ -92,7 +136,7 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
             <div className="flex items-center gap-4">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm
-                  ${step === 'service' || ['datetime', 'summary', 'confirmation'].includes(step)
+                  ${step === 'service' || ['datetime', 'summary', 'payment', 'confirmation'].includes(step)
                     ? 'bg-[#B2B8A3] text-white'
                     : 'bg-gray-200 text-gray-600'
                   }`}
@@ -107,14 +151,14 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
             <div className="flex items-center gap-4">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm
-                  ${step === 'datetime' || ['summary', 'confirmation'].includes(step)
+                  ${step === 'datetime' || ['summary', 'payment', 'confirmation'].includes(step)
                     ? 'bg-[#B2B8A3] text-white'
                     : step === 'service'
                     ? 'bg-gray-200 text-gray-600'
                     : 'bg-[#B2B8A3] text-white'
                   }`}
               >
-                {['summary', 'confirmation'].includes(step) ? '✓' : '2'}
+                {['summary', 'payment', 'confirmation'].includes(step) ? '✓' : '2'}
               </div>
               <span className="text-gray-600 font-medium">Data e Hora</span>
             </div>
@@ -124,14 +168,31 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
             <div className="flex items-center gap-4">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm
-                  ${['summary', 'confirmation'].includes(step)
+                  ${['summary', 'payment', 'confirmation'].includes(step)
                     ? 'bg-[#B2B8A3] text-white'
                     : 'bg-gray-200 text-gray-600'
                   }`}
               >
-                {step === 'confirmation' ? '✓' : '3'}
+                {['payment', 'confirmation'].includes(step) ? '✓' : '3'}
               </div>
-              <span className="text-gray-600 font-medium">Confirmação</span>
+              <span className="text-gray-600 font-medium">Resumo</span>
+            </div>
+
+            <div className="flex-1 h-0.5 mx-2 bg-gray-200"></div>
+
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm
+                  ${step === 'confirmation'
+                    ? 'bg-[#B2B8A3] text-white'
+                    : ['payment'].includes(step)
+                    ? 'bg-[#B2B8A3] text-white'
+                    : 'bg-gray-200 text-gray-600'
+                  }`}
+              >
+                {step === 'confirmation' ? '✓' : '4'}
+              </div>
+              <span className="text-gray-600 font-medium">Pagamento</span>
             </div>
           </div>
 
@@ -169,6 +230,57 @@ export default function BookingForm({ therapist, clientEmail }: BookingFormProps
               onConfirm={handleConfirmBooking}
               loading={loading}
             />
+          )}
+
+          {step === 'payment' && selectedService && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-[#B2B8A3] rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-serif text-gray-900 mb-2">
+                Processar Pagamento
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Você será redirecionado para o checkout seguro do Asaas
+              </p>
+              <div className="space-y-2 text-left bg-gray-50 p-4 rounded-lg mb-6">
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Serviço:</span> {selectedService.name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Valor:</span> R$ {selectedService.price.toFixed(2)}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Data:</span> {selectedDate}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Horário:</span> {selectedTime}
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setStep('summary')}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  disabled={loading}
+                >
+                  Voltar
+                </button>
+                <button
+                  onClick={handleCreatePayment}
+                  className="flex-1 px-4 py-3 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors font-medium disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading ? 'Processando...' : 'Ir para Pagamento'}
+                </button>
+              </div>
+              {paymentUrl && (
+                <p className="text-xs text-gray-500 mt-4">
+                  Redirecionando em instantes...
+                </p>
+              )}
+            </div>
           )}
 
           {step === 'confirmation' && (
