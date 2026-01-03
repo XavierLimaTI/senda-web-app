@@ -2,6 +2,8 @@
 
 import { TherapistProfile, User } from '@prisma/client'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import FavoriteButton from '@/components/FavoriteButton'
 
 interface Props {
   therapist: TherapistProfile & {
@@ -11,26 +13,47 @@ interface Props {
     }
   }
   therapistId: number
+  isFavorite?: boolean
 }
 
-export default function TherapistHeader({ therapist, therapistId }: Props) {
+export default function TherapistHeader({ therapist, therapistId, isFavorite = false }: Props) {
   const router = useRouter()
 
+  // Galeria de fotos (por enquanto placeholder - será implementado com upload)
+  const gallery = therapist.user.avatar ? [therapist.user.avatar] : []
+
   return (
-    <div className="relative bg-white border-b-4 border-[#B2B8A3] overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F0EBE3] to-white opacity-50"></div>
+    <div className="relative bg-gradient-to-br from-[#F0EBE3] to-white border-b-4 border-[#B2B8A3] overflow-hidden">
+      {/* Hero com imagem de fundo (se disponível) */}
+      {therapist.user.avatar && (
+        <div className="absolute inset-0 opacity-10">
+          <Image
+            src={therapist.user.avatar}
+            alt=""
+            fill
+            className="object-cover blur-sm"
+          />
+        </div>
+      )}
 
       <div className="relative max-w-5xl mx-auto px-4 py-12">
+        {/* Botão Favorito no canto superior direito */}
+        <div className="absolute top-4 right-4 z-10">
+          <FavoriteButton therapistId={therapistId} initialIsFavorite={isFavorite} />
+        </div>
+
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           {/* Foto/Avatar */}
           <div className="flex-shrink-0">
             {therapist.user.avatar ? (
-              <img
-                src={therapist.user.avatar}
-                alt={therapist.user.name}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-[#B2B8A3] shadow-lg"
-              />
+              <div className="relative w-32 h-32 md:w-40 md:h-40">
+                <Image
+                  src={therapist.user.avatar}
+                  alt={therapist.user.name}
+                  fill
+                  className="rounded-full object-cover border-4 border-[#B2B8A3] shadow-lg"
+                />
+              </div>
             ) : (
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-[#B2B8A3] to-[#9da390] 
                               flex items-center justify-center border-4 border-[#B2B8A3] shadow-lg">

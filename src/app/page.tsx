@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
@@ -32,10 +33,16 @@ export default async function Home() {
         <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
           <div className="text-center max-w-4xl mx-auto">
             {/* Logo/Brand */}
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <svg className="w-10 h-10 text-[#B2B8A3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg">
+                <Image
+                  src="/images/senda/logo.png"
+                  alt="Senda"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
               <h1 className="text-5xl md:text-6xl font-serif text-gray-900">Senda</h1>
             </div>
 

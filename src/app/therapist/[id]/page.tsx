@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import TherapistHeader from './TherapistHeader'
 import TherapistServices from './TherapistServices'
@@ -96,10 +98,30 @@ export default async function TherapistPage({ params }: Props) {
     ratingDistribution[d.rating as number] = d._count.rating
   })
 
+  // Verificar se o terapeuta está nos favoritos do usuário (se logado como cliente)
+  const session = await getServerSession(authOptions)
+  let isFavorite = false
+  
+  if (session && session.user.role === 'CLIENT') {
+    const clientProfile = await prisma.clientProfile.findUnique({
+      where: { userId: parseInt(session.user.id) },
+      include: {
+        favorites: {
+          where: { therapistId },
+          select: { id: true }
+        }
+      }
+    })
+    
+    if (clientProfile) {
+      isFavorite = clientProfile.favorites.length > 0
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F0EBE3]">
       {/* Header/Hero */}
-      <TherapistHeader therapist={therapist} therapistId={therapist.id} />
+      <TherapistHeader therapist={therapist} therapistId={therapist.id} isFavorite={isFavorite} />
 
       {/* Conteúdo principal */}
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">

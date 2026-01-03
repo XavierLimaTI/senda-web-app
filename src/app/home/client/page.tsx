@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import Image from 'next/image'
 
 export default async function ClientHome() {
   const session = await getServerSession(authOptions)
@@ -22,7 +23,7 @@ export default async function ClientHome() {
       service: true,
       therapist: {
         include: {
-          therapistProfile: true
+          user: true
         }
       }
     },
@@ -38,14 +39,28 @@ export default async function ClientHome() {
 
   return (
     <div className="min-h-screen bg-[#F0EBE3]">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Saudação Personalizada */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif text-gray-900 mb-3">
-            {greeting}, {firstName}
-          </h1>
-          <p className="text-xl text-gray-600">Como você quer se sentir hoje?</p>
+      {/* Hero Banner */}
+      <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-b-3xl shadow-lg mb-8">
+        <Image
+          src="/images/senda/home-client/hero-banner.jpg"
+          alt="Bem-vindo ao Senda - Sua jornada de autocuidado"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent"></div>
+        <div className="absolute inset-0 flex items-end pb-8 px-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-serif text-white mb-2">
+              {greeting}, {firstName}
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90">Como você quer se sentir hoje?</p>
+          </div>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Próximas Sessões */}
         {upcomingBookings.length > 0 && (
@@ -73,13 +88,13 @@ export default async function ClientHome() {
                   >
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#B2B8A3] to-[#9da390] flex items-center justify-center text-white font-semibold">
-                        {booking.therapist.name?.[0].toUpperCase()}
+                        {booking.therapist.user.name?.[0].toUpperCase()}
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900">
-                          {booking.therapist.therapistProfile?.specialty || 'Terapeuta'}
+                          {booking.therapist.user.name}
                         </h3>
-                        <p className="text-sm text-gray-600">{booking.therapist.name}</p>
+                        <p className="text-sm text-gray-600">{booking.therapist.specialty}</p>
                       </div>
                     </div>
                     
@@ -113,8 +128,15 @@ export default async function ClientHome() {
             {/* Card 1: Massoterapia */}
             <Link href="/explore/therapists?specialty=Massoterapia" className="group">
               <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="h-48 bg-gradient-to-br from-[#D99A8B] to-[#c88a7b] flex items-center justify-center">
-                  <span className="text-6xl">💆</span>
+                <div className="relative h-48 bg-gray-200 overflow-hidden">
+                  <Image
+                    src="/images/senda/home-client/massage-card.jpg"
+                    alt="Massoterapia - Relaxe corpo e mente"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-serif text-gray-900 mb-2 group-hover:text-[#B2B8A3] transition-colors">
@@ -130,8 +152,15 @@ export default async function ClientHome() {
             {/* Card 2: Acupuntura */}
             <Link href="/explore/therapists?specialty=Acupuntura" className="group">
               <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="h-48 bg-gradient-to-br from-[#B2B8A3] to-[#9da390] flex items-center justify-center">
-                  <span className="text-6xl">🎯</span>
+                <div className="relative h-48 bg-gray-200 overflow-hidden">
+                  <Image
+                    src="/images/senda/home-client/acupuncture-card.jpg"
+                    alt="Acupuntura - Equilíbrio energético"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-serif text-gray-900 mb-2 group-hover:text-[#B2B8A3] transition-colors">
@@ -147,8 +176,15 @@ export default async function ClientHome() {
             {/* Card 3: Reiki */}
             <Link href="/explore/therapists?specialty=Reiki" className="group">
               <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="h-48 bg-gradient-to-br from-[#C8963E] to-[#b8862e] flex items-center justify-center">
-                  <span className="text-6xl">✨</span>
+                <div className="relative h-48 bg-gray-200 overflow-hidden">
+                  <Image
+                    src="/images/senda/home-client/reiki-card.jpg"
+                    alt="Reiki - Cura energética"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-serif text-gray-900 mb-2 group-hover:text-[#B2B8A3] transition-colors">
@@ -200,11 +236,39 @@ export default async function ClientHome() {
         <section>
           <h2 className="text-2xl font-serif text-gray-900 mb-6">Novidades e Dicas</h2>
           
+          {/* Featured Article with Background Image */}
+          <div className="mb-8 relative h-80 rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src="/images/senda/home-client/blog-background.jpg"
+              alt="Bem-estar e autocuidado"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/20"></div>
+            <div className="absolute inset-0 flex items-center px-8">
+              <div className="max-w-md">
+                <p className="text-[#B2B8A3] font-medium mb-2">Destaque desta semana</p>
+                <h3 className="text-3xl font-serif text-white mb-4">
+                  Jornadas de Bem-Estar
+                </h3>
+                <p className="text-white/90 mb-4">
+                  Descubra como criar trilhas personalizadas de autocuidado que se adaptam ao seu ritmo
+                </p>
+                <Link href="/blog" className="inline-block text-[#B2B8A3] hover:text-white font-semibold transition-colors">
+                  Leia mais →
+                </Link>
+              </div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-6">
             <article className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-[#B2B8A3]/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-2xl">📖</span>
+                  <svg className="w-6 h-6 text-[#B2B8A3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">
@@ -221,7 +285,9 @@ export default async function ClientHome() {
             <article className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-[#D99A8B]/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-2xl">🧘</span>
+                  <svg className="w-6 h-6 text-[#D99A8B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">

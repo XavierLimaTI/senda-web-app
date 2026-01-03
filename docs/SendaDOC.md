@@ -4,21 +4,23 @@ Este documento reúne instruções operacionais, dicas de desenvolvimento, funci
 
 ## 📋 Status Atual do Projeto
 
-**Fase:** Sprint 1 Concluída ✅ | Sprint 2 em Andamento 🚧
+**Fase:** Sprint 1 Concluída ✅ | Sprint 2 Concluída ✅ | Sprint 3+ Planejadas 📋
 
 **Stack Tecnológica:**
 - Frontend: Next.js 14 (App Router) + TypeScript + TailwindCSS
 - Backend: Next.js API Routes + NextAuth.js
 - Database: Prisma ORM + SQLite (dev) → PostgreSQL (prod)
 - Email: SendGrid (preferido) ou SMTP via Nodemailer
-- Pagamentos: Pagar.me ou Stripe Connect (a implementar)
+- Pagamentos: Asaas (integrado) + Stripe (planned)
 
-**Stack Tecnológica:**
-- Frontend: Next.js 14 (App Router) + TypeScript + TailwindCSS
-- Backend: Next.js API Routes + NextAuth.js
-- Database: Prisma ORM + SQLite (dev) → PostgreSQL (prod)
-- Email: SendGrid (preferido) ou SMTP via Nodemailer
-- Pagamentos: Pagar.me ou Stripe Connect (a implementar)
+**📄 Documentos de Referência:**
+- [SPRINT2_PLAN.md](SPRINT2_PLAN.md) - Plano original da Sprint 2 (completed)
+- ⭐ **[FEATURES_ROADMAP.md](FEATURES_ROADMAP.md)** - Roadmap completo das 9 features + Sprint 3-6+ detalhes (LEIA PRIMEIRO)
+- [FEATURE_ANALYSIS.md](FEATURE_ANALYSIS.md) - Análise técnica aprofundada de cada feature
+- [FEATURES_EXTRAS_SUMMARY.md](FEATURES_EXTRAS_SUMMARY.md) - Quick reference: timeline visual, bloqueadores
+- [STRATEGIC_RECOMMENDATIONS.md](STRATEGIC_RECOMMENDATIONS.md) - Recomendações de priorização e ROI
+- [ROADMAP_VISUAL.md](ROADMAP_VISUAL.md) - Overview gráfico 2026+
+- [NOTIFICATIONS_SYSTEM.md](NOTIFICATIONS_SYSTEM.md) - Documentação do sistema de notificações (Sprint 2)
 
 ## 🎯 Roadmap de Desenvolvimento
 
@@ -31,131 +33,32 @@ Este documento reúne instruções operacionais, dicas de desenvolvimento, funci
 - [x] Criação automática de profiles baseado em role
 - [x] Scripts de teste E2E para signup/verify
 
-### 🚧 Sprint 2: Motor B2C - Marketplace de Agendamentos (EM ANDAMENTO)
+### ✅ Sprint 2: Motor B2C - Marketplace de Agendamentos (CONCLUÍDO)
+- [x] CRUD de Serviços (Terapeuta)
+- [x] Sistema de Disponibilidade (Terapeuta)
+- [x] API de Slots Disponíveis (cálculo dinâmico de horários)
+- [x] Perfil Público do Terapeuta (SEO-friendly)
+- [x] Fluxo de Agendamento (4 passos: serviço → data → hora → confirmação)
+- [x] Integração de Pagamento (Asaas: cartão, PIX, boleto)
+- [x] Dashboard do Cliente (próximas sessões, histórico)
+- [x] Dashboard do Terapeuta (agenda do dia, métricas, ganhos)
+- [x] Sistema de Favoritos (FavoriteButton, Favorites page)
+- [x] Sistema de Notificações (NotificationBell, API, dropdown)
 
-#### Tarefas Prioritárias:
+### 📋 Sprint 3: Segurança + Admin + Compliance (PLANEJADO)
+- [ ] Admin Panel (gerenciar terapeutas, notícias, configurações)
+- [ ] Sistema de Upload de Documentos (verificação, certificados)
+- [ ] Termos & Condições + Políticas (versionamento, aceite)
+- [ ] Solicitar Adição de Terapia (workflow de request → approval)
 
-**1. CRUD de Serviços (Terapeuta)**
-```typescript
-// Endpoint: POST /api/therapist/services
-// Permite terapeuta criar/editar seus serviços
-interface Service {
-  name: string;          // "Massagem Relaxante"
-  description: string;
-  duration: number;      // Minutos (ex: 60)
-  price: number;         // Reais (ex: 150.00)
-  active: boolean;
-}
-```
-
-**2. Sistema de Disponibilidade (Terapeuta)**
-```typescript
-// Endpoint: POST /api/therapist/availability
-// Terapeuta define blocos de horário semanais
-interface Availability {
-  dayOfWeek: number;     // 0-6 (Domingo-Sábado)
-  startTime: string;     // "09:00"
-  endTime: string;       // "18:00"
-}
-
-// Funcionalidade futura: Sincronização bidirecional com Google Calendar
-```
-
-**3. API de Slots Disponíveis (Crítico para Agendamento)**
-```typescript
-// Endpoint: GET /api/slots?therapistId=X&date=2025-12-30
-// Algoritmo:
-// 1. Buscar Availability do terapeuta para aquele dayOfWeek
-// 2. Gerar slots de X minutos (baseado na duração do serviço)
-// 3. Remover slots já ocupados (Bookings existentes)
-// 4. Retornar array de horários livres: ["09:00", "10:00", "11:00", ...]
-```
-
-**4. Perfil Público do Terapeuta (SEO)**
-```typescript
-// Página: /therapist/[id] (Server-Side Rendering)
-// Deve exibir:
-// - Foto profissional, nome, bio
-// - Especialidades (tags visual)
-// - Galeria de fotos do espaço
-// - Avaliações (stars + comentários) - futuro
-// - Lista de Services (cards com preço e duração)
-// - Botão CTA: "Ver horários disponíveis" (cor Sálvia)
-```
-
-**5. Fluxo de Agendamento Completo**
-```
-Cliente → Perfil Terapeuta → Seleciona Serviço → 
-Escolhe Data (Calendário) → Escolhe Horário (Pills de slots) →
-Tela de Checkout → Pagamento → Confirmação
-```
-
-**6. Integração Gateway de Pagamento** ⚠️ CRÍTICO
-```bash
-# Escolher entre:
-# 1. Pagar.me (Brasil, suporta split nativo)
-# 2. Stripe Connect (global, split via Connected Accounts)
-
-# Fluxo de pagamento:
-# - Cliente insere dados do cartão no COMPONENTE SEGURO do gateway
-# - NUNCA salvar dados de cartão no nosso DB
-# - Backend chama API do gateway para criar transação
-# - Split automático: Taxa Senda (ex: 15%) + Valor líquido terapeuta (85%)
-# - Webhook: Gateway notifica quando pagamento aprovado
-# - Só então criar Booking definitivo no DB
-# - Repasse ao terapeuta: D+1 após sessão (anti-fraude)
-```
-
-**7. Dashboard do Cliente**
-```typescript
-// Página: /dashboard/client
-// Exibe:
-// - Próximos agendamentos (ordenados por data)
-// - Histórico de sessões passadas
-// - Botão para avaliar terapeuta (após sessão)
-// - Botão "Agendar novamente" (quick rebooking)
-```
-
-**8. Dashboard do Terapeuta**
-```typescript
-// Página: /dashboard/therapist
-// Exibe:
-// - Visão do dia (lista cronológica de sessões hoje)
-// - Resumo financeiro do mês
-// - Calendário semanal com sessões agendadas
-// - Gestão de disponibilidade (bloqueios manuais)
-```
-
-### 📦 Sprint 3: Motor B2B - Espaços Terapêuticos (PLANEJADO)
-- [ ] CRUD de Rooms (espaço cadastra salas com fotos, tipo, preço/hora)
-- [ ] Marketplace de salas (terapeuta busca por localização, vê disponibilidade)
-- [ ] Reserva de sala por hora (B2B) com split automático
-- [ ] Dashboard do espaço (visão multi-salas, ocupação)
-- [ ] Gestão de equipe interna (espaço vincula terapeutas da casa)
-
-### 🎨 Sprint 4: Trilhas + Polimento (PLANEJADO)
-- [ ] CRUD de Trails e Lessons (terapeutas criam, admin aprova)
-- [ ] Player de Trilhas (suporte a texto, áudio embed, vídeo YouTube/Vimeo)
-- [ ] Sistema de progresso (TrailProgress, marcar lições concluídas)
-- [ ] Política de cancelamento humanizada (botão de emergência)
-- [ ] Micro-interações (motion design - partículas, pulsação)
-- [ ] Responsive mobile (PWA ready)
+### 📋 Sprint 4+: Operações, Monetização, Expansão
+**Referência completa:** ⭐ **[FEATURES_ROADMAP.md](FEATURES_ROADMAP.md)** (leia para detalhes de todas as sprints 3-6+)
 
 ---
 
 ## 🔒 Segurança e Operações
 
 ### 1. Proteção do Endpoint de Cleanup
-
-Proteger e operar o endpoint `POST /api/auth/cleanup-verification` que remove tokens de verificação de e‑mail expirados.
-
----
-
-## 🔒 Segurança e Operações
-
-### 1. Proteção do Endpoint de Cleanup
-
-**Objetivo:** Proteger o endpoint `POST /api/auth/cleanup-verification` que remove tokens de verificação de e‑mail expirados.
 
 **Objetivo:** Proteger o endpoint `POST /api/auth/cleanup-verification` que remove tokens de verificação de e‑mail expirados.
 

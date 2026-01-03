@@ -7,9 +7,14 @@ import { sendVerificationEmail } from '@/lib/email'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, email, password, role } = body
+    const { name, email, password, role, legalConsent } = body
     if (!email || !password || !name) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+    }
+
+    // Validar aceite legal
+    if (!legalConsent || !legalConsent.acceptedTerms || !legalConsent.acceptedPrivacy) {
+      return NextResponse.json({ error: 'Legal consent required' }, { status: 400 })
     }
 
     // basic email + password validation
@@ -32,6 +37,11 @@ export async function POST(req: Request) {
         email,
         password: hashed,
         role: role || 'CLIENT',
+        // LGPD Compliance: Registrar aceite de termos
+        acceptedTermsAt: new Date(),
+        acceptedTermsVersion: '1.0.0',
+        marketingConsent: legalConsent.marketingConsent || false,
+        dataProcessingConsent: true, // Sempre true (necessário para serviço)
       },
     })
 

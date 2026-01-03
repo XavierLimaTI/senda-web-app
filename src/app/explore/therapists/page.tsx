@@ -1,23 +1,18 @@
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import TherapistsGrid from './TherapistsGrid'
 import TherapistsHeader from './TherapistsHeader'
+import TherapistsFilters from './TherapistsFilters'
 
 interface SearchParams {
   specialty?: string
   minRating?: string
+  maxPrice?: string
+  city?: string
+  sort?: 'rating' | 'price' | 'recent'
   page?: string
 }
-
-const SPECIALTIES = [
-  'Reiki',
-  'Acupuntura',
-  'Massagem Terapêutica',
-  'Psicologia',
-  'Coaching',
-  'Meditação',
-  'Yoga',
-  'Reflexologia'
-]
 
 export default async function TherapistsPage({
   searchParams
@@ -26,16 +21,26 @@ export default async function TherapistsPage({
 }) {
   const specialty = searchParams.specialty || ''
   const minRating = searchParams.minRating ? parseFloat(searchParams.minRating) : 0
+  const maxPrice = searchParams.maxPrice ? parseFloat(searchParams.maxPrice) : undefined
+  const city = searchParams.city || ''
+  const sort = searchParams.sort || 'rating'
   const page = parseInt(searchParams.page || '1')
   const limit = 12
   const skip = (page - 1) * limit
+
+  // Construir orderBy dinâmico
+  const orderBy: any = 
+    sort === 'rating' ? [{ rating: 'desc' }, { createdAt: 'desc' }] :
+    sort === 'recent' ? [{ createdAt: 'desc' }] :
+    [{ rating: 'desc' }]
 
   // Buscar terapeutas com filtros
   const [therapists, totalCount] = await Promise.all([
     prisma.therapistProfile.findMany({
       where: {
         verified: true,
-        rating: { gte: minRating }
+        rating: { gte: minRating },
+        ...(city ? { city: { contains: city, mode: 'insensitive' } } : {})
       },
       include: {
         user: {
@@ -43,28 +48,54 @@ export default async function TherapistsPage({
         },
         services: {
           where: { active: true },
-          select: { price: true },
-          orderBy: { price: 'asc' },
-          take: 1
+          select: { price: true, name: true },
+          orderBy: { price: 'asc' }
         }
       },
-      orderBy: [{ rating: 'desc' }, { createdAt: 'desc' }],
+      orderBy,
       take: limit,
       skip
     }),
     prisma.therapistProfile.count({
       where: {
         verified: true,
-        rating: { gte: minRating }
+        rating: { gte: minRating },
+        ...(city ? { city: { contains: city, mode: 'insensitive' } } : {})
       }
     })
   ])
 
-  // Filtrar por especialidade client-side (case-insensitive)
+  // Buscar favoritos do usuário (se logado como cliente)
+  const session = await getServerSession(authOptions)
+  let userFavorites: number[] = []
+  
+  if (session && session.user.role === 'CLIENT') {
+    const clientProfile = await prisma.clientProfile.findUnique({
+      where: { userId: parseInt(session.user.id) },
+      include: {
+        favorites: {
+          select: { therapistId: true }
+        }
+      }
+    })
+    
+    if (clientProfile) {
+      userFavorites = clientProfile.favorites.map(f => f.therapistId)
+    }
+  }
+
+  // Filtrar por especialidade e preço client-side
   let filteredTherapists = therapists
+  
   if (specialty) {
-    filteredTherapists = therapists.filter((t) =>
+    filteredTherapists = filteredTherapists.filter((t) =>
       t.specialty?.toLowerCase().includes(specialty.toLowerCase())
+    )
+  }
+  
+  if (maxPrice) {
+    filteredTherapists = filteredTherapists.filter((t) =>
+      t.services.some(s => s.price <= maxPrice)
     )
   }
 
@@ -75,54 +106,25 @@ export default async function TherapistsPage({
       <TherapistsHeader />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Filtros e Info */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-serif text-gray-900 mb-1">
-                Encontre seu Terapeuta
-              </h2>
-              <p className="text-gray-600">
-                {totalCount} profissionais verificados disponíveis
-              </p>
-            </div>
-          </div>
+        {/* Info e Contadores */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-serif text-gray-900 mb-1">
+            Encontre seu Terapeuta
+          </h2>
+          <p className="text-gray-600">
+            {filteredTherapists.length} profissionais {specialty ? `de ${specialty}` : 'verificados'}
+          </p>
+        </div>
 
-          {/* Filtros por especialidade */}
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <p className="text-sm font-medium text-gray-700 mb-3">Filtrar por especialidade:</p>
-            <div className="flex flex-wrap gap-2">
-              <a
-                href="/explore/therapists"
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  !specialty
-                    ? 'bg-[#B2B8A3] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Todas
-              </a>
-              {SPECIALTIES.map((spec) => (
-                <a
-                  key={spec}
-                  href={`/explore/therapists?specialty=${encodeURIComponent(spec)}`}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    specialty === spec
-                      ? 'bg-[#B2B8A3] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {spec}
-                </a>
-              ))}
-            </div>
-          </div>
+        {/* Filtros */}
+        <div className="mb-8">
+          <TherapistsFilters />
         </div>
 
         {/* Grid */}
         {filteredTherapists.length > 0 ? (
           <>
-            <TherapistsGrid therapists={filteredTherapists} />
+            <TherapistsGrid therapists={filteredTherapists} userFavorites={userFavorites} />
 
             {/* Paginação */}
             {totalPages > 1 && (

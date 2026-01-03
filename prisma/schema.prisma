@@ -28,6 +28,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   emailVerified DateTime?
+  
+  // LGPD Compliance (Legal acceptance)
+  acceptedTermsAt      DateTime? // Timestamp do aceite dos termos
+  acceptedTermsVersion String?   @default("1.0.0") // Versão aceita
+  marketingConsent     Boolean   @default(false)   // Opt-in para emails marketing
+  dataProcessingConsent Boolean  @default(true)    // Necessário para usar plataforma
 
   // Relações
   clientProfile    ClientProfile?
@@ -47,9 +53,11 @@ model ClientProfile {
   userId      Int      @unique
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   preferences String?  // JSON: intenções, preferências
+  phone       String?
   createdAt   DateTime @default(now())
   
   trailProgress TrailProgress[]
+  favorites     TherapistFavorite[]
 }
 
 model TherapistProfile {
@@ -62,6 +70,7 @@ model TherapistProfile {
   experience   Int?     // Anos de experiência
   rating       Float    @default(0)
   verified     Boolean  @default(false)
+  phone        String?
   createdAt    DateTime @default(now())
   
   services     Service[]
@@ -69,6 +78,7 @@ model TherapistProfile {
   bookings     Booking[]       @relation("TherapistBookings")
   trails       Trail[]
   reviews      Review[]        @relation("TherapistReviews")
+  favoritedBy  TherapistFavorite[]
 }
 
 model SpaceProfile {
@@ -269,3 +279,39 @@ model Review {
   @@index([therapistId])
   @@index([createdAt])
 }
+
+// ============================================
+// FAVORITOS
+// ============================================
+
+model TherapistFavorite {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  client      ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  therapistId Int
+  therapist   TherapistProfile @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([clientId, therapistId])
+  @@index([clientId])
+  @@index([therapistId])
+}
+
+// ============================================
+// NOTIFICAÇÕES
+// ============================================
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String   // "FAVORITE_AVAILABILITY", "BOOKING_REMINDER", "REVIEW_REQUEST"
+  title     String
+  message   String
+  data      String?  // JSON com dados extras (therapistId, bookingId, etc)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@index([userId, read])
+  @@index([createdAt])
+}
+

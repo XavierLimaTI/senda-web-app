@@ -125,7 +125,7 @@ export async function sendBookingConfirmationEmail(
     minute: '2-digit',
   }).format(startTime)
 
-  const subject = '✨ Agendamento Confirmado — Senda'
+  const subject = 'Agendamento Confirmado — Senda'
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
       <div style="background: linear-gradient(135deg, #B2B8A3 0%, #C8963E 100%); padding: 40px 20px; text-align: center;">
@@ -134,7 +134,7 @@ export async function sendBookingConfirmationEmail(
       </div>
       
       <div style="padding: 40px 30px; background: #F0EBE3;">
-        <h2 style="color: #2d3748; margin-top: 0;">Olá, ${clientName}! 🌿</h2>
+        <h2 style="color: #2d3748; margin-top: 0;">Olá, ${clientName}!</h2>
         
         <p style="line-height: 1.6; color: #4a5568;">
           Seu agendamento foi confirmado com sucesso. Estamos ansiosos para acompanhá-lo nesta jornada.
@@ -169,7 +169,7 @@ export async function sendBookingConfirmationEmail(
         
         <div style="background: #D99A8B20; border-radius: 8px; padding: 16px; margin: 24px 0;">
           <p style="margin: 0; color: #4a5568; font-size: 14px;">
-            <strong>📍 Preparação:</strong> Recomendamos chegar 5-10 minutos antes do horário agendado. 
+            <strong style="color: #B2B8A3;">• Preparação:</strong> Recomendamos chegar 5-10 minutos antes do horário agendado. 
             Traga roupas confortáveis e uma mente aberta para a experiência.
           </p>
         </div>
@@ -468,7 +468,7 @@ export async function sendRescheduleNotificationToClient(
     return `${formattedDate} às ${formattedTime}`
   }
 
-  const subject = '📅 Agendamento Reagendado — Senda'
+  const subject = 'Agendamento Reagendado — Senda'
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
       <div style="background: linear-gradient(135deg, #B2B8A3 0%, #C8963E 100%); padding: 40px 20px; text-align: center;">
@@ -477,7 +477,7 @@ export async function sendRescheduleNotificationToClient(
       </div>
       
       <div style="padding: 40px 30px; background: #F0EBE3;">
-        <h2 style="color: #2d3748; margin-top: 0;">Olá, ${clientName}! 📆</h2>
+        <h2 style="color: #2d3748; margin-top: 0;">Olá, ${clientName}!</h2>
         
         <p style="line-height: 1.6; color: #4a5568;">
           Seu agendamento foi reagendado com sucesso. Confira os novos detalhes abaixo:

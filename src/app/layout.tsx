@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Providers from './Providers'
 import Navbar from '@/components/Navbar'
+import CookieConsent from '@/components/CookieConsent'
+import TermsUpdateWrapper from '@/components/TermsUpdateWrapper'
 
 export const metadata: Metadata = {
   title: 'Senda - Sua Jornada de Bem-Estar',
@@ -17,8 +19,10 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <Providers>
+          <TermsUpdateWrapper />
           <Navbar />
           {children}
+          <CookieConsent />
         </Providers>
       </body>
     </html>

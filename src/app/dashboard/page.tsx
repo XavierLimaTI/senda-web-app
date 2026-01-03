@@ -67,6 +67,27 @@ export default async function Dashboard() {
             </div>
           )}
 
+          {/* Configurações */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">⚙️ Configurações</h2>
+            <Link
+              href="/dashboard/settings/privacy"
+              className="block p-4 border-2 border-blue-200 bg-blue-50 rounded-lg hover:border-[#B2B8A3] hover:bg-[#F0EBE3] transition-all group"
+            >
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🔐</span>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 group-hover:text-[#B2B8A3] transition-colors">
+                    Privacidade e Dados
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Gerencie seus dados conforme a LGPD (exportar, deletar, consentimentos)
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+
           {/* Logout */}
           <div className="pt-6 border-t border-gray-200">
             <SignOutButton />
