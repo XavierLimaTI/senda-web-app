@@ -37,27 +37,6 @@ export default async function TherapistBookingsPage() {
     orderBy: { startTime: 'desc' }
   })
 
-  // Buscar dados dos usuários clientes
-  const clientUserIds = bookings.map(b => b.clientId)
-  const clientUsers = await prisma.user.findMany({
-    where: {
-      clientProfile: {
-        id: { in: clientUserIds }
-      }
-    }
-  })
-
-  const userMap = new Map(clientUsers.map(u => [u.id, u]))
-
-  // Enriquecer bookings com dados de usuários
-  const enrichedBookings = bookings.map(b => ({
-    ...b,
-    client: {
-      ...b.client,
-      user: userMap.get(b.clientId) || null
-    }
-  }))
-
   return (
     <div className="min-h-screen bg-[#F0EBE3] py-8">
       <div className="max-w-6xl mx-auto px-4">
@@ -75,7 +54,7 @@ export default async function TherapistBookingsPage() {
             <p className="text-gray-600">Seus agendamentos aparecerão aqui assim que os clientes marcarem sessões</p>
           </div>
         ) : (
-          <TherapistBookingsClient bookings={enrichedBookings as any} />
+          <TherapistBookingsClient bookings={bookings as any} />
         )}
       </div>
     </div>

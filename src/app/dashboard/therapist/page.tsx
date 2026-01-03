@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import { NewsSection } from './NewsSection';
 
 export default async function TherapistDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -301,6 +302,9 @@ export default async function TherapistDashboardPage() {
             </Link>
           </div>
         </section>
+
+        {/* News Section */}
+        <NewsSection />
       </div>
     </div>
   );

@@ -41,6 +41,8 @@ model User {
   spaceProfile     SpaceProfile?
   bookings         Booking[]       @relation("ClientBookings")
   payments         Payment[]
+  newsArticles     NewsArticle[]
+  subscriptions    Subscription[]
   emailVerificationTokens EmailVerificationToken[]
 }
 
@@ -193,18 +195,23 @@ model RoomBooking {
 // ============================================
 
 model Payment {
-  id            Int      @id @default(autoincrement())
-  bookingId     Int      @unique
-  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  userId        Int
-  user          User     @relation(fields: [userId], references: [id])
-  amount        Float
-  sendaFee      Float    // Taxa do Senda
+  id              Int      @id @default(autoincrement())
+  bookingId       Int      @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  subscriptionId  Int?
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  amount          Float
+  sendaFee        Float    // Taxa do Senda
   professionalAmount Float // Valor líquido do profissional
-  status        String   @default("PENDING") // PENDING, APPROVED, FAILED, REFUNDED
-  method        String   // "credit_card", "pix"
-  transactionId String?
-  createdAt     DateTime @default(now())
+  status          String   @default("PENDING") // PENDING, APPROVED, FAILED, REFUNDED
+  method          String   // "credit_card", "pix"
+  transactionId   String?
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([status])
 }
 
 // ============================================
@@ -314,4 +321,84 @@ model Notification {
   @@index([userId, read])
   @@index([createdAt])
 }
+
+// ============================================
+// NOTÍCIAS & BLOG
+// ============================================
+
+model NewsArticle {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  description String
+  content     String   // Markdown ou HTML
+  thumbnail   String?  // URL da imagem
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false)
+  authorId    Int      // Admin/editor user id
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+  
+  @@index([published])
+  @@index([featured])
+  @@index([publishedAt])
+  @@index([authorId])
+}
+
+// ============================================
+// ASSINATURAS & PLANOS
+// ============================================
+
+model SubscriptionPlan {
+  id          Int      @id @default(autoincrement())
+  name        String   // FREE, PRO, PREMIUM
+  role        String   // CLIENT, THERAPIST, SPACE (que tipo de usuário)
+  monthlyFee  Float    @default(0) // R$ 0, R$ 29, R$ 79
+  perSession  Float    @default(0) // Taxa por sessão (se houver)
+  features    String   // JSON array de strings ["Feature 1", "Feature 2"]
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relações
+  subscriptions Subscription[]
+  
+  @@index([role])
+  @@index([active])
+  @@unique([role, name])
+}
+
+model Subscription {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId          Int
+  status          String   @default("ACTIVE") // ACTIVE, PAUSED, CANCELLED, EXPIRED
+  currentPeriodStart DateTime
+  currentPeriodEnd DateTime
+  cancelledAt     DateTime?
+  cancelReason    String?
+  autoRenew       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relações
+  plan            SubscriptionPlan @relation(fields: [planId], references: [id])
+  payments        Payment[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([planId])
+  @@index([currentPeriodEnd])
+}
+
+// Adicionar campo subscription ao model Payment
+// payment: {
+//   subscriptionId  Int?
+//   subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+// }
 

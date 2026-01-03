@@ -20,9 +20,9 @@ export async function GET(req: Request) {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
-        ClientProfile: true,
-        TherapistProfile: true,
-        SpaceProfile: true,
+        clientProfile: true,
+        therapistProfile: true,
+        spaceProfile: true,
       },
     })
 
@@ -51,9 +51,9 @@ export async function GET(req: Request) {
         emailVerified: user.emailVerified,
       },
       profiles: {
-        client: user.ClientProfile,
-        therapist: user.TherapistProfile,
-        space: user.SpaceProfile,
+        client: user.clientProfile,
+        therapist: user.therapistProfile,
+        space: user.spaceProfile,
       },
     }
 

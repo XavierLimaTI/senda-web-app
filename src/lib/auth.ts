@@ -24,17 +24,32 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null
         const isValid = await compare(credentials.password, user.password)
         if (!isValid) return null
-        return { id: user.id.toString(), email: user.email, name: user.name, role: user.role }
+        return { id: user.id.toString(), email: user.email, name: user.name, role: user.role, avatar: user.avatar }
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) return { ...token, id: (user as any).id, role: (user as any).role }
+      if (user) {
+        return {
+          ...token,
+          id: (user as any).id,
+          role: (user as any).role,
+          avatar: (user as any).avatar,
+        }
+      }
       return token
     },
     async session({ session, token }) {
-      return { ...session, user: { ...session.user, id: (token as any).id, role: (token as any).role } }
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: (token as any).id,
+          role: (token as any).role,
+          avatar: (token as any).avatar,
+        }
+      }
     },
   },
 }

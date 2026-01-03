@@ -1,15 +1,13 @@
 'use client'
 
-import { Booking, Service, ClientProfile, Review } from '@prisma/client'
+import { Booking, Service, Review, User } from '@prisma/client'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 interface TherapistBookingCardProps {
   booking: Booking & {
     service: Service
-    client: ClientProfile & {
-      user: { name: string; email: string; avatar: string | null }
-    }
+    client: User
     review: Review | null
   }
 }
@@ -60,17 +58,17 @@ export default function TherapistBookingCard({ booking }: TherapistBookingCardPr
     <div className={`${statusColor[booking.status as BookingStatus]} rounded-lg border p-6 transition-all hover:shadow-md`}>
       <div className="flex items-start gap-4">
         {/* Foto do cliente */}
-        {booking.client.user.avatar ? (
+        {booking.client.avatar ? (
           <img
-            src={booking.client.user.avatar}
-            alt={booking.client.user.name}
+            src={booking.client.avatar}
+            alt={booking.client.name}
             className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
           />
         ) : (
           <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#B2B8A3] to-[#9da390] 
                           flex items-center justify-center flex-shrink-0">
             <span className="text-2xl text-white font-serif">
-              {booking.client.user.name.charAt(0).toUpperCase()}
+              {booking.client.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
@@ -83,10 +81,10 @@ export default function TherapistBookingCard({ booking }: TherapistBookingCardPr
                 {booking.service.name}
               </h3>
               <p className="text-sm text-gray-600 mt-1">
-                com <span className="font-medium">{booking.client.user.name}</span>
+                com <span className="font-medium">{booking.client.name}</span>
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                {booking.client.user.email}
+                {booking.client.email}
               </p>
             </div>
             <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap

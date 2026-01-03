@@ -123,9 +123,9 @@ export default function Navbar() {
                 className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C8963E] to-[#B2B8A3] flex items-center justify-center text-white font-semibold hover:shadow-lg transition-shadow overflow-hidden"
                 title="Meu Perfil"
               >
-                {session.user.image ? (
+                {(session.user as any).avatar ? (
                   <img
-                    src={session.user.image}
+                    src={(session.user as any).avatar}
                     alt={session.user.name || ''}
                     className="w-full h-full object-cover"
                   />
