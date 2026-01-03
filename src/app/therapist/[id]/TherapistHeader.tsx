@@ -1,6 +1,7 @@
 'use client'
 
 import { TherapistProfile, User } from '@prisma/client'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   therapist: TherapistProfile & {
@@ -9,9 +10,12 @@ interface Props {
       avatar: string | null
     }
   }
+  therapistId: number
 }
 
-export default function TherapistHeader({ therapist }: Props) {
+export default function TherapistHeader({ therapist, therapistId }: Props) {
+  const router = useRouter()
+
   return (
     <div className="relative bg-white border-b-4 border-[#B2B8A3] overflow-hidden">
       {/* Background pattern */}
@@ -93,6 +97,27 @@ export default function TherapistHeader({ therapist }: Props) {
                 </svg>
                 <span className="text-sm font-medium text-gray-900">Verificado</span>
               </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="mt-6 flex justify-center md:justify-start">
+              <button
+                onClick={() => router.push(`/booking/${therapistId}`)}
+                className="px-8 py-3 bg-gradient-to-r from-[#B2B8A3] to-[#9da390] 
+                           hover:from-[#9da390] hover:to-[#8a9280] text-white font-serif text-lg font-semibold
+                           rounded-full shadow-lg hover:shadow-xl transition-all duration-200 
+                           transform hover:scale-105 flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                Agendar Sessão
+              </button>
             </div>
           </div>
         </div>

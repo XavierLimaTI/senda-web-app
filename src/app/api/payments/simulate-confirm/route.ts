@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendBookingConfirmationEmail, sendBookingNotificationToTherapist } from '@/lib/email'
 
 /**
  * POST /api/payments/simulate-confirm
@@ -64,8 +65,50 @@ export async function POST(req: Request) {
       prisma.booking.update({
         where: { id: payment.bookingId },
         data: { status: 'CONFIRMED' }
+      }),
+      // Buscar dados completos para emails
+      prisma.booking.findUnique({
+        where: { id: payment.bookingId },
+        include: {
+          client: { select: { name: true, email: true } },
+          therapist: { include: { user: { select: { name: true, email: true } } } },
+          service: { select: { name: true, price: true } }
+        }
       })
     ])
+
+    // Enviar emails de confirmação (não bloquear resposta)
+    const bookingData = updatedBooking as any
+    if (bookingData && bookingData.client && bookingData.therapist) {
+      Promise.all([
+        sendBookingConfirmationEmail(
+          bookingData.client.email,
+          bookingData.client.name,
+          {
+            therapistName: bookingData.therapist.user.name,
+            serviceName: bookingData.service.name,
+            startTime: bookingData.startTime,
+            endTime: bookingData.endTime,
+            price: bookingData.service.price,
+            bookingId: bookingData.id
+          }
+        ),
+        sendBookingNotificationToTherapist(
+          bookingData.therapist.user.email,
+          bookingData.therapist.user.name,
+          {
+            clientName: bookingData.client.name,
+            serviceName: bookingData.service.name,
+            startTime: bookingData.startTime,
+            endTime: bookingData.endTime,
+            price: bookingData.service.price,
+            bookingId: bookingData.id
+          }
+        )
+      ]).catch(err => {
+        console.error('Erro ao enviar emails:', err)
+      })
+    }
 
     return NextResponse.json({
       success: true,

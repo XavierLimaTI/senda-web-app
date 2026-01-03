@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Providers from './Providers'
+import Navbar from '@/components/Navbar'
 
 export const metadata: Metadata = {
   title: 'Senda - Sua Jornada de Bem-Estar',
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   )

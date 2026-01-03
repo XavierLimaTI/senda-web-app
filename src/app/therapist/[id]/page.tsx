@@ -4,6 +4,7 @@ import TherapistHeader from './TherapistHeader'
 import TherapistServices from './TherapistServices'
 import TherapistAvailability from './TherapistAvailability'
 import BookingButton from './BookingButton'
+import ReviewCard from '@/components/ReviewCard'
 
 interface Props {
   params: { id: string }
@@ -16,7 +17,7 @@ export default async function TherapistPage({ params }: Props) {
     notFound()
   }
 
-  // Buscar terapeuta com todas as relações
+  // Buscar terapeuta com relações principais
   const therapist = await prisma.therapistProfile.findUnique({
     where: { id: therapistId },
     include: {
@@ -29,13 +30,6 @@ export default async function TherapistPage({ params }: Props) {
       },
       availability: {
         orderBy: [{ dayOfWeek: 'asc' }, { startTime: 'asc' }]
-      },
-      bookings: {
-        where: {
-          status: 'completed'
-        },
-        take: 10,
-        orderBy: { createdAt: 'desc' }
       }
     }
   })
@@ -69,10 +63,43 @@ export default async function TherapistPage({ params }: Props) {
     )
   }
 
+  // Reviews e métrica agregada
+  const [reviews, reviewCount, ratingAvg, distribution] = await Promise.all([
+    prisma.review.findMany({
+      where: { therapistId },
+      include: {
+        booking: {
+          select: {
+            service: { select: { name: true } },
+            startTime: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 6
+    }),
+    prisma.review.count({ where: { therapistId } }),
+    prisma.review.aggregate({
+      where: { therapistId },
+      _avg: { rating: true }
+    }),
+    prisma.review.groupBy({
+      by: ['rating'],
+      where: { therapistId },
+      _count: { rating: true }
+    })
+  ])
+
+  const ratingAverage = ratingAvg._avg.rating ? Number(ratingAvg._avg.rating.toFixed(1)) : 0
+  const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+  distribution.forEach((d) => {
+    ratingDistribution[d.rating as number] = d._count.rating
+  })
+
   return (
     <div className="min-h-screen bg-[#F0EBE3]">
       {/* Header/Hero */}
-      <TherapistHeader therapist={therapist} />
+      <TherapistHeader therapist={therapist} therapistId={therapist.id} />
 
       {/* Conteúdo principal */}
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">
@@ -108,13 +135,64 @@ export default async function TherapistPage({ params }: Props) {
 
         {/* Serviços */}
         {therapist.services.length > 0 && (
-          <TherapistServices services={therapist.services} />
+          <TherapistServices services={therapist.services} therapistId={therapist.id} />
         )}
 
         {/* Disponibilidade */}
         {therapist.availability.length > 0 && (
           <TherapistAvailability availability={therapist.availability} />
         )}
+
+        {/* Reviews */}
+        <section className="bg-white rounded-lg p-8 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-serif text-gray-900">Avaliações</h2>
+            <div className="text-right">
+              <p className="text-3xl font-semibold text-[#C8963E] leading-tight">
+                {ratingAverage.toFixed(1)}
+              </p>
+              <p className="text-sm text-gray-500">{reviewCount} {reviewCount === 1 ? 'avaliação' : 'avaliações'}</p>
+            </div>
+          </div>
+
+          {/* Distribuição */}
+          {reviewCount > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
+              {[5, 4, 3, 2, 1].map((star) => (
+                <div key={star} className="flex items-center gap-2">
+                  <span className="w-10 text-right font-medium">{star}★</span>
+                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#B2B8A3]"
+                      style={{
+                        width: `${reviewCount ? (ratingDistribution[star] / reviewCount) * 100 : 0}%`
+                      }}
+                    />
+                  </div>
+                  <span className="w-8 text-left">{ratingDistribution[star]}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Lista de reviews */}
+          {reviewCount === 0 ? (
+            <p className="text-gray-600">Ainda não há avaliações para este terapeuta.</p>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-4">
+              {reviews.map((review) => (
+                <ReviewCard
+                  key={review.id}
+                  rating={review.rating}
+                  comment={review.comment || undefined}
+                  serviceName={review.booking.service.name}
+                  sessionDate={review.booking.startTime}
+                  createdAt={review.createdAt}
+                />
+              ))}
+            </div>
+          )}
+        </section>
 
         {/* Contato */}
         <section className="bg-white rounded-lg p-8 shadow-sm">

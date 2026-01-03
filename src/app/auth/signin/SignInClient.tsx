@@ -27,7 +27,33 @@ export default function SignInClient() {
 
     setLoading(false)
     if (res?.ok) {
-      router.push("/")
+      // Respeita callbackUrl se fornecido (NextAuth padrão)
+      const callbackUrl = searchParams?.get('callbackUrl')
+
+      if (callbackUrl) {
+        router.push(callbackUrl)
+        return
+      }
+
+      // Busca sessão para descobrir role e redirecionar
+      try {
+        const sessionRes = await fetch('/api/auth/session')
+        const sessionData = await sessionRes.json()
+        const role = sessionData?.user?.role
+
+        const destination = (() => {
+          if (role === 'THERAPIST') return '/dashboard/therapist/services'
+          if (role === 'CLIENT') return '/client/bookings'
+          if (role === 'SPACE') return '/dashboard'
+          if (role === 'ADMIN') return '/dashboard'
+          return '/dashboard'
+        })()
+
+        router.push(destination)
+      } catch (err) {
+        // fallback seguro
+        router.push('/dashboard')
+      }
     } else {
       setError(res?.error || "Falha no login")
     }

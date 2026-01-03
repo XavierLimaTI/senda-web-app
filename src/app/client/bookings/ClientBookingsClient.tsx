@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Booking, Service, TherapistProfile, User } from '@prisma/client'
+import { Booking, Service, TherapistProfile, Review } from '@prisma/client'
 import BookingCard from './BookingCard'
 import BookingFilters from './BookingFilters'
+import { useRouter } from 'next/navigation'
 
 interface ClientBookingsClientProps {
   bookings: (Booking & {
@@ -11,6 +12,7 @@ interface ClientBookingsClientProps {
     therapist: TherapistProfile & {
       user: { name: string; avatar: string | null }
     }
+    review: Review | null
   })[]
 }
 
@@ -18,8 +20,13 @@ type FilterStatus = 'all' | 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
 type FilterSort = 'upcoming' | 'past' | 'newest'
 
 export default function ClientBookingsClient({ bookings }: ClientBookingsClientProps) {
+  const router = useRouter()
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('all')
   const [sortBy, setSortBy] = useState<FilterSort>('upcoming')
+
+  function handleBookingUpdate() {
+    router.refresh()
+  }
 
   // Filtrar por status
   const filteredBookings = statusFilter === 'all'
@@ -61,7 +68,7 @@ export default function ClientBookingsClient({ bookings }: ClientBookingsClientP
           <h2 className="text-2xl font-serif text-gray-900 mb-4">Próximos</h2>
           <div className="space-y-4">
             {upcomingBookings.map(booking => (
-              <BookingCard key={booking.id} booking={booking} />
+              <BookingCard key={booking.id} booking={booking} onUpdate={handleBookingUpdate} />
             ))}
           </div>
         </div>
@@ -73,7 +80,7 @@ export default function ClientBookingsClient({ bookings }: ClientBookingsClientP
           <h2 className="text-2xl font-serif text-gray-900 mb-4">Histórico</h2>
           <div className="space-y-4">
             {pastBookings.map(booking => (
-              <BookingCard key={booking.id} booking={booking} />
+              <BookingCard key={booking.id} booking={booking} onUpdate={handleBookingUpdate} />
             ))}
           </div>
         </div>

@@ -22,7 +22,8 @@ export default async function ClientBookingsPage() {
     },
     include: {
       service: true,
-      therapist: { include: { user: { select: { name: true, avatar: true } } } }
+      therapist: { include: { user: { select: { name: true, avatar: true } } } },
+      review: true
     },
     orderBy: { startTime: 'desc' }
   })

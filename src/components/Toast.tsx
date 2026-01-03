@@ -3,26 +3,82 @@ import { useEffect, useState } from 'react'
 
 type ToastProps = {
   message: string
-  type?: 'info' | 'success' | 'error'
+  type?: 'info' | 'success' | 'error' | 'warning'
   duration?: number
+  onClose?: () => void
 }
 
-export function Toast({ message, type = 'info', duration = 4000 }: ToastProps) {
+export function Toast({ message, type = 'info', duration = 4000, onClose }: ToastProps) {
   const [visible, setVisible] = useState(true)
+  const [isExiting, setIsExiting] = useState(false)
+
   useEffect(() => {
-    const t = setTimeout(() => setVisible(false), duration)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => {
+      handleClose()
+    }, duration)
+    return () => clearTimeout(timer)
   }, [duration])
+
+  const handleClose = () => {
+    setIsExiting(true)
+    setTimeout(() => {
+      setVisible(false)
+      onClose?.()
+    }, 300)
+  }
 
   if (!visible) return null
 
-  const bg = type === 'success' ? 'bg-green-100 border-green-400 text-green-800' : type === 'error' ? 'bg-red-100 border-red-400 text-red-800' : 'bg-neutral-100 border-neutral-300 text-neutral-800'
+  const styles = {
+    success: {
+      bg: 'bg-green-50',
+      border: 'border-green-400',
+      text: 'text-green-800',
+      icon: '✅'
+    },
+    error: {
+      bg: 'bg-red-50',
+      border: 'border-red-400',
+      text: 'text-red-800',
+      icon: '❌'
+    },
+    warning: {
+      bg: 'bg-orange-50',
+      border: 'border-orange-400',
+      text: 'text-orange-800',
+      icon: '⚠️'
+    },
+    info: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-400',
+      text: 'text-blue-800',
+      icon: 'ℹ️'
+    }
+  }
+
+  const style = styles[type]
 
   return (
-    <div className={`fixed top-6 right-6 z-50 max-w-sm w-full border-l-4 ${bg} shadow-md rounded p-4`} role="status">
-      <div className="text-sm">{message}</div>
+    <div
+      className={`fixed top-6 right-6 z-50 max-w-sm w-full border-l-4 ${style.border} ${style.bg} ${style.text} shadow-lg rounded-lg p-4 transition-all duration-300 ${
+        isExiting ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0'
+      }`}
+      role="alert"
+    >
+      <div className="flex items-start gap-3">
+        <span className="text-xl flex-shrink-0">{style.icon}</span>
+        <p className="text-sm flex-1 font-medium">{message}</p>
+        <button
+          onClick={handleClose}
+          className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   )
 }
 
 export default Toast
+

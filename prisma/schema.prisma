@@ -68,6 +68,7 @@ model TherapistProfile {
   availability Availability[]
   bookings     Booking[]       @relation("TherapistBookings")
   trails       Trail[]
+  reviews      Review[]        @relation("TherapistReviews")
 }
 
 model SpaceProfile {
@@ -162,6 +163,7 @@ model Booking {
   createdAt   DateTime @default(now())
   
   payment     Payment?
+  review      Review?
 }
 
 model RoomBooking {
@@ -246,4 +248,24 @@ model EmailVerificationToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+// ============================================
+// AVALIAÇÕES (REVIEWS)
+// ============================================
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  bookingId   Int      @unique
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  therapistId Int
+  therapist   TherapistProfile @relation("TherapistReviews", fields: [therapistId], references: [id])
+  clientId    Int
+  rating      Int      // 1-5 estrelas
+  comment     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([therapistId])
+  @@index([createdAt])
 }

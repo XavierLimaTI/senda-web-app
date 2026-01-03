@@ -1,8 +1,12 @@
 'use client'
 
-import { Booking, Service, TherapistProfile } from '@prisma/client'
-import { formatDistanceToNow, format } from 'date-fns'
+import { useState } from 'react'
+import { Booking, Service, TherapistProfile, Review } from '@prisma/client'
+import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import RescheduleModal from './RescheduleModal'
+import CancelModal from './CancelModal'
+import { useToast } from '@/context/ToastContext'
 
 interface BookingCardProps {
   booking: Booking & {
@@ -10,13 +14,23 @@ interface BookingCardProps {
     therapist: TherapistProfile & {
       user: { name: string; avatar: string | null }
     }
+    review: Review | null
   }
+  onUpdate?: () => void
 }
 
 type BookingStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
 
-export default function BookingCard({ booking }: BookingCardProps) {
+export default function BookingCard({ booking, onUpdate }: BookingCardProps) {
+  const { showToast } = useToast()
   const isUpcoming = booking.startTime > new Date()
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [rating, setRating] = useState(5)
+  const [comment, setComment] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(Boolean(booking.review))
   
   const statusColor: Record<BookingStatus, string> = {
     PENDING: 'bg-yellow-50 border-yellow-200',
@@ -37,6 +51,45 @@ export default function BookingCard({ booking }: BookingCardProps) {
     CONFIRMED: 'text-blue-700',
     COMPLETED: 'text-green-700',
     CANCELLED: 'text-red-700'
+  }
+
+  async function handleSubmitReview() {
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: booking.id,
+          rating,
+          comment: comment.trim() || undefined
+        })
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Erro ao enviar avaliação')
+      }
+
+      setSubmitted(true)
+      setShowReviewModal(false)
+      showToast({ message: 'Avaliação enviada com sucesso!', type: 'success' })
+    } catch (err) {
+      console.error(err)
+      showToast({ message: (err as Error).message, type: 'error' })
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  function handleRescheduleSuccess() {
+    showToast({ message: 'Agendamento reagendado com sucesso!', type: 'success' })
+    if (onUpdate) onUpdate()
+  }
+
+  function handleCancelSuccess() {
+    showToast({ message: 'Agendamento cancelado com sucesso.', type: 'info' })
+    if (onUpdate) onUpdate()
   }
 
   return (
@@ -103,22 +156,122 @@ export default function BookingCard({ booking }: BookingCardProps) {
           <div className="flex gap-2 mt-4">
             {isUpcoming && booking.status !== 'CANCELLED' && (
               <>
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => setShowRescheduleModal(true)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
                   Reagendar
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-lg hover:bg-red-50 transition-colors">
+                <button
+                  onClick={() => setShowCancelModal(true)}
+                  className="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+                >
                   Cancelar
                 </button>
               </>
             )}
             {booking.status === 'COMPLETED' && (
-              <button className="px-4 py-2 text-sm font-medium text-[#B2B8A3] bg-white border border-[#B2B8A3] rounded-lg hover:bg-[#F0EBE3] transition-colors">
-                Deixar Avaliação
+              <button
+                onClick={() => setShowReviewModal(true)}
+                disabled={submitted}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors border ${
+                  submitted
+                    ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white border-[#B2B8A3] text-[#B2B8A3] hover:bg-[#F0EBE3]'
+                }`}
+              >
+                {submitted ? 'Avaliação enviada' : 'Deixar Avaliação'}
               </button>
             )}
           </div>
         </div>
       </div>
+
+      {/* Reschedule Modal */}
+      <RescheduleModal
+        booking={booking}
+        isOpen={showRescheduleModal}
+        onClose={() => setShowRescheduleModal(false)}
+        onSuccess={handleRescheduleSuccess}
+      />
+
+      {/* Cancel Modal */}
+      <CancelModal
+        booking={booking}
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onSuccess={handleCancelSuccess}
+      />
+
+      {showReviewModal && !submitted && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Avaliar sessão</h3>
+                <p className="text-sm text-gray-600">{booking.service.name} com {booking.therapist.user.name}</p>
+              </div>
+              <button
+                onClick={() => setShowReviewModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Estrelas */}
+            <div className="flex items-center gap-2">
+              {[1,2,3,4,5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className="focus:outline-none"
+                >
+                  <svg
+                    className={`w-7 h-7 ${star <= rating ? 'text-[#C8963E]' : 'text-gray-300'}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                </button>
+              ))}
+              <span className="text-sm text-gray-600">{rating} / 5</span>
+            </div>
+
+            {/* Comentário */}
+            <div>
+              <label className="text-sm text-gray-700 font-medium">Comentário (opcional)</label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                rows={4}
+                className="mt-1 w-full rounded-lg border border-gray-200 focus:border-[#B2B8A3] focus:ring-[#B2B8A3] text-sm"
+                placeholder="Como foi sua experiência?"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowReviewModal(false)}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSubmitReview}
+                disabled={submitting}
+                className={`px-4 py-2 text-sm font-medium rounded-lg text-white ${
+                  submitting ? 'bg-[#B2B8A3]/60 cursor-not-allowed' : 'bg-[#B2B8A3] hover:bg-[#9da390]'
+                }`}
+              >
+                {submitting ? 'Enviando...' : 'Enviar avaliação'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,12 +1,15 @@
 'use client'
 
 import { Service } from '@prisma/client'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   services: Service[]
+  therapistId: number
 }
 
-export default function TherapistServices({ services }: Props) {
+export default function TherapistServices({ services, therapistId }: Props) {
+  const router = useRouter()
   return (
     <section>
       <h2 className="text-2xl font-serif text-gray-900 mb-6">Serviços</h2>
@@ -48,6 +51,7 @@ export default function TherapistServices({ services }: Props) {
 
             {/* Botão Agendar */}
             <button
+              onClick={() => router.push(`/booking/${therapistId}?serviceId=${service.id}`)}
               className="w-full mt-4 bg-gradient-to-r from-[#B2B8A3] to-[#9da390] 
                          hover:from-[#9da390] hover:to-[#8a9280] text-white font-medium py-2.5 rounded-lg
                          transition-all duration-200 shadow-sm hover:shadow-md"

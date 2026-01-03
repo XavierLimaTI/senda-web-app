@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendCancellationEmail } from '@/lib/email'
 
 /**
  * PATCH /api/bookings/[id]
@@ -171,11 +172,39 @@ export async function DELETE(
     // Cancelar agendamento
     const cancelledBooking = await prisma.booking.update({
       where: { id: parseInt(params.id) },
-      data: { status: 'CANCELLED' }
+      data: { status: 'CANCELLED' },
+      include: {
+        service: { select: { name: true } },
+        client: { select: { name: true, email: true } },
+        therapist: { include: { user: { select: { name: true, email: true } } } }
+      }
+    })
+
+    // Enviar emails de notificação (não bloquear resposta)
+    Promise.all([
+      sendCancellationEmail(
+        cancelledBooking.client.email,
+        cancelledBooking.client.name,
+        {
+          serviceName: cancelledBooking.service.name,
+          startTime: cancelledBooking.startTime,
+          isClient: true
+        }
+      ),
+      sendCancellationEmail(
+        cancelledBooking.therapist.user.email,
+        cancelledBooking.therapist.user.name,
+        {
+          serviceName: cancelledBooking.service.name,
+          startTime: cancelledBooking.startTime,
+          isClient: false
+        }
+      )
+    ]).catch(err => {
+      console.error('Erro ao enviar emails de cancelamento:', err)
     })
 
     // TODO: Processar reembolso se pagamento foi processado
-    // TODO: Enviar email de notificação
 
     return NextResponse.json({ booking: cancelledBooking })
   } catch (error) {

@@ -31,7 +31,8 @@ export default async function TherapistBookingsPage() {
     },
     include: {
       service: true,
-      client: true
+      client: true,
+      review: true
     },
     orderBy: { startTime: 'desc' }
   })

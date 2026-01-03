@@ -7,7 +7,7 @@ interface Payment {
   id: number
   amount: number
   status: string
-  transactionId: string
+  transactionId: string | null
   booking: {
     id: number
     startTime: Date
