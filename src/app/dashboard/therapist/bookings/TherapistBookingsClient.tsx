@@ -1,16 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Booking, Service, ClientProfile, Review } from '@prisma/client'
+import { Booking, Service, User, Review } from '@prisma/client'
 import TherapistBookingCard from './TherapistBookingCard'
 import BookingFilters from './BookingFilters'
 
 interface TherapistBookingsClientProps {
   bookings: (Booking & {
     service: Service
-    client: ClientProfile & {
-      user: { name: string; email: string; avatar: string | null }
-    }
+    client: User
     review: Review | null
   })[]
 }

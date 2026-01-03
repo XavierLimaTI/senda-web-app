@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
+import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from 'lucide-react'
 
 type ToastProps = {
   message: string
@@ -34,29 +35,30 @@ export function Toast({ message, type = 'info', duration = 4000, onClose }: Toas
       bg: 'bg-green-50',
       border: 'border-green-400',
       text: 'text-green-800',
-      icon: '✅'
+      icon: CheckCircle
     },
     error: {
       bg: 'bg-red-50',
       border: 'border-red-400',
       text: 'text-red-800',
-      icon: '❌'
+      icon: AlertCircle
     },
     warning: {
       bg: 'bg-orange-50',
       border: 'border-orange-400',
       text: 'text-orange-800',
-      icon: '⚠️'
+      icon: AlertTriangle
     },
     info: {
       bg: 'bg-blue-50',
       border: 'border-blue-400',
       text: 'text-blue-800',
-      icon: 'ℹ️'
+      icon: Info
     }
   }
 
   const style = styles[type]
+  const IconComponent = style.icon
 
   return (
     <div
@@ -66,14 +68,14 @@ export function Toast({ message, type = 'info', duration = 4000, onClose }: Toas
       role="alert"
     >
       <div className="flex items-start gap-3">
-        <span className="text-xl flex-shrink-0">{style.icon}</span>
+        <IconComponent className="w-5 h-5 flex-shrink-0 mt-0.5" />
         <p className="text-sm flex-1 font-medium">{message}</p>
         <button
           onClick={handleClose}
           className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
           aria-label="Fechar"
         >
-          ✕
+          <X className="w-4 h-4" />
         </button>
       </div>
     </div>

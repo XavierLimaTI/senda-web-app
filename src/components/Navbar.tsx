@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -9,6 +10,7 @@ import NotificationBell from './NotificationBell'
 export default function Navbar() {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const [language, setLanguage] = useState<'pt' | 'en' | 'es' | 'zh'>('pt')
 
   // Não mostrar navbar em páginas de autenticação
   if (pathname?.startsWith('/auth/')) {
@@ -17,10 +19,12 @@ export default function Navbar() {
 
   const isTherapist = session?.user?.role === 'THERAPIST'
   const isClient = session?.user?.role === 'CLIENT'
+  const isAdmin = session?.user?.role === 'ADMIN'
   
   // Link dinâmico para home baseado no role
   const homeLink = session?.user 
-    ? isClient ? '/home/client' 
+    ? isAdmin ? '/dashboard/admin'
+    : isClient ? '/home/client' 
     : isTherapist ? '/home/therapist' 
     : '/dashboard'
     : '/'
@@ -93,6 +97,12 @@ export default function Navbar() {
                     </svg>
                     Explorar
                   </NavLink>
+                  <NavLink href="/explore/therapies" active={pathname === '/explore/therapies'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Terapias
+                  </NavLink>
                   <NavLink href="/favorites" active={pathname === '/favorites'}>
                     <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -101,12 +111,47 @@ export default function Navbar() {
                   </NavLink>
                 </>
               )}
+
+              {isAdmin && (
+                <>
+                  <NavLink href="/dashboard/admin" active={pathname === '/dashboard/admin'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Dashboard
+                  </NavLink>
+                  <NavLink href="/dashboard/admin/therapists/pending" active={pathname === '/dashboard/admin/therapists/pending'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Aprovações
+                  </NavLink>
+                  <NavLink href="/dashboard/admin/users" active={pathname === '/dashboard/admin/users'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Usuários
+                  </NavLink>
+                </>
+              )}
             </div>
           )}
 
-          {/* User Menu */}
+          {/* Language Selector & User Menu */}
           {session ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {/* Language Selector */}
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as 'pt' | 'en' | 'es' | 'zh')}
+                className="p-2 rounded-lg bg-transparent hover:bg-gray-100 border border-gray-200 text-sm cursor-pointer font-medium"
+                title="Idioma / Language / Idioma / 语言"
+              >
+                <option value="pt">🇧🇷 PT</option>
+                <option value="en">🇺🇸 EN</option>
+                <option value="es">🇪🇸 ES</option>
+                <option value="zh">🇨🇳 ZH</option>
+              </select>
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
                 <p className="text-xs text-gray-500">

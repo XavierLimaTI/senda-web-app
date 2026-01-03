@@ -32,18 +32,17 @@ export default async function Home() {
 
         <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Logo/Brand */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg">
+            {/* Logo Centralizada (maior) */}
+            <div className="flex items-center justify-center mb-8">
+              <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-white shadow-2xl ring-4 ring-[#B2B8A3]/20">
                 <Image
                   src="/images/senda/logo.png"
-                  alt="Senda"
+                  alt="Senda - Seu caminho de autocuidado"
                   fill
                   className="object-cover"
                   priority
                 />
               </div>
-              <h1 className="text-5xl md:text-6xl font-serif text-gray-900">Senda</h1>
             </div>
 
             {/* Tagline */}
@@ -87,6 +86,77 @@ export default async function Home() {
                 Entrar
               </Link>
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Anúncios/Promoções Section */}
+      <section className="py-12 bg-gradient-to-r from-[#D99A8B]/10 to-[#C8963E]/10">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl md:text-3xl font-serif text-gray-900 mb-2">
+              ✨ Destaques do Mês
+            </h3>
+            <p className="text-gray-600">
+              Promoções exclusivas e novidades para sua jornada de bem-estar
+            </p>
+          </div>
+
+          {/* Grid de Anúncios */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Anúncio 1 - Primeira Sessão */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-[#C8963E]/20">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#C8963E]/10 mb-4">
+                <svg className="w-6 h-6 text-[#C8963E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                Primeira Sessão Grátis
+              </h4>
+              <p className="text-gray-600 text-sm mb-4">
+                Experimente gratuitamente sua primeira sessão com terapeutas selecionados
+              </p>
+              <Link href="/explore/therapists" className="text-[#B2B8A3] font-medium hover:underline text-sm">
+                Ver terapeutas →
+              </Link>
+            </div>
+
+            {/* Anúncio 2 - Pacotes */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-[#D99A8B]/20">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#D99A8B]/10 mb-4">
+                <svg className="w-6 h-6 text-[#D99A8B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                Pacotes com 20% OFF
+              </h4>
+              <p className="text-gray-600 text-sm mb-4">
+                Adquira pacotes de 5 ou 10 sessões e economize em sua jornada
+              </p>
+              <Link href="/explore/therapies" className="text-[#B2B8A3] font-medium hover:underline text-sm">
+                Conhecer terapias →
+              </Link>
+            </div>
+
+            {/* Anúncio 3 - Novidades */}
+            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-[#B2B8A3]/20">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#B2B8A3]/10 mb-4">
+                <svg className="w-6 h-6 text-[#B2B8A3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                Novos Terapeutas
+              </h4>
+              <p className="text-gray-600 text-sm mb-4">
+                Conheça os profissionais que acabaram de se juntar à plataforma
+              </p>
+              <Link href="/explore/therapists?filter=new" className="text-[#B2B8A3] font-medium hover:underline text-sm">
+                Descobrir →
+              </Link>
+            </div>
           </div>
         </div>
       </section>

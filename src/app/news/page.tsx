@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
+import { Star } from 'lucide-react'
 
 interface NewsPageProps {
   searchParams: {
@@ -182,9 +183,10 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             {/* Featured Articles */}
             {featured.length > 0 && (
               <div className="bg-white rounded-lg p-6 shadow-sm sticky top-4">
-                <h3 className="text-lg font-serif text-gray-900 mb-4">
-                  ⭐ Destaque
-                </h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <Star className="w-5 h-5 text-[#C8963E]" />
+                  <h3 className="text-lg font-serif text-gray-900">Destaque</h3>
+                </div>
 
                 <div className="space-y-4">
                   {featured.map((article) => (

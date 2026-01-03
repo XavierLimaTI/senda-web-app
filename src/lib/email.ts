@@ -50,6 +50,34 @@ async function sendViaNodemailer(email: string, subject: string, html: string) {
   }
 }
 
+/**
+ * Função genérica para enviar emails
+ * Tenta SendGrid primeiro, depois Nodemailer (SMTP)
+ */
+export async function sendEmail(params: {
+  to: string
+  subject: string
+  html: string
+}) {
+  const { to, subject, html } = params
+
+  try {
+    const hasSendGrid = Boolean(process.env.SENDGRID_API_KEY)
+    const hasSmtp = Boolean(process.env.SMTP_HOST || (process.env.SMTP_USER && process.env.SMTP_PASS))
+
+    if (hasSendGrid) {
+      await sendViaSendGrid(to, subject, html)
+    } else if (hasSmtp) {
+      await sendViaNodemailer(to, subject, html)
+    } else {
+      console.warn('No email provider configured: set SENDGRID_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS. Skipping sending email.')
+    }
+  } catch (err) {
+    console.error('Error sending email', err)
+    throw err
+  }
+}
+
 export async function sendVerificationEmail(userId: number, email: string, token: string) {
   const base = process.env.NEXTAUTH_URL || process.env.FRONTEND_URL || 'http://localhost:3000'
   const verifyUrl = `${base.replace(/\/$/, '')}/api/auth/verify?token=${encodeURIComponent(token)}`
