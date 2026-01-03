@@ -195,20 +195,23 @@ model RoomBooking {
 // ============================================
 
 model Payment {
-  id              Int      @id @default(autoincrement())
-  bookingId       Int      @unique
-  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  subscriptionId  Int?
-  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
-  userId          Int
-  user            User     @relation(fields: [userId], references: [id])
-  amount          Float
-  sendaFee        Float    // Taxa do Senda
-  professionalAmount Float // Valor líquido do profissional
-  status          String   @default("PENDING") // PENDING, APPROVED, FAILED, REFUNDED
-  method          String   // "credit_card", "pix"
-  transactionId   String?
-  createdAt       DateTime @default(now())
+  id                  Int      @id @default(autoincrement())
+  bookingId           Int      @unique
+  booking             Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  subscriptionId      Int?
+  subscription        Subscription? @relation(fields: [subscriptionId], references: [id])
+  userId              Int
+  user                User     @relation(fields: [userId], references: [id])
+  amount              Float
+  sendaFee            Float    // Taxa do Senda
+  professionalAmount  Float    // Valor líquido do profissional
+  status              String   @default("PENDING") // PENDING, APPROVED, FAILED, REFUNDED
+  method              String   // "credit_card", "pix"
+  transactionId       String?
+  stripePaymentIntentId String? // Para integração com Stripe
+  description         String?  // Descrição da transação
+  refundedAt          DateTime? // Data do reembolso
+  createdAt           DateTime @default(now())
   
   @@index([userId])
   @@index([status])
@@ -280,6 +283,7 @@ model Review {
   clientId    Int
   rating      Int      // 1-5 estrelas
   comment     String?
+  flagged     Boolean  @default(false) // Para moderação de conteúdo impróprio
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -401,4 +405,3 @@ model Subscription {
 //   subscriptionId  Int?
 //   subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
 // }
-

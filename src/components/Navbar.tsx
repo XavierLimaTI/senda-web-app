@@ -6,11 +6,12 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import NotificationBell from './NotificationBell'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function Navbar() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const [language, setLanguage] = useState<'pt' | 'en' | 'es' | 'zh'>('pt')
+  const { language, setLanguage, t } = useLanguage()
 
   // Não mostrar navbar em páginas de autenticação
   if (pathname?.startsWith('/auth/')) {
@@ -51,7 +52,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-6">
               {/* Link Início dinâmico */}
               <NavLink href={homeLink} active={pathname === homeLink || pathname?.startsWith('/home/')}>
-                🏠 Início
+                Início
               </NavLink>
 
               {isTherapist && (
@@ -132,6 +133,30 @@ export default function Navbar() {
                     </svg>
                     Usuários
                   </NavLink>
+                  <NavLink href="/dashboard/admin/news" active={pathname === '/dashboard/admin/news'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2zm-2-4h2m-2 4H7m10-7h-2M7 17h8" />
+                    </svg>
+                    Notícias
+                  </NavLink>
+                  <NavLink href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Relatórios
+                  </NavLink>
+                  <NavLink href="/dashboard/admin/reviews" active={pathname === '/dashboard/admin/reviews'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    Reviews
+                  </NavLink>
+                  <NavLink href="/dashboard/admin/payments" active={pathname === '/dashboard/admin/payments'}>
+                    <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pagamentos
+                  </NavLink>
                 </>
               )}
             </div>
@@ -143,9 +168,14 @@ export default function Navbar() {
               {/* Language Selector */}
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value as 'pt' | 'en' | 'es' | 'zh')}
+                onChange={(e) => {
+                  const lang = e.target.value as 'pt' | 'en' | 'es' | 'zh'
+                  setLanguage(lang)
+                  // Atualizar idioma do HTML
+                  document.documentElement.lang = lang === 'en' ? 'en-US' : lang === 'es' ? 'es-ES' : lang === 'zh' ? 'zh-CN' : 'pt-BR'
+                }}
                 className="p-2 rounded-lg bg-transparent hover:bg-gray-100 border border-gray-200 text-sm cursor-pointer font-medium"
-                title="Idioma / Language / Idioma / 语言"
+                title={t('navbar.language') || 'Idioma / Language / Idioma / 语言'}
               >
                 <option value="pt">🇧🇷 PT</option>
                 <option value="en">🇺🇸 EN</option>

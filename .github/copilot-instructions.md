@@ -10,6 +10,7 @@ Immediate priorities for an agent
 - Preserve: Prisma singleton at `src/lib/prisma.ts` — always use it for DB access to avoid HMR issues.
 - Auth: `src/lib/auth.ts` holds NextAuth config; `src/app/api/auth/signup/route.ts` implements signup + profile creation.
 - Email: `src/lib/email.ts` abstracts SendGrid (preferred) and SMTP fallback — check env vars before attempting sends.
+- **Documentation:** Always update relevant documentation files when making changes (`ADMIN_PANEL_GUIDE.md`, `ADMIN_FAQ_RECOMMENDATIONS.md`, `ADMIN_IMPLEMENTATION_SUMMARY.md`, etc). Keep docs in sync with code.
 
 Where to look first
 - Database model: `prisma/schema.prisma` (migrations in `prisma/migrations/`). Run `npx prisma generate` after edits.
@@ -90,6 +91,31 @@ Request feedback: If any section above is unclear or you want more examples (cod
 - **Transições:** Suaves (ease-in-out), orgânicas como natureza
 - **Micro-interações:** Botões pulsam como respiração, liberam partículas sutis de luz/folhas
 - **NUNCA:** Aparecer/desaparecer abruptamente, beeps eletrônicos estridentes
+
+### Ícones
+- **🚫 NUNCA usar:** Emojis de desenho (🏠, 📱, 💬, 👤, etc)
+- **✅ USAR:** Ícones Lucide React (`lucide-react`) apenas
+- **Pattern:** Importar do pacote: `import { Calendar, CheckCircle, AlertCircle } from 'lucide-react'`
+- **Estilo:** Ícones devem ser minimalistas e alinhados com a vibe Senda (natural, wellness)
+- **Tamanho padrão:** `w-4 h-4` (nav), `w-5 h-5` (buttons), `w-6 h-6` (destacados)
+- **Cores de ícones:**
+  - Verde Sálvia (#B2B8A3) para ações primárias
+  - Terracota (#D99A8B) para favoritos/alertas
+  - Dourado (#C8963E) para premium/importante
+  - Cinza (#6B7280) para secundários
+- **Exemplos bons:**
+  ```tsx
+  // ✅ Correto
+  import { Calendar, Heart, AlertCircle, Users } from 'lucide-react'
+  <Calendar className="w-4 h-4 text-[#B2B8A3]" />
+  ```
+- **Exemplos ruins:**
+  ```tsx
+  // ❌ Errado
+  🏠 Início
+  📱 Menu
+  💬 Chat
+  ```
 
 ## 🏗️ Architecture & Key Patterns
 
