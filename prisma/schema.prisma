@@ -75,6 +75,16 @@ model TherapistProfile {
   phone        String?
   createdAt    DateTime @default(now())
   
+  // Localização e Atendimento
+  city             String?
+  state            String?
+  address          String?
+  latitude         Float?
+  longitude        Float?
+  zipCode          String?
+  neighborhood     String?
+  onlineAvailable  Boolean  @default(false)
+  
   services     Service[]
   availability Availability[]
   bookings     Booking[]       @relation("TherapistBookings")

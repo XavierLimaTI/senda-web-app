@@ -3,10 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import TherapistHeader from './TherapistHeader'
-import TherapistServices from './TherapistServices'
-import TherapistAvailability from './TherapistAvailability'
+import TherapistBookingSection from './TherapistBookingSection'
+import TherapistReviewsSection from './TherapistReviewsSection'
 import BookingButton from './BookingButton'
-import ReviewCard from '@/components/ReviewCard'
 
 interface Props {
   params: { id: string }
@@ -125,6 +124,16 @@ export default async function TherapistPage({ params }: Props) {
 
       {/* Conteúdo principal */}
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">
+        {/* Seção de Agendamento */}
+        <TherapistBookingSection
+          therapistId={therapist.id}
+          therapistName={therapist.user.name}
+          services={therapist.services}
+          onlineAvailable={therapist.onlineAvailable}
+          city={therapist.city}
+          neighborhood={therapist.neighborhood}
+        />
+
         {/* Bio */}
         {therapist.bio && (
           <section className="bg-white rounded-lg p-8 shadow-sm">
@@ -155,99 +164,17 @@ export default async function TherapistPage({ params }: Props) {
           </section>
         )}
 
-        {/* Serviços */}
-        {therapist.services.length > 0 && (
-          <TherapistServices services={therapist.services} therapistId={therapist.id} />
-        )}
+        {/* Avaliações */}
+        <TherapistReviewsSection
+          reviews={reviews}
+          averageRating={ratingAverage}
+          ratingDistribution={ratingDistribution}
+          totalReviews={reviewCount}
+        />
 
-        {/* Disponibilidade */}
-        {therapist.availability.length > 0 && (
-          <TherapistAvailability availability={therapist.availability} />
-        )}
-
-        {/* Reviews */}
-        <section className="bg-white rounded-lg p-8 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-serif text-gray-900">Avaliações</h2>
-            <div className="text-right">
-              <p className="text-3xl font-semibold text-[#C8963E] leading-tight">
-                {ratingAverage.toFixed(1)}
-              </p>
-              <p className="text-sm text-gray-500">{reviewCount} {reviewCount === 1 ? 'avaliação' : 'avaliações'}</p>
-            </div>
-          </div>
-
-          {/* Distribuição */}
-          {reviewCount > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
-              {[5, 4, 3, 2, 1].map((star) => (
-                <div key={star} className="flex items-center gap-2">
-                  <span className="w-10 text-right font-medium">{star}★</span>
-                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#B2B8A3]"
-                      style={{
-                        width: `${reviewCount ? (ratingDistribution[star] / reviewCount) * 100 : 0}%`
-                      }}
-                    />
-                  </div>
-                  <span className="w-8 text-left">{ratingDistribution[star]}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Lista de reviews */}
-          {reviewCount === 0 ? (
-            <p className="text-gray-600">Ainda não há avaliações para este terapeuta.</p>
-          ) : (
-            <div className="grid md:grid-cols-2 gap-4">
-              {reviews.map((review) => (
-                <ReviewCard
-                  key={review.id}
-                  rating={review.rating}
-                  comment={review.comment || undefined}
-                  serviceName={review.booking.service.name}
-                  sessionDate={review.booking.startTime}
-                  createdAt={review.createdAt}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Contato */}
-        <section className="bg-white rounded-lg p-8 shadow-sm">
-          <h2 className="text-2xl font-serif text-gray-900 mb-4">Entre em Contato</h2>
-          <div className="space-y-2">
-            {therapist.user.email && (
-              <p className="text-gray-700">
-                <span className="font-medium">Email:</span>{' '}
-                <a
-                  href={`mailto:${therapist.user.email}`}
-                  className="text-[#B2B8A3] hover:underline"
-                >
-                  {therapist.user.email}
-                </a>
-              </p>
-            )}
-            {therapist.user.phone && (
-              <p className="text-gray-700">
-                <span className="font-medium">Telefone:</span>{' '}
-                <a
-                  href={`tel:${therapist.user.phone}`}
-                  className="text-[#B2B8A3] hover:underline"
-                >
-                  {therapist.user.phone}
-                </a>
-              </p>
-            )}
-          </div>
-        </section>
+        {/* CTA flutuante no mobile, fixo no desktop */}
+        <BookingButton therapistId={therapist.id} therapistName={therapist.user.name} />
       </div>
-
-      {/* CTA flutuante no mobile, fixo no desktop */}
-      <BookingButton therapistId={therapist.id} therapistName={therapist.user.name} />
     </div>
   )
 }

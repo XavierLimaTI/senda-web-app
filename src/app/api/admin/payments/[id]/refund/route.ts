@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+// Refunds via Asaas are not implemented yet. This endpoint now only marks the
+// payment as refunded in the database. When Asaas refund API is available,
+// replace this stub with the real call.
 
 interface RouteParams {
   params: { id: string }
@@ -15,32 +18,73 @@ export async function POST(req: Request, { params }: RouteParams) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await req.json()
-    const { amount } = body
+    await req.json()
 
-    // Update payment status
-    const payment = await prisma.payment.update({
+    // Buscar pagamento antes de marcar reembolso
+    const payment = await prisma.payment.findUnique({
       where: { id: parseInt(params.id) },
-      data: {
-        status: 'refunded',
-        refundedAt: new Date(),
+      include: {
+        booking: {
+          include: {
+            client: true,
+            therapist: { include: { user: true } },
+          },
+        },
       },
     })
 
-    // TODO: Integrate with Stripe API to process actual refund
-    // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-    // if (payment.stripePaymentIntentId) {
-    //   await stripe.refunds.create({
-    //     payment_intent: payment.stripePaymentIntentId,
-    //     amount: amount,
-    //   })
-    // }
+    if (!payment) {
+      return NextResponse.json(
+        { error: 'Pagamento não encontrado' },
+        { status: 404 }
+      )
+    }
 
-    return NextResponse.json(payment)
-  } catch (error) {
-    console.error('Error processing refund:', error)
+    // Validate payment can be refunded
+    if (payment.status === 'REFUNDED') {
+      return NextResponse.json(
+        { error: 'Pagamento já foi reembolsado' },
+        { status: 400 }
+      )
+    }
+
+    if (payment.status !== 'APPROVED') {
+      return NextResponse.json(
+        { error: 'Apenas pagamentos aprovados podem ser reembolsados' },
+        { status: 400 }
+      )
+    }
+
+    // Update payment status in database (manual Asaas refund stub)
+    const updatedPayment = await prisma.payment.update({
+      where: { id: parseInt(params.id) },
+      data: {
+        status: 'REFUNDED',
+        refundedAt: new Date(),
+        description: `${payment.description || ''} [Refund manual (Asaas pending)]`,
+      },
+      include: {
+        booking: {
+          include: {
+            client: true,
+            therapist: { include: { user: true } },
+          },
+        },
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      payment: updatedPayment,
+      note: 'Reembolso marcado como REFUNDED. Processar no Asaas manualmente se aplicável.',
+    })
+  } catch (error: any) {
+    console.error('❌ Error processing refund:', error)
     return NextResponse.json(
-      { error: 'Erro ao processar reembolso' },
+      { 
+        error: 'Erro ao processar reembolso',
+        details: error.message 
+      },
       { status: 500 }
     )
   }

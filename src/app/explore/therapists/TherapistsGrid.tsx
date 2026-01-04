@@ -1,17 +1,26 @@
 'use client'
 
 import FavoriteButton from '@/components/FavoriteButton'
+import { MapPin, Video } from 'lucide-react'
 
 interface Therapist {
   id: number
   rating: number
   specialty: string | null
+  city?: string | null
+  state?: string | null
+  neighborhood?: string | null
+  onlineAvailable?: boolean
+  distance?: number | null
+  minPrice?: number | null
   user: {
     name: string
     avatar: string | null
   }
   services: Array<{
     price: number
+    name: string
+    modality?: string
   }>
 }
 
@@ -24,7 +33,7 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
       {therapists.map((therapist) => {
-        const minPrice = therapist.services[0]?.price || 0
+        const minPrice = therapist.minPrice || therapist.services[0]?.price || 0
 
         return (
           <a
@@ -66,6 +75,15 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
                   />
                 </div>
               </div>
+
+              {/* Badge online */}
+              {therapist.onlineAvailable && (
+                <div className="absolute bottom-3 right-3 bg-white/95 text-[#B2B8A3] px-2 py-1 rounded-lg 
+                                flex items-center gap-1 text-xs font-medium shadow-md">
+                  <Video className="w-3 h-3" />
+                  Online
+                </div>
+              )}
             </div>
 
             {/* Info */}
@@ -77,10 +95,22 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
 
               {/* Especialidade */}
               {therapist.specialty && (
-                <p className="text-xs text-gray-500 mb-3 line-clamp-1">
+                <p className="text-xs text-gray-500 mb-2 line-clamp-1">
                   {therapist.specialty.split(',').slice(0, 2).join(', ')}
                 </p>
               )}
+
+              {/* Localização e Distância */}
+              <div className="flex items-center gap-1 mb-3 text-xs text-gray-600">
+                <MapPin className="w-3 h-3" />
+                {therapist.distance !== undefined && therapist.distance !== null ? (
+                  <span>{therapist.distance.toFixed(1)} km de você</span>
+                ) : therapist.city ? (
+                  <span>{therapist.neighborhood ? `${therapist.neighborhood}, ` : ''}{therapist.city}</span>
+                ) : (
+                  <span>Localização não informada</span>
+                )}
+              </div>
 
               {/* Badge de verificado */}
               <div className="mb-3 flex items-center gap-1">

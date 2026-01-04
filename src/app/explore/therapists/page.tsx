@@ -3,14 +3,20 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import TherapistsGrid from './TherapistsGrid'
 import TherapistsHeader from './TherapistsHeader'
-import TherapistsFilters from './TherapistsFilters'
+import TherapistSearchBar from '@/components/TherapistSearchBar'
 
 interface SearchParams {
+  q?: string              // Busca textual
   specialty?: string
   minRating?: string
   maxPrice?: string
   city?: string
-  sort?: 'rating' | 'price' | 'recent'
+  state?: string
+  lat?: string
+  lng?: string
+  maxDistance?: string
+  onlineOnly?: string
+  sort?: 'relevance' | 'rating' | 'price' | 'distance' | 'recent'
   page?: string
 }
 
@@ -19,50 +25,86 @@ export default async function TherapistsPage({
 }: {
   searchParams: SearchParams
 }) {
+  const q = searchParams.q || ''
   const specialty = searchParams.specialty || ''
   const minRating = searchParams.minRating ? parseFloat(searchParams.minRating) : 0
   const maxPrice = searchParams.maxPrice ? parseFloat(searchParams.maxPrice) : undefined
   const city = searchParams.city || ''
+  const state = searchParams.state || ''
+  const lat = searchParams.lat ? parseFloat(searchParams.lat) : undefined
+  const lng = searchParams.lng ? parseFloat(searchParams.lng) : undefined
+  const maxDistance = searchParams.maxDistance ? parseFloat(searchParams.maxDistance) : undefined
+  const onlineOnly = searchParams.onlineOnly === 'true'
   const sort = searchParams.sort || 'rating'
   const page = parseInt(searchParams.page || '1')
   const limit = 12
   const skip = (page - 1) * limit
 
+  // Função Haversine para cálculo de distância
+  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371
+    const dLat = (lat2 - lat1) * Math.PI / 180
+    const dLon = (lon2 - lon1) * Math.PI / 180
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return R * c
+  }
+
+  // Construir WHERE clause
+  const where: any = {
+    verified: true,
+    rating: { gte: minRating }
+  }
+
+  if (city) {
+    where.city = { contains: city, mode: 'insensitive' }
+  }
+  if (state) {
+    where.state = { contains: state, mode: 'insensitive' }
+  }
+  if (onlineOnly) {
+    where.onlineAvailable = true
+  }
+
   // Construir orderBy dinâmico
   const orderBy: any = 
     sort === 'rating' ? [{ rating: 'desc' }, { createdAt: 'desc' }] :
+    sort === 'price' ? [{ createdAt: 'desc' }] : // Ordenação por preço é client-side
     sort === 'recent' ? [{ createdAt: 'desc' }] :
-    [{ rating: 'desc' }]
+    sort === 'distance' ? [{ createdAt: 'desc' }] : // Ordenação por distância é client-side
+    [{ rating: 'desc' }] // relevance fallback
 
   // Buscar terapeutas com filtros
   const [therapists, totalCount] = await Promise.all([
     prisma.therapistProfile.findMany({
-      where: {
-        verified: true,
-        rating: { gte: minRating },
-        ...(city ? { city: { contains: city, mode: 'insensitive' } } : {})
-      },
+      where,
       include: {
         user: {
-          select: { name: true, avatar: true }
+          select: { 
+            id: true,
+            name: true, 
+            avatar: true 
+          }
         },
         services: {
           where: { active: true },
-          select: { price: true, name: true },
+          select: { 
+            id: true,
+            name: true,
+            price: true,
+            duration: true
+          },
           orderBy: { price: 'asc' }
         }
       },
       orderBy,
-      take: limit,
+      take: limit * 3, // Buscar mais para permitir filtros client-side
       skip
     }),
-    prisma.therapistProfile.count({
-      where: {
-        verified: true,
-        rating: { gte: minRating },
-        ...(city ? { city: { contains: city, mode: 'insensitive' } } : {})
-      }
-    })
+    prisma.therapistProfile.count({ where })
   ])
 
   // Buscar favoritos do usuário (se logado como cliente)
@@ -84,43 +126,129 @@ export default async function TherapistsPage({
     }
   }
 
-  // Filtrar por especialidade e preço client-side
-  let filteredTherapists = therapists
-  
+  // Processar e filtrar resultados client-side
+  let results = therapists.map(t => {
+    // Calcular distância
+    let distance: number | null = null
+    if (lat && lng && t.latitude && t.longitude) {
+      distance = calculateDistance(lat, lng, t.latitude, t.longitude)
+    }
+
+    // Calcular preço mínimo
+    const minPrice = t.services.length > 0 
+      ? Math.min(...t.services.map(s => s.price))
+      : null
+
+    // Score de relevância para busca textual
+    let relevanceScore = 0
+    if (q) {
+      const query = q.toLowerCase()
+      const nameMatch = t.user.name.toLowerCase().includes(query)
+      const bioMatch = t.bio?.toLowerCase().includes(query)
+      const specialtyMatch = t.specialty?.toLowerCase().includes(query)
+      
+      relevanceScore = 
+        (nameMatch ? 3 : 0) + 
+        (specialtyMatch ? 2 : 0) + 
+        (bioMatch ? 1 : 0)
+    }
+
+    return {
+      ...t,
+      distance,
+      minPrice,
+      relevanceScore
+    }
+  })
+
+  // Filtros client-side
   if (specialty) {
-    filteredTherapists = filteredTherapists.filter((t) =>
+    results = results.filter(t =>
       t.specialty?.toLowerCase().includes(specialty.toLowerCase())
     )
   }
-  
+
   if (maxPrice) {
-    filteredTherapists = filteredTherapists.filter((t) =>
-      t.services.some(s => s.price <= maxPrice)
+    results = results.filter(t =>
+      t.minPrice !== null && t.minPrice <= maxPrice
     )
   }
 
-  const totalPages = Math.ceil(totalCount / limit)
+  if (maxDistance && lat && lng) {
+    results = results.filter(t =>
+      t.distance !== null && t.distance <= maxDistance
+    )
+  }
+
+  if (q) {
+    results = results.filter(t => t.relevanceScore > 0)
+  }
+
+  // Ordenação
+  if (sort === 'price') {
+    results.sort((a, b) => {
+      if (a.minPrice === null) return 1
+      if (b.minPrice === null) return -1
+      return a.minPrice - b.minPrice
+    })
+  } else if (sort === 'distance' && lat && lng) {
+    results.sort((a, b) => {
+      if (a.distance === null) return 1
+      if (b.distance === null) return -1
+      return a.distance - b.distance
+    })
+  } else if (sort === 'relevance' && q) {
+    results.sort((a, b) => b.relevanceScore - a.relevanceScore)
+  }
+
+  // Paginação client-side
+  const filteredTherapists = results.slice(0, limit)
+  const totalPages = Math.ceil(results.length / limit)
 
   return (
     <div className="min-h-screen bg-[#F0EBE3]">
       <TherapistsHeader />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Info e Contadores */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-serif text-gray-900 mb-1">
-            Encontre seu Terapeuta
-          </h2>
-          <p className="text-gray-600">
-            {filteredTherapists.length} profissionais {specialty ? `de ${specialty}` : 'verificados'}
-          </p>
-        </div>
-
-        {/* Filtros */}
+        {/* Barra de Busca Inteligente */}
         <div className="mb-8">
-          <TherapistsFilters />
+          <TherapistSearchBar />
         </div>
 
+        {/* Info e Contadores */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-serif text-gray-900 mb-1">
+              {q ? `Resultados para "${q}"` : 'Terapeutas Verificados'}
+            </h2>
+            <p className="text-gray-600">
+              {filteredTherapists.length} profissionais encontrados
+              {specialty && ` em ${specialty}`}
+              {city && ` em ${city}`}
+              {lat && lng && maxDistance && ` em um raio de ${maxDistance}km`}
+            </p>
+          </div>
+
+          {/* Ordenação rápida */}
+          <div className="hidden md:flex items-center gap-2">
+            <span className="text-sm text-gray-600">Ordenar:</span>
+            <select
+              value={sort}
+              onChange={(e) => {
+                const params = new URLSearchParams(window.location.search)
+                params.set('sort', e.target.value)
+                window.location.search = params.toString()
+              }}
+              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#B2B8A3] focus:border-transparent"
+            >
+              {q && <option value="relevance">Relevância</option>}
+              <option value="rating">Avaliação</option>
+              <option value="price">Menor preço</option>
+              {lat && lng && <option value="distance">Distância</option>}
+              <option value="recent">Mais recentes</option>
+            </select>
+          </div>
+        </div>
         {/* Grid */}
         {filteredTherapists.length > 0 ? (
           <>

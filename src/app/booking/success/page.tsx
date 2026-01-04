@@ -1,33 +1,54 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { CheckCircle, Calendar, Mail, Lock } from 'lucide-react';
+
+interface BookingInfo {
+  id: number;
+  startTime: string;
+  service: { name: string };
+  therapist: { user: { name: string; email: string } };
+}
 
 export default function BookingSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('bookingId');
+  
+  const [loading, setLoading] = useState(true);
+  const [booking, setBooking] = useState<BookingInfo | null>(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (bookingId) {
+      fetchBookingDetails();
+    } else {
+      setLoading(false);
+      setError('Nenhum agendamento encontrado');
+    }
+  }, [bookingId]);
+
+  const fetchBookingDetails = async () => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`);
+      if (!res.ok) throw new Error('Falha ao carregar detalhes');
+      const data = await res.json();
+      setBooking(data);
+    } catch (err) {
+      setError('Não foi possível carregar os detalhes do agendamento');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#F0EBE3] flex items-center justify-center px-4">
-      <Card className="max-w-md w-full p-8 text-center">
-        {/* Ícone de sucesso */}
+    <div className="min-h-screen bg-[#F0EBE3] flex items-center justify-center px-4 py-8">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-sm p-8 text-center">
+        {/* Success Icon */}
         <div className="mb-6">
           <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-            <svg
-              className="w-10 h-10 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
         </div>
 
@@ -37,67 +58,97 @@ export default function BookingSuccessPage() {
         </p>
 
         {bookingId && (
-          <p className="text-sm text-gray-500 mb-6">
-            Número do agendamento: <span className="font-mono font-semibold">#{bookingId}</span>
+          <p className="text-sm text-gray-500 mb-6 p-3 bg-gray-50 rounded-lg">
+            Número do agendamento: <span className="font-mono font-semibold text-gray-900">#{bookingId}</span>
           </p>
         )}
 
-        {/* Cards de próximos passos */}
-        <div className="bg-[#F0EBE3] rounded-lg p-4 mb-6 space-y-2">
-          <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#B2B8A3' }} fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-left text-sm">
-              <p className="font-semibold">Verificamos a disponibilidade</p>
-              <p className="text-gray-600">Seu horário está reservado</p>
-            </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="inline-block w-8 h-8 border-4 border-[#B2B8A3] border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-600 text-sm">Carregando detalhes...</p>
           </div>
-
-          <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#B2B8A3' }} fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-left text-sm">
-              <p className="font-semibold">Confirmação por e-mail</p>
-              <p className="text-gray-600">Você receberá lembretes 24h antes</p>
+        ) : booking ? (
+          <>
+            {/* Booking Details */}
+            <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left space-y-3">
+              <div>
+                <p className="text-xs text-gray-600 font-medium">Serviço</p>
+                <p className="text-sm font-medium text-gray-900">{booking.service.name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 font-medium">Terapeuta</p>
+                <p className="text-sm font-medium text-gray-900">{booking.therapist.user.name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 font-medium">Data/Hora</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {new Date(booking.startTime).toLocaleDateString('pt-BR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })} às {new Date(booking.startTime).toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: '#B2B8A3' }} fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-left text-sm">
-              <p className="font-semibold">Acesso seguro</p>
-              <p className="text-gray-600">Gerencie seu agendamento a qualquer hora</p>
+            {/* Next Steps */}
+            <div className="bg-[#F0EBE3] rounded-lg p-4 mb-6 space-y-3">
+              <div className="flex items-start gap-3">
+                <Calendar className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#B2B8A3]" />
+                <div className="text-left text-sm">
+                  <p className="font-medium text-gray-900">Verificamos a disponibilidade</p>
+                  <p className="text-gray-600 text-xs">Seu horário está reservado</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Mail className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#B2B8A3]" />
+                <div className="text-left text-sm">
+                  <p className="font-medium text-gray-900">Confirmação por e-mail</p>
+                  <p className="text-gray-600 text-xs">Você receberá lembretes 24h antes</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Lock className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#B2B8A3]" />
+                <div className="text-left text-sm">
+                  <p className="font-medium text-gray-900">Acesso seguro</p>
+                  <p className="text-gray-600 text-xs">Gerencie seu agendamento a qualquer hora</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : null}
 
-        {/* Botões de ação */}
+        {/* Action Buttons */}
         <div className="space-y-3">
-          <Button
+          <button
             onClick={() => router.push('/dashboard/client')}
-            className="w-full bg-[#B2B8A3] text-white hover:bg-[#9fa693]"
+            className="w-full px-6 py-3 bg-[#B2B8A3] text-white rounded-lg font-medium hover:bg-[#9CA89F] transition-colors"
           >
-            Ver Meus Agendamentos
-          </Button>
+            Ir para meus agendamentos
+          </button>
 
-          <Button
+          <button
             onClick={() => router.push('/explore/therapists')}
-            variant="outline"
-            className="w-full"
+            className="w-full px-6 py-3 border border-gray-300 text-gray-900 rounded-lg font-medium hover:bg-gray-50 transition-colors"
           >
-            Encontrar Mais Terapeutas
-          </Button>
+            Agendar outra sessão
+          </button>
         </div>
 
-        {/* Aviso sobre cancelamento */}
-        <p className="text-xs text-gray-500 mt-6 px-4 py-3 bg-gray-50 rounded">
-          💡 <strong>Dica:</strong> Você pode cancelar com reembolso completo até 24h antes da sessão.
-        </p>
-      </Card>
+        {/* Cancellation Policy */}
+        <div className="mt-6 pt-6 border-t border-gray-200 text-left">
+          <p className="text-xs text-gray-600">
+            <strong>Pode mudar de ideia?</strong> Você pode cancelar com reembolso total até 24h antes da sessão.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
