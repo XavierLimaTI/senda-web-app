@@ -1,0 +1,92 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - navigation [ref=e3]:
+    - generic [ref=e5]:
+      - link "Senda" [ref=e6]:
+        - /url: /
+        - img "Senda" [ref=e8]
+      - generic [ref=e9]:
+        - link "Entrar" [ref=e10]:
+          - /url: /auth/signin
+        - link "Cadastrar" [ref=e11]:
+          - /url: /auth/signup
+  - generic [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Explorar Terapias" [level=1] [ref=e15]
+      - paragraph [ref=e16]: Descubra as melhores práticas terapêuticas para sua jornada de bem-estar
+      - generic [ref=e17]:
+        - button "🇧🇷 PT" [ref=e18] [cursor=pointer]
+        - button "🇺🇸 EN" [ref=e19] [cursor=pointer]
+        - button "🇪🇸 ES" [ref=e20] [cursor=pointer]
+        - button "🇨🇳 ZH" [ref=e21] [cursor=pointer]
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: Filtrar por Categoria
+        - generic [ref=e25]:
+          - button "Terapias Corporais" [ref=e26] [cursor=pointer]
+          - button "Terapias Energéticas" [ref=e27] [cursor=pointer]
+          - button "Terapias da Mente" [ref=e28] [cursor=pointer]
+          - button "Terapias Naturais" [ref=e29] [cursor=pointer]
+          - button "Terapias Xamânicas" [ref=e30] [cursor=pointer]
+      - generic [ref=e31]:
+        - generic [ref=e32]: Filtrar por Indicação Terapêutica
+        - generic [ref=e33]:
+          - button "circulacao" [ref=e34] [cursor=pointer]
+          - button "dor" [ref=e35] [cursor=pointer]
+          - button "energia" [ref=e36] [cursor=pointer]
+          - button "equilibrio" [ref=e37] [cursor=pointer]
+          - button "fadiga" [ref=e38] [cursor=pointer]
+          - button "flexibilidade" [ref=e39] [cursor=pointer]
+          - button "insomnia" [ref=e40] [cursor=pointer]
+          - button "postura" [ref=e41] [cursor=pointer]
+          - button "reabilitacao" [ref=e42] [cursor=pointer]
+          - button "stress" [ref=e43] [cursor=pointer]
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - img "Massagem Relaxante / Terapêutica" [ref=e47]
+        - generic [ref=e48]:
+          - heading "Massagem Relaxante / Terapêutica" [level=2] [ref=e49]
+          - paragraph [ref=e50]: Técnicas clássicas de massagem que utilizam movimentos suaves, pressão controlada e manipulação dos tecidos moles para aliviar tensão muscular, melhorar a circulação sanguínea, promover relaxamento profundo e restaurar o equilíbrio corporal.
+          - generic [ref=e52]: Presencial
+          - button "Mais info" [ref=e53] [cursor=pointer]:
+            - generic [ref=e54]: Mais info
+            - img [ref=e55]
+      - generic [ref=e57]:
+        - img "Yoga (Hatha, Vinyasa, Yin, Restaurativa)" [ref=e59]
+        - generic [ref=e60]:
+          - heading "Yoga (Hatha, Vinyasa, Yin, Restaurativa)" [level=2] [ref=e61]
+          - paragraph [ref=e62]: Prática milenar indiana que integra posturas físicas (asanas), respiração (pranayama) e meditação para alcançar harmonia entre corpo, mente e espírito. Diferentes estilos adaptam-se a diversos níveis de intensidade e objetivos.
+          - generic [ref=e64]: Presencial/Online
+          - button "Mais info" [ref=e65] [cursor=pointer]:
+            - generic [ref=e66]: Mais info
+            - img [ref=e67]
+      - generic [ref=e69]:
+        - img "Pilates Clínico/Integrativo" [ref=e71]
+        - generic [ref=e72]:
+          - heading "Pilates Clínico/Integrativo" [level=2] [ref=e73]
+          - paragraph [ref=e74]: Método estruturado de exercício que desenvolve força do "core", melhora flexibilidade, alinhamento postural e consciência corporal. Combina controle preciso do movimento, respiração coordenada e concentração mental para transformar o corpo e mente.
+          - generic [ref=e76]: Presencial/Online
+          - button "Mais info" [ref=e77] [cursor=pointer]:
+            - generic [ref=e78]: Mais info
+            - img [ref=e79]
+  - generic [ref=e82]:
+    - generic [ref=e83]:
+      - generic [ref=e84]: 🍪
+      - generic [ref=e85]:
+        - heading "Este site usa cookies" [level=3] [ref=e86]
+        - paragraph [ref=e87]:
+          - text: Usamos cookies essenciais para o funcionamento da plataforma e cookies opcionais para melhorar sua experiência. Você pode escolher quais aceitar.
+          - link "Saiba mais" [ref=e88]:
+            - /url: /legal/privacy
+    - generic [ref=e89]:
+      - button "Aceitar Todos" [ref=e90] [cursor=pointer]
+      - button "Apenas Essenciais" [ref=e91] [cursor=pointer]
+      - button "Gerenciar" [ref=e92] [cursor=pointer]
+    - generic [ref=e93]:
+      - text: Suas preferências podem ser alteradas a qualquer momento em
+      - link "Configurações de Privacidade" [ref=e94]:
+        - /url: /dashboard/settings/privacy
+```

@@ -317,17 +317,34 @@ Tempo: 45-60 min
 
 ---
 
+## 📁 **Pastas de Documentação**
+
+| Pasta | Conteúdo | Uso |
+|-------|----------|-----|
+| `/` (root) | Docs principais (INDEX, PROJECT_STATUS, etc) | Referência geral |
+| `auditoria/` | Auditorias de segurança e qualidade | Compliance, audits |
+| `testes/` | Testes E2E, Lighthouse, K6, reports | Testing, QA |
+| `legal/` | Docs legais (privacidade, termos) | Legal, compliance |
+| `01_BUSINESS/` | Estratégia, roadmap, métricas | Business planning |
+| `02_PRODUCT/` | Especificações, features, análises | Product development |
+| `05_SUPPORT/` | Guias, troubleshooting, FAQs | Support, onboarding |
+| `images/` | Screenshots, diagrams, assets | Documentation assets |
+
+---
+
 ## ✅ **What's Done**
 
 - ✅ Sprint 2 implementation 100% completa
+- ✅ Sprint 3-4 implementation 100% completa (18/18 features)
 - ✅ Build compila com sucesso (zero errors)
-- ✅ 9 features analisadas e alocadas
-- ✅ 7 documentos criados (~15,000 palavras)
+- ✅ 18 features implementadas e testadas
+- ✅ Testing infrastructure (Sentry, Playwright, Lighthouse, K6)
+- ✅ 10+ documentos criados (~25,000 palavras)
 - ✅ Budget estimado (R$ 137-152k)
 - ✅ Timeline definida (20-25 semanas)
 - ✅ Bloqueadores identificados
 - ✅ ROI potencial estimado (R$ 155k+ ano 1)
-- ✅ Todos seus 9 itens mapeados
+- ✅ DEPLOY CHECKLIST criado (O que falta para ir ao ar)
 
 ---
 
@@ -353,6 +370,9 @@ Tempo: 45-60 min
 | [ROADMAP_VISUAL.md](ROADMAP_VISUAL.md) | Apresentações |
 | [FEATURES_EXTRAS_SUMMARY.md](FEATURES_EXTRAS_SUMMARY.md) | Quick reference |
 | [DOCUMENTATION_CREATED.md](DOCUMENTATION_CREATED.md) | Project history |
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Status atual (18/18 features) |
+| [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md) | ⚠️ **O que falta para deploy** |
+| [testes/](testes/) | Pasta com testes (E2E, Lighthouse, K6) |
 
 ---
 

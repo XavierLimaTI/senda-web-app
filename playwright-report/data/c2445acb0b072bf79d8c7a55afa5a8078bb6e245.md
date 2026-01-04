@@ -1,0 +1,46 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - navigation [ref=e3]:
+    - generic [ref=e5]:
+      - link "Senda" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img "Senda" [ref=e8]
+      - generic [ref=e9]:
+        - link "Entrar" [ref=e10] [cursor=pointer]:
+          - /url: /auth/signin
+        - link "Cadastrar" [ref=e11] [cursor=pointer]:
+          - /url: /auth/signup
+  - generic [ref=e12]:
+    - generic [ref=e14]:
+      - heading "📰 Notícias & Artigos" [level=1] [ref=e15]
+      - paragraph [ref=e16]: Explore artigos sobre bem-estar, terapias integrativas e sua jornada de autocuidado
+    - complementary [ref=e19]:
+      - generic [ref=e20]:
+        - heading "📬 Newsletter" [level=3] [ref=e21]
+        - paragraph [ref=e22]: Receba notícias sobre bem-estar e terapias
+        - textbox "seu@email.com" [ref=e23]
+        - button "Se inscrever" [ref=e24] [cursor=pointer]
+      - generic [ref=e26]:
+        - generic [ref=e27]: "0"
+        - paragraph [ref=e28]: Artigos publicados
+  - generic [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]: 🍪
+      - generic [ref=e33]:
+        - heading "Este site usa cookies" [level=3] [ref=e34]
+        - paragraph [ref=e35]:
+          - text: Usamos cookies essenciais para o funcionamento da plataforma e cookies opcionais para melhorar sua experiência. Você pode escolher quais aceitar.
+          - link "Saiba mais" [ref=e36] [cursor=pointer]:
+            - /url: /legal/privacy
+    - generic [ref=e37]:
+      - button "Aceitar Todos" [ref=e38] [cursor=pointer]
+      - button "Apenas Essenciais" [ref=e39] [cursor=pointer]
+      - button "Gerenciar" [ref=e40] [cursor=pointer]
+    - generic [ref=e41]:
+      - text: Suas preferências podem ser alteradas a qualquer momento em
+      - link "Configurações de Privacidade" [ref=e42] [cursor=pointer]:
+        - /url: /dashboard/settings/privacy
+```

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Providers from './Providers'
 import ClientLayout from '@/components/ClientLayout'
+import { useSentryErrorTracking } from '@/lib/sentry-error-tracking'
 
 export const metadata: Metadata = {
   title: 'Senda - Sua Jornada de Bem-Estar',
