@@ -1,144 +1,89 @@
-# 📚 Documentação Senda - Índice Master
+# 📚 Senda Documentation Hub
 
 **Última atualização:** 3 de janeiro de 2026  
-**Versão:** 2.0.0
+**Versão:** 3.0.0 - Reorganizado (Princípios Anti-Redundância)  
+**⭐ Start Here:** [PROJECT_STATUS.md](./PROJECT_STATUS.md)
 
 ---
 
-## 🎯 Navegação Rápida
+## 🎯 Quick Navigation
 
-### Para Desenvolvedores
-- [Arquitetura Técnica](#-03-technical---arquitetura-e-implementação)
-- [Guia de Contribuição](../README.md)
-- [Padrões de Documentação](DOCUMENTATION_STANDARDS.md)
+### ⭐ **MUST READ FIRST**
+- **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Project status, features, roadmap, next steps
+- **[PROGRESS_TRACKING_RULE.md](./PROGRESS_TRACKING_RULE.md)** - How to keep docs clean (anti-redundancy)
 
-### Para Stakeholders/Investidores
-- [Pitch para Investidores](01_BUSINESS/INVESTOR_PITCH.md)
-- [Modelo de Precificação](01_BUSINESS/PRICING_MODEL.md)
-- [Visão de Escalabilidade](01_BUSINESS/SCALABILITY_VISION.md)
+### 📖 For Developers
+- [Technical Guides](#-guias-técnicos) - Setup, migrations, testing
+- [Code Patterns](./SendaDOC.md) - Auth, email, database
+- [Useful Commands](./USEFUL_COMMANDS.md) - npm, prisma, dev tools
 
-### Para Usuários (Terapeutas/Espaços)
-- [FAQ - Taxas e Cobranças](05_SUPPORT/FAQ_TAXAS_COBRANCAS.md)
-- [Termos de Uso](04_LEGAL/TERMOS_DE_USO.md) *(em breve)*
-- [Política de Cancelamento](04_LEGAL/POLITICA_CANCELAMENTO.md) *(em breve)*
+### 💼 For Business/Investors
+- [Investor Pitch](./01_BUSINESS/INVESTOR_PITCH.md) - Problem, solution, traction
+- [Pricing Model](./01_BUSINESS/PRICING_MODEL.md) - Subscription + transaction fees
+- [Scalability Vision](./01_BUSINESS/SCALABILITY_VISION.md) - Growth roadmap
+
+### 👥 For Users (Therapists/Spaces)
+- [FAQ - Taxas e Cobranças](./05_SUPPORT/FAQ_TAXAS_COBRANCAS.md) - Customer-facing pricing
+- [Termos de Condições](./legal/TERMOS_CONDICOES.md) - Terms of Service (LGPD-compliant)
+- [Política de Privacidade](./legal/POLITICA_PRIVACIDADE.md) - Privacy Policy (LGPD Art. 14, 18)
+- [Política de Cancelamento](./legal/POLITICA_CANCELAMENTO.md) - Cancellation & Refund Policy
+
+---
+
+## 📂 Folder Structure
+
+```
+docs/
+├── 📊 PROJECT_STATUS.md ⭐ (LEIA PRIMEIRO)
+├── 📋 PROGRESS_TRACKING_RULE.md (como manter docs limpos)
+├── ⚖️ legal/ (Termos, Privacidade, Cancelamento - LGPD compliant)
+├── 💼 01_BUSINESS/ (Estratégia: Pitch, Pricing, Scalability)
+├── 🛍️ 02_PRODUCT/ (Strategic Recommendations)
+├── 💬 05_SUPPORT/ (FAQ - Taxas e Cobranças)
+├── 🖼️ images/ (Assets)
+├── 📦 archive/ (Histórico - docs obsoletos)
+└── 🔧 Outros (SendaDOC, padrões, comandos úteis)
+```
 
 ---
 
-## 📂 Estrutura Completa da Documentação
+## 📘 Core Documentation (Essencial)
 
-### 📘 Meta-Documentação
-- [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) - Padrões e convenções
-
----
+### 📊 Project Management
+- **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** ⭐ - **Status único. Leia isto PRIMEIRO!**
+  - Features completas (16/18 = 89%)
+  - Próximos passos e blockers
+  - Build status, dev server status
+  
+- **[PROGRESS_TRACKING_RULE.md](./PROGRESS_TRACKING_RULE.md)** - Regras obrigatórias
+  - Anti-redundancy rule (check before creating)
+  - Legal docs folder structure (única source of truth)
+  - Como atualizar PROJECT_STATUS.md
 
 ### 💼 01_BUSINESS/ - Estratégia e Modelo de Negócio
 
-#### Documentos Principais
-- **[BUSINESS_MODEL.md](01_BUSINESS/BUSINESS_MODEL.md)** *(em breve)*
+- **[INVESTOR_PITCH.md](./01_BUSINESS/INVESTOR_PITCH.md)** - Pitch deck para investidores
+  - Problema: 86M brasileiros com ansiedade
+  - Solução: Marketplace + Trilhas de Cuidado
   - Modelo tri-face (B2B2C)
-  - Canvas do negócio
-  - Proposta de valor por perfil
-
-- **[PRICING_MODEL.md](01_BUSINESS/PRICING_MODEL.md)** ✅
-  - Planos de assinatura (THERAPIST, SPACE, CLIENT)
-  - Comparação vs. modelo percentual
-  - Perfis de vendedores
-  - Política de upgrade/downgrade
-  
-- **[SCALABILITY_VISION.md](01_BUSINESS/SCALABILITY_VISION.md)** ✅
-  - Escalabilidade física (centros de bem-estar)
-  - Escalabilidade digital (atendimento virtual, cursos)
-  - Projeção 2026-2030
-  - Modelo de franquias
-
-- **[INVESTOR_PITCH.md](01_BUSINESS/INVESTOR_PITCH.md)** ✅
-  - Pitch deck textual completo
-  - Projeções financeiras (3 anos)
-  - Ask: R$ 500k-1M SEED
-  - **Ativo estratégico:** Lista 10k terapeutas
   - Tração e milestones
 
----
+- **[PRICING_MODEL.md](./01_BUSINESS/PRICING_MODEL.md)** - Modelo de precificação
+  - Planos: FREE, PRO, PREMIUM (Terapeutas)
+  - Taxa fixa por transação (não percentual)
+  - Comparação vs. concorrentes
 
-### 🎨 02_PRODUCT/ - Produto e Features
+- **[SCALABILITY_VISION.md](./01_BUSINESS/SCALABILITY_VISION.md)** - Visão de crescimento
+  - Escalabilidade física (centros de bem-estar)
+  - Modelo de franquias
+  - Projeção 2026-2030
 
-#### Roadmaps
-- **[FEATURE_ROADMAP.md](FEATURE_ROADMAP.md)** *(legado - ver SPRINT_PLANS/)*
-  - Roadmap original (R$ 137-152k budget)
-  - **Status:** Obsoleto (substituído por SOLO_DEV_ROADMAP)
+### 🛍️ 02_PRODUCT/ - Produto & Roadmap
 
-- **[SOLO_DEV_ROADMAP.md](SOLO_DEV_ROADMAP.md)** ✅
-  - Estratégia budget-zero (R$ 40 total)
-  - Timeline 8-12 semanas
-  - Free tier infrastructure (Vercel, Resend)
-  - Pitch para summit
-
-#### Planejamento de Sprints
-- **[SPRINT_PLANS/SPRINT2_PLAN.md](SPRINT2_PLAN.md)** ✅
-  - Sprint 2: CONCLUÍDA (100%)
-  - Features: CRUD services, availability, slots, booking, Asaas, dashboards
-
-- **[SPRINT_PLANS/SPRINT3_PLAN.md](SPRINT3_PLAN.md)** *(em breve)*
-  - Admin Panel simplificado
-  - Upload de documentos (local storage)
-  - Sistema de assinaturas (Prisma models)
-  - Legal docs modal
-
-#### Análises de Features
-- **[FEATURE_ANALYSIS.md](FEATURE_ANALYSIS.md)** ✅
-  - 9 features solicitadas (análise técnica)
-  - Complexidade, dependências, riscos
-  
-- **[STRATEGIC_RECOMMENDATIONS.md](STRATEGIC_RECOMMENDATIONS.md)** ✅
-  - Priorização estratégica
-  - Trade-offs MVP vs. features avançadas
-
-#### User Stories
-- **[USER_STORIES/CLIENT_STORIES.md](02_PRODUCT/USER_STORIES/CLIENT_STORIES.md)** *(em breve)*
-- **[USER_STORIES/THERAPIST_STORIES.md](02_PRODUCT/USER_STORIES/THERAPIST_STORIES.md)** *(em breve)*
-- **[USER_STORIES/SPACE_STORIES.md](02_PRODUCT/USER_STORIES/SPACE_STORIES.md)** *(em breve)*
-
----
-
-### 🏗️ 03_TECHNICAL/ - Arquitetura e Implementação
-
-- **[ARCHITECTURE.md](03_TECHNICAL/ARCHITECTURE.md)** *(em breve)*
-  - Next.js 14 App Router
-  - Prisma ORM (SQLite → PostgreSQL)
-  - NextAuth multi-role
-  - Asaas payment gateway
-
-- **[DATABASE_SCHEMA.md](03_TECHNICAL/DATABASE_SCHEMA.md)** *(em breve)*
-  - Explicação detalhada dos modelos Prisma
-  - Relacionamentos (User, Booking, Payment, etc.)
-  - Migrations importantes
-
-- **[API_REFERENCE.md](03_TECHNICAL/API_REFERENCE.md)** *(em breve)*
-  - Todos os endpoints `/api/**`
-  - Contratos (request/response)
-  - Autenticação e autorização
-
-- **[DEPLOYMENT.md](03_TECHNICAL/DEPLOYMENT.md)** *(em breve)*
-  - Deploy Vercel (free tier)
-  - Variáveis de ambiente
-  - CI/CD (GitHub Actions)
-  - Cron jobs (cleanup, notifications)
-
----
-
-### ⚖️ 04_LEGAL/ - Documentos Legais (LGPD)
-
-**Status:** Todos em desenvolvimento (necessário para MVP)
-
-- **[TERMOS_DE_USO.md](04_LEGAL/TERMOS_DE_USO.md)** *(em breve)*
-  - Marketplace usage terms
-  - Responsabilidades (plataforma vs. terapeutas)
-  - Verificação e aprovação de profissionais
-
-- **[POLITICA_PRIVACIDADE.md](04_LEGAL/POLITICA_PRIVACIDADE.md)** *(em breve)*
-  - LGPD Lei 13.709/2018 compliance
-  - Dados coletados (cliente, terapeuta, espaço)
-  - Direitos do titular (acesso, exclusão, portabilidade)
+- **[STRATEGIC_RECOMMENDATIONS.md](./02_PRODUCT/STRATEGIC_RECOMMENDATIONS.md)** - Priorização de features
+  - Bloqueadores críticos (Admin Panel, Documentos, T&Cs)
+  - Nice-to-have features (Anúncios, Espaços, Trilhas)
+  - Timeline recomendada
 
 - **[POLITICA_CANCELAMENTO.md](04_LEGAL/POLITICA_CANCELAMENTO.md)** *(em breve)*
   - Regra 24h (100% reembolso)
@@ -192,66 +137,54 @@
 
 - **[UX_WRITING_GUIDE.md](06_BRAND/UX_WRITING_GUIDE.md)** *(em breve)*
   - Tom de voz: Acolhedor + Profissional
-  - Exemplos de microcopy
-  - Glossário (evitar jargões)
+---
 
-- **[DESIGN_SYSTEM.md](06_BRAND/DESIGN_SYSTEM.md)** *(em breve)*
-  - Componentes UI (botões, cards, modals)
-  - Spacing, grid, responsividade
-  - Motion design (transições orgânicas)
+## 🛠️ Guias Técnicos & Referência
+
+### Development Setup
+- **[SendaDOC.md](./SendaDOC.md)** - Documentação operacional (português)
+- **[USEFUL_COMMANDS.md](./USEFUL_COMMANDS.md)** - Comandos npm, prisma, etc.
+- **[SEED_DATA_GUIDE.md](./SEED_DATA_GUIDE.md)** - Como popular DB para testes
+- **[ASAAS_TEST_GUIDE.md](./ASAAS_TEST_GUIDE.md)** - Integração Asaas (pagamentos)
+- **[DOCUMENTATION_STANDARDS.md](./DOCUMENTATION_STANDARDS.md)** - Padrões de escrita
 
 ---
 
-## 🗂️ Documentos Antigos (Arquivados)
+## 💬 Customer-Facing Documentation
 
-Estes documentos foram criados antes da profissionalização da documentação. **Manter para referência histórica, mas priorizar os novos.**
-
-- [SendaDOC.md](SendaDOC.md) - Documentação operacional original (português)
-- [ROADMAP_VISUAL.md](ROADMAP_VISUAL.md) - Timeline visual (pré-pivot)
-- [ITEMS_TO_FEATURES_MAPPING.md](ITEMS_TO_FEATURES_MAPPING.md) - Mapeamento 9 features
-- [SPRINT3_EXECUTIVE_SUMMARY.md](SPRINT3_EXECUTIVE_SUMMARY.md) - Resumo Sprint 3 (draft)
-- [DELIVERABLES.md](DELIVERABLES.md) - Lista de entregáveis (obsoleto)
-- [README_DELIVERABLES.md](README_DELIVERABLES.md) - Meta sobre deliverables
-- [CONCLUSAO.md](CONCLUSAO.md) - Conclusões antigas
-
-**Ação recomendada:** Migrar conteúdo relevante para nova estrutura e deprecar.
+### 05_SUPPORT/ - Suporte e FAQ
+- **[FAQ_TAXAS_COBRANCAS.md](./05_SUPPORT/FAQ_TAXAS_COBRANCAS.md)** - Perguntas frequentes
+  - Modelos de cobrança
+  - Planos de terapeutas e espaços
+  - Comparação vs. concorrentes
 
 ---
 
-## 🚀 Roadmap de Documentação
+## ⚖️ Legal Documentation (LGPD Compliant)
 
-### ✅ Concluído
-- [x] Padrões de documentação
-- [x] FAQ Taxas e Cobranças
-- [x] Modelo de Precificação (completo)
-- [x] Visão de Escalabilidade
-- [x] Pitch para Investidores
+### legal/ - Documentos Legais Oficiais
 
-### 🔄 Em Progresso
-- [ ] Legal docs (Termos de Uso, Privacidade, Cancelamento, Pagamento)
-- [ ] Arquitetura técnica detalhada
-- [ ] API Reference
+**Estrutura:** `/docs/legal/` é a ÚNICA source of truth para docs legais.
 
-### 📅 Planejado (Q1 2026)
-- [ ] User Stories completas
-- [ ] Guia de contribuição para devs externos
-- [ ] Design System documentado
-- [ ] Brand Guidelines
+- **[TERMOS_CONDICOES.md](./legal/TERMOS_CONDICOES.md)** ✅
+  - Terms of Service (obrigatório na signup)
+  - Elegibilidade, responsabilidades, limitações
+  - Compliance: LGPD, Lei 14.181/2021, CDC 8.078/1990
 
----
+- **[POLITICA_PRIVACIDADE.md](./legal/POLITICA_PRIVACIDADE.md)** ✅
+  - Privacy Policy (LGPD Art. 14, 18)
+  - Dados coletados, legal basis, retenção
+  - Direitos do titular (acesso, exclusão, portabilidade)
 
-## 📖 Como Usar Este Índice
+- **[POLITICA_CANCELAMENTO.md](./legal/POLITICA_CANCELAMENTO.md)** ✅
+  - Cancellation & Refund Policy
+  - 100% refund se 24h+ de antecedência
+  - "Button of Humanity" - terapeuta pode abrir mão de taxa
 
-### 1. **Encontrar Documento**
-Use Ctrl+F (ou Cmd+F) para buscar palavra-chave. Exemplo: "assinatura", "pitch", "LGPD".
-
-### 2. **Entender Status**
-- ✅ **Documento completo e aprovado**
-- 🔄 **Em desenvolvimento**
-- *(em breve)* **Planejado, não iniciado**
-
-### 3. **Navegar por Seções**
-Clique nos links internos para ir diretamente ao arquivo.
+- **[legal/README.md](./legal/README.md)** - Índice de compliance
+  - Checklist antes de go-live
+  - Mapeamento de LGPD compliance
+  - Versioning strategy
 
 ### 4. **Contribuir**
 Ao criar novo documento:
@@ -264,45 +197,60 @@ Ao criar novo documento:
 ## 🔍 Busca Semântica (Por Caso de Uso)
 
 ### "Quero entender o modelo de negócio"
-1. [INVESTOR_PITCH.md](01_BUSINESS/INVESTOR_PITCH.md) (visão geral)
-2. [PRICING_MODEL.md](01_BUSINESS/PRICING_MODEL.md) (detalhes precificação)
-3. [SCALABILITY_VISION.md](01_BUSINESS/SCALABILITY_VISION.md) (longo prazo)
+---
 
-### "Sou terapeuta, tenho dúvidas sobre taxas"
-1. [FAQ_TAXAS_COBRANCAS.md](05_SUPPORT/FAQ_TAXAS_COBRANCAS.md) (começo aqui)
-2. [PRICING_MODEL.md](01_BUSINESS/PRICING_MODEL.md) (detalhes completos)
+## 🗂️ Archived Documentation
 
-### "Sou desenvolvedor, quero contribuir"
-1. [README.md](../README.md) (setup inicial)
-2. [DOCUMENTATION_STANDARDS.md](DOCUMENTATION_STANDARDS.md) (padrões)
-3. [ARCHITECTURE.md](03_TECHNICAL/ARCHITECTURE.md) *(em breve)*
+**Documentos obsoletos foram movidos para `/archive/` para preservar histórico:**
 
-### "Quero investir no Senda"
-1. [INVESTOR_PITCH.md](01_BUSINESS/INVESTOR_PITCH.md) (começo aqui)
-2. [SCALABILITY_VISION.md](01_BUSINESS/SCALABILITY_VISION.md) (visão 2030)
-3. Contato: investidores@senda.app
+| Documento | Razão |
+|-----------|-------|
+| `FEATURE_ANALYSIS.md` | Sprint 3 completo (análise desatualizada) |
+| `SOLO_DEV_ROADMAP.md` | Substituído por PROJECT_STATUS.md |
+| `SPRINT_PLANS/` | Sprints 2-3 completados |
+| `04_LEGAL/` | Consolidado em `legal/` |
+| `CLEANUP_RESULT.md` | Propósito cumprido (consolidação feita) |
+
+**Acesse `/archive/` se precisar referência histórica.**
 
 ---
 
-## 📞 Contato para Documentação
+## ✅ Quick Checklist
 
-**Dúvidas sobre onde encontrar informação?**
-- 📧 Email: docs@senda.app
-- 💬 Issue no GitHub: [Abrir issue](https://github.com/senda/senda-web-app/issues/new?labels=documentation)
+**Mantendo docs limpos (Anti-Redundancy):**
 
----
+- [ ] Antes de criar novo doc, verifiquei se já existe?
+- [ ] Se existe similar, vou ATUALIZAR (não duplicar)?
+- [ ] Novo doc tem propósito ÚNICO e diferente?
+- [ ] Registrei mudança em PROJECT_STATUS.md?
+- [ ] Removi/arquivei docs redundantes?
 
-## 📝 Histórico de Versões do Índice
+**Depois de completar feature:**
 
-| Versão | Data       | Autor       | Mudanças                                      |
-|--------|------------|-------------|-----------------------------------------------|
-| 2.0.0  | 2026-01-03 | Equipe      | Reestruturação completa (profissionalização)  |
-| 1.0.0  | 2025-12-22 | Equipe      | Versão inicial (INDEX.md original)            |
-
----
-
-**Última revisão por:** Equipe Senda em 3 de janeiro de 2026
+- [ ] Atualizei PROJECT_STATUS.md?
+- [ ] Atualizei alguma doc relacionada?
+- [ ] Nenhum link quebrado em README?
 
 ---
 
-**💡 Sugestão:** Marque este arquivo nos favoritos do seu navegador para acesso rápido!
+## 📚 Navigation Tips
+
+**Buscar rápido:** Use Ctrl+F (Cmd+F) para keywords como "LGPD", "assinatura", "Asaas"
+
+**Links de volta:** Cada documento tem link de volta a README.md no início
+
+**Versions:** Procure por "Versão X.Y.Z" e "Última atualização" em cada doc
+
+---
+
+## 🎯 Key Takeaways
+
+1. **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** é o único lugar para status
+2. **[PROGRESS_TRACKING_RULE.md](./PROGRESS_TRACKING_RULE.md)** explica como manter tudo limpo
+3. **[legal/](./legal/)** é fonte única de docs legais (LGPD compliant)
+4. **Arquive, não delete** - `/archive/` preserva histórico
+5. **Sem duplicação** - Check first, update if exists, document unique purpose if creating
+
+---
+
+**Versionado:** 3.0.0 | Reorganizado 2026-01-03 | Princípios: Anti-Redundância + Source of Truth

@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import {
+  sendBookingConfirmationToClient,
+  sendBookingNotificationToTherapist
+} from '@/lib/email-notifications'
 
 /**
  * POST /api/bookings/create
@@ -63,7 +67,8 @@ export async function POST(req: Request) {
 
     // Verify therapist exists and is verified
     const therapist = await prisma.therapistProfile.findUnique({
-      where: { id: therapistId }
+      where: { id: therapistId },
+      include: { user: true }
     })
 
     if (!therapist) {
@@ -158,7 +163,44 @@ export async function POST(req: Request) {
       }
     })
 
-    // TODO: Send confirmation email to therapist and client
+    // Send confirmation emails asynchronously (don't block response)
+    const appointmentDate = start.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+    const appointmentTime = start.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+
+    // Send to client
+    if (confirmedBooking.client?.email) {
+      sendBookingConfirmationToClient({
+        clientEmail: confirmedBooking.client.email,
+        clientName: confirmedBooking.client.name || 'Cliente',
+        therapistName: therapist.user.name || 'Terapeuta',
+        serviceName: confirmedBooking.service.name,
+        appointmentDate,
+        appointmentTime,
+        bookingId: confirmedBooking.id
+      }).catch(error => console.error('[Email to client]', error))
+    }
+
+    // Send to therapist
+    if (confirmedBooking.therapist?.user?.email) {
+      sendBookingNotificationToTherapist({
+        therapistEmail: confirmedBooking.therapist.user.email,
+        therapistName: therapist.user.name || 'Terapeuta',
+        clientName: confirmedBooking.client?.name || 'Cliente',
+        clientPhone: confirmedBooking.client?.phone || null,
+        serviceName: confirmedBooking.service.name,
+        appointmentDate,
+        appointmentTime,
+        bookingId: confirmedBooking.id
+      }).catch(error => console.error('[Email to therapist]', error))
+    }
 
     return NextResponse.json(confirmedBooking, { status: 201 })
   } catch (error) {

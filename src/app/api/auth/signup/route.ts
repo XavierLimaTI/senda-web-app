@@ -3,9 +3,20 @@ import { hash } from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 import { sendVerificationEmail } from '@/lib/email'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting (10 signup attempts per hour per IP)
+    const clientIp = getClientIp(req)
+    const rateLimitResult = rateLimit(clientIp, { limit: 10, windowMs: 3600000 })
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many signup attempts. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)) } }
+      )
+    }
+
     const body = await req.json()
     const { name, email, password, role, legalConsent } = body
     if (!email || !password || !name) {

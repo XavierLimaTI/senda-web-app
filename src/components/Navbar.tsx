@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import NotificationBell from './NotificationBell'
 import { useLanguage } from '@/context/LanguageContext'
+import { LogOut } from 'lucide-react'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -212,10 +213,10 @@ export default function Navbar() {
               {/* Logout */}
               <button
                 onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
                 title="Sair"
               >
-                🚪
+                <LogOut size={20} />
               </button>
             </div>
           ) : (

@@ -128,7 +128,7 @@ export default function TherapistTimeSlotSelector({
     return (
       <div className="flex items-center justify-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B2B8A3]" />
-        <span className="ml-2 text-gray-600">Carregando horários...</span>
+        <span className="ml-2 text-[#666666]">Carregando horários...</span>
       </div>
     )
   }
@@ -162,7 +162,7 @@ export default function TherapistTimeSlotSelector({
     <div className="space-y-6">
       {/* Seletor de Dias */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-3">
+        <label className="block text-sm font-medium text-[#2C3E2D] mb-3">
           <Calendar className="w-4 h-4 inline mr-2" />
           Escolha o dia
         </label>
@@ -181,11 +181,11 @@ export default function TherapistTimeSlotSelector({
                   selectedDay === day.dateStr
                     ? 'border-[#B2B8A3] bg-[#B2B8A3]/10 text-[#B2B8A3]'
                     : hasAvailableSlot
-                    ? 'border-gray-200 hover:border-[#B2B8A3]/50 text-gray-900'
-                    : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    ? 'border-[#B2B8A3]/30 hover:border-[#B2B8A3] text-[#2C3E2D]'
+                    : 'border-[#D3D3D3] bg-[#F5F5F5] text-[#999999] cursor-not-allowed'
                 }`}
               >
-                <div className="text-xs text-gray-600 mb-1">{day.dayOfWeek}</div>
+                <div className="text-xs text-[#777777] mb-1">{day.dayOfWeek}</div>
                 <div className="text-sm">
                   {new Date(day.dateStr).toLocaleDateString('pt-BR', {
                     month: 'short',
@@ -201,7 +201,7 @@ export default function TherapistTimeSlotSelector({
       {/* Seletor de Horários */}
       {selectedDayObj && (
         <div>
-          <label className="block text-sm font-medium text-gray-900 mb-3">
+          <label className="block text-sm font-medium text-[#2C3E2D] mb-3">
             <Clock className="w-4 h-4 inline mr-2" />
             Horário ({duration} minutos)
           </label>
@@ -216,8 +216,8 @@ export default function TherapistTimeSlotSelector({
                   selectedTime === slot.time && slot.available
                     ? 'border-[#B2B8A3] bg-[#B2B8A3] text-white'
                     : slot.available
-                    ? 'border-gray-200 hover:border-[#B2B8A3]/50 text-gray-900 hover:bg-gray-50'
-                    : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    ? 'border-[#B2B8A3]/30 hover:border-[#B2B8A3] text-[#2C3E2D] hover:bg-[#F0EBE3]'
+                    : 'border-[#D3D3D3] bg-[#F5F5F5] text-[#999999] cursor-not-allowed'
                 }`}
               >
                 {slot.time}
@@ -230,7 +230,7 @@ export default function TherapistTimeSlotSelector({
       {/* Resumo da Seleção */}
       {selectedDay && selectedTime && (
         <div className="p-4 bg-[#B2B8A3]/5 border border-[#B2B8A3]/20 rounded-lg">
-          <p className="text-sm text-gray-900">
+          <p className="text-sm text-[#2C3E2D]">
             <span className="font-medium">Data/Hora selecionada:</span>{' '}
             {new Date(selectedDay).toLocaleDateString('pt-BR', {
               weekday: 'long',
@@ -247,7 +247,7 @@ export default function TherapistTimeSlotSelector({
       <button
         onClick={handleSelectSlot}
         disabled={!selectedTime || !selectedSlot?.available || isLoading}
-        className="w-full py-3 bg-[#B2B8A3] hover:bg-[#9da390] disabled:bg-gray-300 disabled:cursor-not-allowed 
+        className="w-full py-3 bg-[#B2B8A3] hover:bg-[#9da390] disabled:bg-[#D3D3D3] disabled:cursor-not-allowed 
                    text-white rounded-lg font-medium transition-colors"
       >
         {isLoading ? 'Processando...' : 'Confirmar Horário'}
@@ -255,7 +255,7 @@ export default function TherapistTimeSlotSelector({
 
       {/* Aviso: mostrar se nenhum horário selecionado */}
       {!selectedTime && (
-        <p className="text-xs text-gray-500 text-center">
+        <p className="text-xs text-[#777777] text-center">
           Selecione um dia e um horário para continuar
         </p>
       )}

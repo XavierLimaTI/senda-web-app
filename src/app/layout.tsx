@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Providers from './Providers'
-import Navbar from '@/components/Navbar'
-import CookieConsent from '@/components/CookieConsent'
-import TermsUpdateWrapper from '@/components/TermsUpdateWrapper'
+import ClientLayout from '@/components/ClientLayout'
 
 export const metadata: Metadata = {
   title: 'Senda - Sua Jornada de Bem-Estar',
   description: 'Plataforma de conexão entre clientes e terapeutas integradores',
 }
+
+// Disable static generation for pages using client providers
+export const dynamic = 'force-dynamic'
 
 export default function RootLayout({
   children,
@@ -19,10 +20,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <Providers>
-          <TermsUpdateWrapper />
-          <Navbar />
-          {children}
-          <CookieConsent />
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>

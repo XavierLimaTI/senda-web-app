@@ -72,7 +72,7 @@ export function Toast({ message, type = 'info', duration = 4000, onClose }: Toas
         <p className="text-sm flex-1 font-medium">{message}</p>
         <button
           onClick={handleClose}
-          className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex-shrink-0 text-[#999999] hover:text-[#666666] transition-colors"
           aria-label="Fechar"
         >
           <X className="w-4 h-4" />

@@ -16,8 +16,8 @@ export function Button({
 
   const variantStyles = {
     default: 'bg-[#B2B8A3] text-white hover:bg-[#9fa693]',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
-    destructive: 'bg-red-600 text-white hover:bg-red-700'
+    outline: 'border border-[#B2B8A3]/50 text-[#2C3E2D] hover:bg-[#F0EBE3]',
+    destructive: 'bg-[#D99A8B] text-white hover:bg-[#C8876F]'
   };
 
   const sizeStyles = {

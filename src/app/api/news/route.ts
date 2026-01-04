@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Disable static generation for this route
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/news
  * Get published news articles
