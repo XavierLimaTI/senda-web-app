@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default async function TermsPage() {
   // Ler arquivo markdown
-  const filePath = path.join(process.cwd(), 'docs', '04_LEGAL', 'TERMOS_DE_USO.md');
+  const filePath = path.join(process.cwd(), 'docs', 'legal', 'TERMOS_DE_USO.md');
   const fileContent = fs.readFileSync(filePath, 'utf8');
   
   // Converter markdown para HTML

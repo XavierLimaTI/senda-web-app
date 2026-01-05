@@ -5,7 +5,7 @@ import html from 'remark-html';
 import Link from 'next/link';
 
 export default async function CancellationPage() {
-  const filePath = path.join(process.cwd(), 'docs', '04_LEGAL', 'POLITICA_CANCELAMENTO.md');
+  const filePath = path.join(process.cwd(), 'docs', 'legal', 'POLITICA_CANCELAMENTO.md');
   const fileContent = fs.readFileSync(filePath, 'utf8');
   
   const processedContent = await remark()

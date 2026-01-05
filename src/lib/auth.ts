@@ -22,8 +22,17 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null
         const user = await prisma.user.findUnique({ where: { email: credentials.email } })
         if (!user) return null
+        
+        // Verificar se senha está correta
         const isValid = await compare(credentials.password, user.password)
         if (!isValid) return null
+        
+        // TEMPORÁRIO: Permitir login sem verificação de email em DEV
+        // TODO: Remover em produção ou após testar email verification
+        // if (!user.emailVerified) {
+        //   throw new Error('Email não verificado. Verifique sua caixa de entrada.')
+        // }
+        
         return { id: user.id.toString(), email: user.email, name: user.name, role: user.role, avatar: user.avatar }
       },
     }),

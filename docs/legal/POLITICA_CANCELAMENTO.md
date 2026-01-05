@@ -14,6 +14,7 @@ A Senda acredita em uma política de cancelamento **justa, transparente e humani
 ✅ Ser transparente sobre custos e prazos  
 ✅ Permitir flexibilidade em emergências  
 ✅ Respeitar o tempo investido pelos profissionais
+✅ Deixar claro que **a taxa de transação nunca é absorvida pela Senda**: sempre fica com quem solicita o cancelamento
 
 ---
 
@@ -21,8 +22,8 @@ A Senda acredita em uma política de cancelamento **justa, transparente e humani
 
 ### 2.1 Cancelamento até 24 horas antes
 
-**Reembolso:** 100% (sem retenção)  
-**Quem paga:** Senda (absorve a comissão)  
+**Reembolso:** 100% do valor da sessão  
+**Taxa de transação:** cobrada de quem solicitou o cancelamento (Cliente)  
 **Prazo:** Processado em até 5 dias úteis
 
 **Motivos comuns:**
@@ -42,19 +43,20 @@ A Senda acredita em uma política de cancelamento **justa, transparente e humani
 ### 2.2 Cancelamento com menos de 24h
 
 **Reembolso:** 50% do valor (compensação ao Terapeuta)  
-**Quem paga:** Cliente retém R$; Terapeuta recebe 50% da comissão dele  
+**Taxa de transação:** cobrada do solicitante (Cliente)  
+**Quem recebe:** Cliente recebe 50% do valor da sessão (líquido das taxas) e Terapeuta recebe 50% da comissão dele  
 **Prazo:** 5 dias úteis
 
 **Cálculo Exemplo:**
 ```
 Valor da Sessão: R$ 200,00
-Taxa Senda: R$ 30,00 (15%)
-Terapeuta receberia: R$ 170,00
+Taxa de transação: cobrada do solicitante (Cliente) — exemplo: R$ 5,00
+Comissão Terapeuta (exemplo 85%): R$ 170,00
 
 Cancelamento < 24h:
-- Reembolso ao Cliente: R$ 100,00
-- Ao Terapeuta: R$ 85,00
-- Absorvido por Senda: R$ 15,00
+- Reembolso ao Cliente: 50% do valor da sessão (R$ 100,00) menos a taxa de transação (R$ 5,00) = R$ 95,00
+- Ao Terapeuta: 50% da comissão dele (R$ 85,00)
+- Senda não absorve taxa de transação
 ```
 
 **Por quê?**
@@ -106,7 +108,19 @@ Se o Cliente enfrentar emergência pessoal no cancelamento:
 ### 3.1 Cancelamento pelo Terapeuta
 
 **Reembolso:** 100% imediato ao Cliente  
-**Penalidade:** 50% da comissão do Terapeuta é retida
+**Taxa de transação:** cobrada de quem solicitou o cancelamento (Terapeuta)  
+**Compensação ao Cliente:** voucher de **15%** de desconto para reagendamento, com validade de **45 dias** e prioridade de agenda (3 horários sugeridos nas próximas 72h)
+
+**Retórica para confiança (sem multa direta ao Terapeuta):** quando o Terapeuta cancela, o Cliente recebe o valor integral e um incentivo para remarcar. O foco é proteger a experiência do cliente e manter a reputação do Terapeuta:
+- O Cliente recebe 100% do valor da sessão, e **a taxa de transação não é absorvida pela Senda**, ficando com quem solicitou o cancelamento (Terapeuta);
+- O Cliente ganha um desconto de 15% para o próximo agendamento, com prioridade de agenda em 72h;
+- O Terapeuta não sofre multa financeira imediata, mas o histórico de cancelamentos é monitorado; limites mensais aplicam bloqueios curtos em caso de recorrência:
+  - Até 2 cancelamentos/mês: apenas registro
+  - 3º no mês: aviso e acompanhamento (sem bloqueio)
+  - 4º no mês: bloqueio de novas reservas por 2 dias (mantém as já marcadas)
+  - 5º no mês: bloqueio de novas reservas por 5 dias + contato do suporte
+  - 2 meses seguidos com ≥4 cancelamentos: revisão manual da conta
+- Em emergências reais, o Terapeuta informa o motivo e a Senda agiliza o reagendamento com transparência.
 
 **Motivos aceitáveis:**
 - Doença grave do profissional

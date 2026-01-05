@@ -5,7 +5,7 @@ import html from 'remark-html';
 import Link from 'next/link';
 
 export default async function PaymentPage() {
-  const filePath = path.join(process.cwd(), 'docs', '04_LEGAL', 'TERMOS_PAGAMENTO.md');
+  const filePath = path.join(process.cwd(), 'docs', 'legal', 'TERMOS_PAGAMENTO.md');
   const fileContent = fs.readFileSync(filePath, 'utf8');
   
   const processedContent = await remark()

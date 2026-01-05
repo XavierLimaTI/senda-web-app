@@ -62,8 +62,19 @@ export default function SignUpPage({ searchParams }: { searchParams?: { role?: s
     setLoading(false)
     if (res.ok) {
       setShowLegalModal(false)
-      await signIn('credentials', { redirect: false, email: formData.email, password: formData.password })
-      router.push('/dashboard')
+      // Login automático após cadastro
+      const signInResult = await signIn('credentials', { 
+        redirect: false, 
+        email: formData.email, 
+        password: formData.password 
+      })
+      
+      if (signInResult?.error) {
+        setError('Cadastro realizado, mas erro no login automático. Tente fazer login manualmente.')
+        setTimeout(() => router.push('/auth/signin'), 3000)
+      } else {
+        router.push('/dashboard')
+      }
     } else {
       setError(data?.error || 'Erro no cadastro')
       setShowLegalModal(false)

@@ -5,7 +5,7 @@ import html from 'remark-html';
 import Link from 'next/link';
 
 export default async function PrivacyPage() {
-  const filePath = path.join(process.cwd(), 'docs', '04_LEGAL', 'POLITICA_PRIVACIDADE.md');
+  const filePath = path.join(process.cwd(), 'docs', 'legal', 'POLITICA_PRIVACIDADE.md');
   const fileContent = fs.readFileSync(filePath, 'utf8');
   
   const processedContent = await remark()
