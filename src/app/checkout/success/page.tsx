@@ -1,15 +1,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 
 export default async function CheckoutSuccessPage({
   searchParams
 }: {
   searchParams: { bookingId?: string }
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const bookingId = searchParams.bookingId ? parseInt(searchParams.bookingId) : null
 
   if (!bookingId) {

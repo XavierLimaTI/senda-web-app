@@ -1,6 +1,6 @@
-import { getServerSession } from 'next-auth';
+;
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
+;
 import { prisma } from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { NewsSection } from './NewsSection';
 
 export default async function TherapistDashboardPage() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || session.user.role !== 'THERAPIST') {
     redirect('/auth/signin');
@@ -309,3 +309,4 @@ export default async function TherapistDashboardPage() {
     </div>
   );
 }
+

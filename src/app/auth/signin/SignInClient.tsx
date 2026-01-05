@@ -26,7 +26,7 @@ export default function SignInClient() {
     })
 
     setLoading(false)
-    if (res?.ok) {
+    if (!res?.error) {
       // Respeita callbackUrl se fornecido (NextAuth padrão)
       const callbackUrl = searchParams?.get('callbackUrl')
 

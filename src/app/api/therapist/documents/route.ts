@@ -1,6 +1,7 @@
+import { auth } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+
+
 import { prisma } from '@/lib/prisma'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
@@ -14,7 +15,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 export async function POST(req: NextRequest) {
   try {
     // Validar sessão
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
@@ -137,7 +138,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     // Validar sessão
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
@@ -199,3 +200,4 @@ function getFileExtension(mimeType: string): string {
   }
   return extensions[mimeType] || '.bin'
 }
+

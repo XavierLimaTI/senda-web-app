@@ -1,11 +1,12 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import { prisma } from '@/lib/prisma'
 import PendingTherapistsClient from './PendingTherapistsClient'
 
 export default async function PendingTherapistsPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session?.user || session.user.role !== 'ADMIN') {
     redirect('/auth/signin')
@@ -35,3 +36,4 @@ export default async function PendingTherapistsPage() {
 
   return <PendingTherapistsClient therapists={pendingTherapists} />
 }
+

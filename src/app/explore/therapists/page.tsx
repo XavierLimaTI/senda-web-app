@@ -1,6 +1,7 @@
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+
+
 import TherapistsGrid from './TherapistsGrid'
 import TherapistsHeader from './TherapistsHeader'
 import TherapistSearchBar from '@/components/TherapistSearchBar'
@@ -108,7 +109,7 @@ export default async function TherapistsPage({
   ])
 
   // Buscar favoritos do usuário (se logado como cliente)
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   let userFavorites: number[] = []
   
   if (session && session.user.role === 'CLIENT') {
@@ -302,3 +303,4 @@ export default async function TherapistsPage({
     </div>
   )
 }
+

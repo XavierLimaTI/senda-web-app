@@ -1,11 +1,12 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import { prisma } from '@/lib/prisma'
 import AdminDashboardClient from './AdminDashboardClient'
 
 export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   // Verificar se é admin
   if (!session?.user || session.user.role !== 'ADMIN') {
@@ -59,3 +60,4 @@ export default async function AdminDashboard() {
 
   return <AdminDashboardClient metrics={metrics} />
 }
+

@@ -1,11 +1,12 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import { prisma } from '@/lib/prisma'
 import FavoritesClient from './FavoritesClient'
 
 export default async function FavoritesPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session) {
     redirect('/auth/signin')
@@ -60,3 +61,4 @@ export default async function FavoritesPage() {
 
   return <FavoritesClient favorites={favorites} />
 }
+

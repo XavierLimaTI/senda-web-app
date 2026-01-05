@@ -1,6 +1,7 @@
-import { getServerSession } from 'next-auth/next'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import PrivacyDashboard from '@/components/PrivacyDashboard'
@@ -11,7 +12,7 @@ export const metadata = {
 }
 
 export default async function PrivacySettingsPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session?.user?.email) {
     redirect('/auth/signin')
@@ -98,3 +99,4 @@ export default async function PrivacySettingsPage() {
     </div>
   );
 }
+

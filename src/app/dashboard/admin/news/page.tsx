@@ -1,15 +1,15 @@
 'use server'
 
-import { getServerSession } from 'next-auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { Plus, Edit2, Eye, EyeOff } from 'lucide-react'
 import NewsListClient from './NewsListClient'
 
 export default async function AdminNewsPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   // Auth check - admin only
   if (!session || session.user?.role !== 'ADMIN') {
@@ -146,3 +146,4 @@ export default async function AdminNewsPage() {
     </div>
   )
 }
+

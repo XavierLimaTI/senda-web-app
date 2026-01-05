@@ -1,13 +1,14 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import { Calendar, TrendingUp, Users, Clock, ChevronRight } from 'lucide-react'
 
 export default async function TherapistHome() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session?.user || session.user.role !== 'THERAPIST') {
     redirect('/auth/signin')
@@ -248,3 +249,4 @@ export default async function TherapistHome() {
     </div>
   )
 }
+

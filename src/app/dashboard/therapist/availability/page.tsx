@@ -1,10 +1,11 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import AvailabilityManager from './AvailabilityManager'
 
 export default async function AvailabilityPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session || session.user.role !== 'THERAPIST') {
     redirect('/auth/signin')
@@ -28,3 +29,4 @@ export default async function AvailabilityPage() {
     </div>
   )
 }
+

@@ -1,7 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import CheckoutClient from './CheckoutClient'
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 }
 
 export default async function CheckoutPage({ params }: Props) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session?.user) {
     redirect('/auth/signin')

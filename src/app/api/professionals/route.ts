@@ -3,11 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
 
-const therapySchema = z.object({
+const professionalSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
-  description: z.string().optional().nullable(),
-  duration: z.number().int().positive().optional().nullable(),
-  price: z.number().positive().optional().nullable(),
+  email: z.string().email("Email inválido").optional().nullable(),
+  phone: z.string().optional().nullable(),
+  document: z.string().optional().nullable(),
+  specialty: z.string().optional().nullable(),
+  licenseNumber: z.string().optional().nullable(),
   active: z.boolean().optional().default(true),
 });
 
@@ -19,21 +21,44 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const search = searchParams.get("search") || "";
     const active = searchParams.get("active");
 
     const where = {
       deletedAt: null,
       ...(active !== null && { active: active === "true" }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: "insensitive" as const } },
+          { email: { contains: search, mode: "insensitive" as const } },
+          { specialty: { contains: search, mode: "insensitive" as const } },
+        ],
+      }),
     };
 
-    const therapies = await prisma.therapy.findMany({
-      where,
-      orderBy: { name: "asc" },
-    });
+    const [professionals, total] = await Promise.all([
+      prisma.professional.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { name: "asc" },
+      }),
+      prisma.professional.count({ where }),
+    ]);
 
-    return NextResponse.json(therapies);
+    return NextResponse.json({
+      data: professionals,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
-    console.error("Erro ao buscar terapias:", error);
+    console.error("Erro ao buscar profissionais:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -49,13 +74,30 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const validatedData = therapySchema.parse(body);
+    const validatedData = professionalSchema.parse(body);
 
-    const therapy = await prisma.therapy.create({
+    // Verificar email duplicado
+    if (validatedData.email) {
+      const existingProfessional = await prisma.professional.findFirst({
+        where: {
+          email: validatedData.email,
+          deletedAt: null,
+        },
+      });
+
+      if (existingProfessional) {
+        return NextResponse.json(
+          { error: "Email já cadastrado" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const professional = await prisma.professional.create({
       data: validatedData,
     });
 
-    return NextResponse.json(therapy, { status: 201 });
+    return NextResponse.json(professional, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -63,7 +105,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.error("Erro ao criar terapia:", error);
+    console.error("Erro ao criar profissional:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -83,30 +125,30 @@ export async function PUT(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "ID da terapia é obrigatório" },
+        { error: "ID do profissional é obrigatório" },
         { status: 400 }
       );
     }
 
-    const validatedData = therapySchema.parse(data);
+    const validatedData = professionalSchema.parse(data);
 
-    const existingTherapy = await prisma.therapy.findFirst({
+    const existingProfessional = await prisma.professional.findFirst({
       where: { id, deletedAt: null },
     });
 
-    if (!existingTherapy) {
+    if (!existingProfessional) {
       return NextResponse.json(
-        { error: "Terapia não encontrada" },
+        { error: "Profissional não encontrado" },
         { status: 404 }
       );
     }
 
-    const updatedTherapy = await prisma.therapy.update({
+    const updatedProfessional = await prisma.professional.update({
       where: { id },
       data: validatedData,
     });
 
-    return NextResponse.json(updatedTherapy);
+    return NextResponse.json(updatedProfessional);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -114,7 +156,7 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.error("Erro ao atualizar terapia:", error);
+    console.error("Erro ao atualizar profissional:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -134,33 +176,33 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "ID da terapia é obrigatório" },
+        { error: "ID do profissional é obrigatório" },
         { status: 400 }
       );
     }
 
-    const existingTherapy = await prisma.therapy.findFirst({
+    const existingProfessional = await prisma.professional.findFirst({
       where: { id, deletedAt: null },
     });
 
-    if (!existingTherapy) {
+    if (!existingProfessional) {
       return NextResponse.json(
-        { error: "Terapia não encontrada" },
+        { error: "Profissional não encontrado" },
         { status: 404 }
       );
     }
 
-    await prisma.therapy.update({
+    await prisma.professional.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
 
     return NextResponse.json({
       success: true,
-      message: "Terapia excluída com sucesso",
+      message: "Profissional excluído com sucesso",
     });
   } catch (error) {
-    console.error("Erro ao excluir terapia:", error);
+    console.error("Erro ao excluir profissional:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }

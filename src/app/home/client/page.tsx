@@ -1,6 +1,7 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
@@ -8,7 +9,7 @@ import { Calendar, Heart, Search, Star, Sparkles, ArrowRight } from 'lucide-reac
 import TherapistsCarousel from '@/components/TherapistsCarousel'
 
 export default async function ClientHome() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   
   if (!session?.user || session.user.role !== 'CLIENT') {
     redirect('/auth/signin')
@@ -272,3 +273,4 @@ export default async function ClientHome() {
     </div>
   )
 }
+

@@ -1,11 +1,12 @@
-import { getServerSession } from 'next-auth'
+import { auth } from '@/lib/auth'
+
 import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+
 import ProfileClient from './ProfileClient'
 import { prisma } from '@/lib/prisma'
 
 export default async function ProfilePage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session) {
     redirect('/auth/signin')
@@ -27,3 +28,4 @@ export default async function ProfilePage() {
 
   return <ProfileClient user={user} />
 }
+

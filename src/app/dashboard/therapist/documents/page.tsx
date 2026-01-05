@@ -1,5 +1,6 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
+
+
 import { redirect } from 'next/navigation'
 import TherapistDocumentsClient from './TherapistDocumentsClient'
 
@@ -9,7 +10,7 @@ export const metadata = {
 }
 
 export default async function TherapistDocumentsPage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   // Validar autenticação e role
   if (!session?.user) {
@@ -28,3 +29,4 @@ export default async function TherapistDocumentsPage() {
     </main>
   )
 }
+

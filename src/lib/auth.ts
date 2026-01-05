@@ -1,10 +1,10 @@
-import { NextAuthOptions } from "next-auth"
+import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { compare } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 
-export const authOptions: NextAuthOptions = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/auth/signin" },
   providers: [
@@ -52,6 +52,4 @@ export const authOptions: NextAuthOptions = {
       }
     },
   },
-}
-
-export default authOptions
+})

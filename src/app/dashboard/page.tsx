@@ -1,12 +1,13 @@
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { auth } from '@/lib/auth'
+
+
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import SignOutButton from "@/components/SignOutButton"
 import { Calendar, Stethoscope, Clock, DollarSign, Search, Settings, Lock } from 'lucide-react'
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session) redirect('/auth/signin')
 
   const therapistLinks = [
@@ -104,4 +105,5 @@ export default async function Dashboard() {
     </main>
   )
 }
+
 

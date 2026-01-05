@@ -1,6 +1,7 @@
+import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+;
+;
 import { prisma } from '@/lib/prisma';
 import { createAsaasPayment } from '@/lib/asaas';
 
@@ -28,7 +29,7 @@ import { createAsaasPayment } from '@/lib/asaas';
  */
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     if (!session?.user?.id || session.user.role !== 'CLIENT') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -186,3 +187,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

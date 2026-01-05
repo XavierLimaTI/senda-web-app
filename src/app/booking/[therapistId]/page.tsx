@@ -1,6 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import BookingForm from './BookingForm'
 
@@ -10,7 +9,7 @@ interface Props {
 
 export default async function BookingPage({ params }: Props) {
   // Verificar autenticação - redirecionar para login se não autenticado
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session || session.user.role !== 'CLIENT') {
     redirect(`/auth/signin?callbackUrl=/booking/${params.therapistId}`)
   }
