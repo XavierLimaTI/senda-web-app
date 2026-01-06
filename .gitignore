@@ -1,5 +1,34 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+.env.production.local
 
 /src/generated/prisma
+
+# Next.js build output
+.next/
+out/
+
+# TypeScript build cache
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Testing
+/playwright-report/
+/test-results/
+/coverage/
+
+# Temporary files
+temp_*.json
+temp_*.txt
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

@@ -3,12 +3,6 @@
 import NextError from 'next/error'
 import * as Sentry from '@sentry/nextjs'
 
-// Initialize Sentry for this error boundary
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 1.0,
-})
-
 interface GlobalErrorProps {
   error: Error & { digest?: string }
   reset: () => void

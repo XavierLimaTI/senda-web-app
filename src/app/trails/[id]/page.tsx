@@ -1,6 +1,5 @@
-import { getServerSession } from 'next-auth/next'
+import { auth } from '@/lib/auth'
 import { notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Metadata } from 'next'
 import { TrailPlayerClient } from './TrailPlayerClient'
@@ -25,7 +24,7 @@ export default async function TrailPage({
 }: {
   params: { id: string }
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const trailId = parseInt(params.id)
 
   const trail = await prisma.trail.findUnique({

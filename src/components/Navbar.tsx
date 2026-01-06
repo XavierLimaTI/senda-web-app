@@ -42,6 +42,7 @@ export default function Navbar() {
                 src="/images/senda/logo.png"
                 alt="Senda"
                 fill
+                sizes="48px"
                 className="object-cover"
                 priority
               />

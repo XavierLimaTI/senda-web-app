@@ -3,6 +3,9 @@ const { withSentryConfig } = require('@sentry/nextjs')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    instrumentationHook: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -10,7 +13,6 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
       },
     ],
-    domains: ['localhost'],
   },
 }
 
@@ -22,5 +24,9 @@ module.exports = withSentryConfig(nextConfig, {
   hideSourceMaps: true,
   
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
 })

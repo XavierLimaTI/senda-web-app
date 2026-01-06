@@ -27,6 +27,8 @@ export default function ProfileClient({ user }: ProfileClientProps) {
   })
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [uploadPreview, setUploadPreview] = useState<string | null>(null)
+  const [docUploads, setDocUploads] = useState<{ name: string; url: string }[]>([])
+  const [isDocUploading, setIsDocUploading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -86,6 +88,44 @@ export default function ProfileClient({ user }: ProfileClientProps) {
       setUploadPreview(null)
     } finally {
       setIsUploading(false)
+    }
+  }
+
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowed = ['application/pdf', 'image/png', 'image/jpeg']
+    if (!allowed.includes(file.type)) {
+      alert('Envie PDF, PNG ou JPG')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('O arquivo deve ter no máximo 10MB')
+      return
+    }
+
+    setIsDocUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) throw new Error('Falha ao enviar documento')
+
+      const data = await response.json()
+      setDocUploads((prev) => [{ name: file.name, url: data.url }, ...prev])
+      alert('Documento enviado com sucesso!')
+    } catch (error) {
+      console.error('Erro ao enviar documento', error)
+      alert('Erro ao enviar documento. Tente novamente.')
+    } finally {
+      setIsDocUploading(false)
     }
   }
 

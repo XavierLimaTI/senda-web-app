@@ -1,6 +1,5 @@
+import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/trails/[id] - Get trail details with lessons
@@ -45,7 +44,7 @@ export async function GET(
     }
 
     // Check if published or user is author
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!trail.published && session?.user?.email) {
       const user = await prisma.user.findUnique({
         where: { email: session.user.email },
@@ -75,7 +74,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -144,7 +143,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

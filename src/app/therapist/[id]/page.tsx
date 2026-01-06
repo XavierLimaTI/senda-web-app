@@ -1,6 +1,5 @@
+import { auth } from '@/lib/auth'
 import { notFound } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import TherapistHeader from './TherapistHeader'
 import TherapistBookingSection from './TherapistBookingSection'
@@ -98,7 +97,7 @@ export default async function TherapistPage({ params }: Props) {
   })
 
   // Verificar se o terapeuta está nos favoritos do usuário (se logado como cliente)
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   let isFavorite = false
   
   if (session && session.user.role === 'CLIENT') {

@@ -1,6 +1,5 @@
-;
-import { redirect } from 'next/navigation';
-;
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';

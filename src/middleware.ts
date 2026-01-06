@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   // Content Security Policy (permissive para MVP, aprimorar depois)
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.sendgrid.com https://accounts.google.com https://*.sentry.io;"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; media-src 'self' data: https:; connect-src 'self' https://api.sendgrid.com https://accounts.google.com https://*.sentry.io;"
   )
 
   // CORS (se necessário para APIs externas)

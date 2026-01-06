@@ -67,51 +67,6 @@ export const api = {
   },
 };
 
-// Serviços específicos
-export const patientsService = {
-  getAll: (params?: Record<string, string>) => 
-    api.get<{ data: Patient[]; pagination: Pagination }>("/api/patients", params),
-  create: (data: CreatePatientData) => 
-    api.post<Patient>("/api/patients", data),
-  update: (id: string, data: UpdatePatientData) => 
-    api.put<Patient>("/api/patients", { id, ...data }),
-  delete: (id: string) => 
-    api.delete<{ success: boolean }>("/api/patients", id),
-};
-
-export const professionalsService = {
-  getAll: (params?: Record<string, string>) => 
-    api.get<{ data: Professional[]; pagination: Pagination }>("/api/professionals", params),
-  create: (data: CreateProfessionalData) => 
-    api.post<Professional>("/api/professionals", data),
-  update: (id: string, data: UpdateProfessionalData) => 
-    api.put<Professional>("/api/professionals", { id, ...data }),
-  delete: (id: string) => 
-    api.delete<{ success: boolean }>("/api/professionals", id),
-};
-
-export const therapiesService = {
-  getAll: (params?: Record<string, string>) => 
-    api.get<Therapy[]>("/api/therapies", params),
-  create: (data: CreateTherapyData) => 
-    api.post<Therapy>("/api/therapies", data),
-  update: (id: string, data: UpdateTherapyData) => 
-    api.put<Therapy>("/api/therapies", { id, ...data }),
-  delete: (id: string) => 
-    api.delete<{ success: boolean }>("/api/therapies", id),
-};
-
-export const roomsService = {
-  getAll: (params?: Record<string, string>) => 
-    api.get<Room[]>("/api/rooms", params),
-  create: (data: CreateRoomData) => 
-    api.post<Room>("/api/rooms", data),
-  update: (id: string, data: UpdateRoomData) => 
-    api.put<Room>("/api/rooms", { id, ...data }),
-  delete: (id: string) => 
-    api.delete<{ success: boolean }>("/api/rooms", id),
-};
-
 // Tipos
 interface Pagination {
   page: number;

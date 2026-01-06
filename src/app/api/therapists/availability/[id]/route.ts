@@ -1,6 +1,5 @@
+import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 interface Params {
@@ -15,7 +14,7 @@ interface Params {
  */
 export async function PUT(req: Request, { params }: Params) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
@@ -70,7 +69,7 @@ export async function PUT(req: Request, { params }: Params) {
  */
 export async function DELETE(req: Request, { params }: Params) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })

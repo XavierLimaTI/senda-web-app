@@ -6,3 +6,6 @@ Sentry.init({
   debug: false,
   enabled: process.env.NODE_ENV === "production",
 });
+
+// Hook requerido para instrumentar navegações
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

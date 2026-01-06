@@ -127,6 +127,30 @@ export default async function TherapistsPage({
     }
   }
 
+  const buildSortUrl = (sortOption: string) => {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    if (specialty) params.set('specialty', specialty)
+    if (searchParams.minRating) params.set('minRating', searchParams.minRating)
+    if (maxPrice) params.set('maxPrice', String(maxPrice))
+    if (city) params.set('city', city)
+    if (state) params.set('state', state)
+    if (lat !== undefined) params.set('lat', String(lat))
+    if (lng !== undefined) params.set('lng', String(lng))
+    if (maxDistance !== undefined) params.set('maxDistance', String(maxDistance))
+    if (onlineOnly) params.set('onlineOnly', 'true')
+    params.set('sort', sortOption)
+    params.set('page', '1')
+    return `/explore/therapists?${params.toString()}`
+  }
+
+  const sortOptions = [
+    { value: 'rating', label: 'Avaliação' },
+    { value: 'price', label: 'Menor preço' },
+    ...(lat && lng ? [{ value: 'distance', label: 'Distância' }] : []),
+    { value: 'recent', label: 'Mais recentes' },
+  ]
+
   // Processar e filtrar resultados client-side
   let results = therapists.map(t => {
     // Calcular distância
@@ -233,21 +257,21 @@ export default async function TherapistsPage({
           {/* Ordenação rápida */}
           <div className="hidden md:flex items-center gap-2">
             <span className="text-sm text-gray-600">Ordenar:</span>
-            <select
-              value={sort}
-              onChange={(e) => {
-                const params = new URLSearchParams(window.location.search)
-                params.set('sort', e.target.value)
-                window.location.search = params.toString()
-              }}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#B2B8A3] focus:border-transparent"
-            >
-              {q && <option value="relevance">Relevância</option>}
-              <option value="rating">Avaliação</option>
-              <option value="price">Menor preço</option>
-              {lat && lng && <option value="distance">Distância</option>}
-              <option value="recent">Mais recentes</option>
-            </select>
+            <div className="flex items-center gap-2">
+              {sortOptions.map((option) => (
+                <a
+                  key={option.value}
+                  href={buildSortUrl(option.value)}
+                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
+                    sort === option.value
+                      ? 'bg-[#B2B8A3] border-[#B2B8A3] text-white'
+                      : 'border-gray-300 text-gray-700 hover:border-[#B2B8A3] hover:text-[#B2B8A3]'
+                  }`}
+                >
+                  {option.label}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
         {/* Grid */}
