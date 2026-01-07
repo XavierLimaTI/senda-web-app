@@ -1,0 +1,46 @@
+# Docker Compose para Senda Web App
+# Ambiente de desenvolvimento com PostgreSQL
+
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: senda-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: senda
+      POSTGRES_PASSWORD: senda_dev_2026
+      POSTGRES_DB: senda_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U senda -d senda_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Adminer - Interface web para gerenciar o banco (opcional)
+  adminer:
+    image: adminer:latest
+    container_name: senda-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+
+volumes:
+  postgres_data:
+    driver: local
+
+# Redes (opcional, usa default)
+networks:
+  default:
+    name: senda-network
