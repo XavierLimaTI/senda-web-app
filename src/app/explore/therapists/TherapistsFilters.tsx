@@ -1,21 +1,41 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useLanguage } from '@/context/LanguageContext'
 
 const SPECIALTIES = [
+  'Psicologia',
+  'Psicanálise',
+  'Terapia Cognitivo-Comportamental',
+  'Constelação Familiar',
+  'Terapia de Casal',
+  'Mindfulness',
+  'Meditação',
+  'Yoga',
   'Reiki',
   'Acupuntura',
   'Massagem Terapêutica',
-  'Psicologia',
+  'Fisioterapia',
+  'Quiropraxia',
+  'Aromaterapia',
+  'Homeopatia',
+  'Hipnoterapia',
   'Coaching',
-  'Meditação',
-  'Yoga',
-  'Reflexologia'
+  'Reflexologia',
+  'Musicoterapia',
+  'Arteterapia',
+]
+
+const CITY_SUGGESTIONS = [
+  'São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Curitiba', 'Porto Alegre',
+  'Brasília', 'Salvador', 'Fortaleza', 'Recife', 'Florianópolis',
+  'Campinas', 'Santos', 'Niterói', 'Vitória', 'Goiânia'
 ]
 
 export default function TherapistsFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { t } = useLanguage()
   
   const specialty = searchParams.get('specialty') || ''
   const maxPrice = searchParams.get('maxPrice') || ''
@@ -44,7 +64,7 @@ export default function TherapistsFilters() {
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 space-y-4">
       {/* Especialidades */}
       <div>
-        <p className="text-sm font-medium text-gray-700 mb-3">Especialidade:</p>
+        <p className="text-sm font-medium text-gray-700 mb-3">{t('explore.therapists.filter_specialty')}</p>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => updateFilter('specialty', '')}
@@ -54,7 +74,7 @@ export default function TherapistsFilters() {
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Todas
+            {t('explore.therapists.all')}
           </button>
           {SPECIALTIES.map((spec) => (
             <button
@@ -77,63 +97,64 @@ export default function TherapistsFilters() {
         {/* Ordenação */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Ordenar:
+            {t('explore.therapists.sort_label')}
           </label>
           <select
             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:border-[#B2B8A3] focus:ring-1 focus:ring-[#B2B8A3]"
             value={sort}
             onChange={(e) => updateFilter('sort', e.target.value)}
           >
-            <option value="rating">Melhor avaliados</option>
-            <option value="price">Menor preço</option>
-            <option value="recent">Mais recentes</option>
+            <option value="rating">{t('explore.therapists.sort_rating')}</option>
+            <option value="price">{t('explore.therapists.sort_price')}</option>
+            <option value="recent">{t('explore.therapists.sort_recent')}</option>
           </select>
         </div>
 
         {/* Preço Máximo */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Preço máximo:
+            {t('explore.therapists.max_price')}
           </label>
           <select
             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:border-[#B2B8A3] focus:ring-1 focus:ring-[#B2B8A3]"
             value={maxPrice}
             onChange={(e) => updateFilter('maxPrice', e.target.value)}
           >
-            <option value="">Qualquer valor</option>
-            <option value="100">Até R$ 100</option>
-            <option value="150">Até R$ 150</option>
-            <option value="200">Até R$ 200</option>
-            <option value="300">Até R$ 300</option>
+            <option value="">{t('explore.therapists.any_price')}</option>
+            <option value="100">{t('explore.therapists.price_100')}</option>
+            <option value="150">{t('explore.therapists.price_150')}</option>
+            <option value="200">{t('explore.therapists.price_200')}</option>
+            <option value="300">{t('explore.therapists.price_300')}</option>
           </select>
         </div>
 
         {/* Avaliação Mínima */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Avaliação mínima:
+            {t('explore.therapists.min_rating')}
           </label>
           <select
             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:border-[#B2B8A3] focus:ring-1 focus:ring-[#B2B8A3]"
             value={minRating}
             onChange={(e) => updateFilter('minRating', e.target.value)}
           >
-            <option value="0">Todas</option>
-            <option value="3">3+ ⭐</option>
-            <option value="4">4+ ⭐</option>
-            <option value="4.5">4.5+ ⭐</option>
+            <option value="0">{t('explore.therapists.rating_all')}</option>
+            <option value="3">{t('explore.therapists.rating_3')}</option>
+            <option value="4">{t('explore.therapists.rating_4')}</option>
+            <option value="4.5">{t('explore.therapists.rating_45')}</option>
           </select>
         </div>
 
         {/* Cidade */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cidade:
+            {t('explore.therapists.city')}
           </label>
           <input
             type="text"
-            placeholder="Ex: São Paulo"
+            placeholder={t('explore.therapists.city_placeholder')}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#B2B8A3] focus:ring-1 focus:ring-[#B2B8A3]"
+            list="city-suggestions"
             defaultValue={city}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -146,6 +167,27 @@ export default function TherapistsFilters() {
               }
             }}
           />
+          <datalist id="city-suggestions">
+            {CITY_SUGGESTIONS.map((cityOption) => (
+              <option key={cityOption} value={cityOption} />
+            ))}
+          </datalist>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {CITY_SUGGESTIONS.slice(0, 8).map((cityOption) => (
+              <button
+                key={cityOption}
+                type="button"
+                onClick={() => updateFilter('city', cityOption)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
+                  city === cityOption
+                    ? 'bg-[#B2B8A3] text-white border-[#B2B8A3]'
+                    : 'border-gray-200 text-gray-700 hover:border-[#B2B8A3] hover:text-[#B2B8A3]'
+                }`}
+              >
+                {cityOption}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -159,7 +201,7 @@ export default function TherapistsFilters() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-            Limpar todos os filtros
+            {t('explore.therapists.clear_filters')}
           </button>
         </div>
       )}

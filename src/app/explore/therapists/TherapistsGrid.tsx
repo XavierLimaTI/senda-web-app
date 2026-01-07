@@ -2,6 +2,7 @@
 
 import FavoriteButton from '@/components/FavoriteButton'
 import { MapPin, Video } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Therapist {
   id: number
@@ -30,6 +31,8 @@ interface Props {
 }
 
 export default function TherapistsGrid({ therapists, userFavorites = [] }: Props) {
+  const { t } = useLanguage()
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
       {therapists.map((therapist) => {
@@ -81,7 +84,7 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
                 <div className="absolute bottom-3 right-3 bg-white/95 text-[#B2B8A3] px-2 py-1 rounded-lg 
                                 flex items-center gap-1 text-xs font-medium shadow-md">
                   <Video className="w-3 h-3" />
-                  Online
+                  {t('explore.therapists.online')}
                 </div>
               )}
             </div>
@@ -104,11 +107,11 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
               <div className="flex items-center gap-1 mb-3 text-xs text-gray-600">
                 <MapPin className="w-3 h-3" />
                 {therapist.distance !== undefined && therapist.distance !== null ? (
-                  <span>{therapist.distance.toFixed(1)} km de você</span>
+                  <span>{t('explore.therapists.distance', { value: therapist.distance.toFixed(1) })}</span>
                 ) : therapist.city ? (
                   <span>{therapist.neighborhood ? `${therapist.neighborhood}, ` : ''}{therapist.city}</span>
                 ) : (
-                  <span>Localização não informada</span>
+                  <span>{t('explore.therapists.location_unknown')}</span>
                 )}
               </div>
 
@@ -117,13 +120,13 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
                 <svg className="w-4 h-4 text-[#C8963E]" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span className="text-xs text-gray-600 font-medium">Verificado</span>
+                <span className="text-xs text-gray-600 font-medium">{t('explore.therapists.verified_badge')}</span>
               </div>
 
               {/* Preço */}
               {minPrice > 0 && (
                 <div className="pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500 mb-1">A partir de</p>
+                  <p className="text-xs text-gray-500 mb-1">{t('explore.therapists.from_price')}</p>
                   <p className="text-xl font-serif text-[#B2B8A3] font-semibold">
                     R$ {minPrice.toFixed(2)}
                   </p>
@@ -141,7 +144,7 @@ export default function TherapistsGrid({ therapists, userFavorites = [] }: Props
                            hover:from-[#9da390] hover:to-[#8a9280] text-white text-sm font-medium rounded-lg
                            transition-all duration-200 shadow-sm hover:shadow-md"
               >
-                Ver Perfil
+                {t('explore.therapists.view_profile')}
               </button>
             </div>
           </a>

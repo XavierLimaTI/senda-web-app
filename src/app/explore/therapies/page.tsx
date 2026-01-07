@@ -1,23 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { therapies, categories } from '@/data/therapies'
 import { ChevronDown, Star } from 'lucide-react'
-
-type Language = 'pt' | 'en' | 'es' | 'zh'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function TherapiesPage() {
-  const [language, setLanguage] = useState<Language>('pt')
+  const { language, setLanguage, t } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState<string>('body')
   const [selectedIndicationTag, setSelectedIndicationTag] = useState<string | null>(null)
   const [expandedTherapy, setExpandedTherapy] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
+
+  function TherapyImage({ src, alt }: { src: string; alt: string }) {
+    const [currentSrc, setCurrentSrc] = useState(src)
+    return (
+      <Image
+        src={currentSrc}
+        alt={alt}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover hover:scale-105 transition-transform duration-300"
+        onError={() => setCurrentSrc('/images/senda/home-client/massage-card.jpg')}
+      />
+    )
+  }
 
   // Filtrar terapias por categoria e indicação
   const filteredTherapies = therapies.filter(therapy => {
     const matchesCategory = therapy.category === selectedCategory
     const matchesIndicationTag = !selectedIndicationTag || therapy.indicationTags.includes(selectedIndicationTag)
-    return matchesCategory && matchesIndicationTag
+    const q = query.trim().toLowerCase()
+    const matchesQuery = q.length === 0 || [
+      therapy.name[language],
+      therapy.description[language],
+      ...therapy.indications[language],
+      therapy.indicationTags.join(' '),
+      therapy.modality,
+    ].some(v => v?.toLowerCase().includes(q))
+    return matchesCategory && matchesIndicationTag && matchesQuery
   })
 
   // Obter tags únicas de indicação da categoria selecionada
@@ -29,76 +51,11 @@ export default function TherapiesPage() {
     )
   ).sort()
 
-  const labels = {
-    pt: {
-      title: 'Explorar Terapias',
-      subtitle: 'Descubra as melhores práticas terapêuticas para sua jornada de bem-estar',
-      filterByCategory: 'Filtrar por Categoria',
-      filterByIndication: 'Filtrar por Indicação Terapêutica',
-      indications: 'Indicações',
-      contraindications: 'Contra-indicações',
-      modality: 'Modalidade',
-      presencial: 'Presencial',
-      online: 'Online',
-      presencialOnline: 'Presencial/Online',
-      findTherapist: 'Encontrar Terapeuta',
-      clearFilters: 'Limpar Filtros',
-      noResults: 'Nenhuma terapia encontrada com esses filtros.'
-    },
-    en: {
-      title: 'Explore Therapies',
-      subtitle: 'Discover the best therapeutic practices for your wellness journey',
-      filterByCategory: 'Filter by Category',
-      filterByIndication: 'Filter by Therapeutic Indication',
-      indications: 'Indications',
-      contraindications: 'Contraindications',
-      modality: 'Modality',
-      presencial: 'In-person',
-      online: 'Online',
-      presencialOnline: 'In-person/Online',
-      findTherapist: 'Find Therapist',
-      clearFilters: 'Clear Filters',
-      noResults: 'No therapies found with these filters.'
-    },
-    es: {
-      title: 'Explorar Terapias',
-      subtitle: 'Descubra las mejores prácticas terapéuticas para su viaje de bienestar',
-      filterByCategory: 'Filtrar por Categoría',
-      filterByIndication: 'Filtrar por Indicación Terapéutica',
-      indications: 'Indicaciones',
-      contraindications: 'Contraindicaciones',
-      modality: 'Modalidad',
-      presencial: 'Presencial',
-      online: 'En línea',
-      presencialOnline: 'Presencial/En línea',
-      findTherapist: 'Encontrar Terapeuta',
-      clearFilters: 'Limpiar Filtros',
-      noResults: 'No se encontraron terapias con estos filtros.'
-    },
-    zh: {
-      title: '探索疗法',
-      subtitle: '为您的健康之旅发现最佳治疗实践',
-      filterByCategory: '按类别筛选',
-      filterByIndication: '按治疗指示筛选',
-      indications: '指示',
-      contraindications: '禁忌',
-      modality: '方式',
-      presencial: '当面',
-      online: '在线',
-      presencialOnline: '当面/在线',
-      findTherapist: '查找治疗师',
-      clearFilters: '清除过滤器',
-      noResults: '未找到符合这些过滤器的疗法。'
-    }
-  }
-
-  const t = labels[language]
-
   const getModalityLabel = (modality: string) => {
     const map = {
-      presencial: t.presencial,
-      online: t.online,
-      presencial_online: t.presencialOnline
+      presencial: t('explore.therapies.presencial'),
+      online: t('explore.therapies.online'),
+      presencial_online: t('explore.therapies.presencial_online')
     }
     return map[modality as keyof typeof map] || modality
   }
@@ -109,39 +66,28 @@ export default function TherapiesPage() {
         {/* Header */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl sm:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-4">
-            {t.title}
+            {t('explore.therapies.title')}
           </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-            {t.subtitle}
+          <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+            {t('explore.therapies.subtitle')}
           </p>
-
-          {/* Language Selector */}
-          <div className="flex justify-center gap-2 mb-8">
-            {(['pt', 'en', 'es', 'zh'] as Language[]).map(lang => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  language === lang
-                    ? 'bg-[#B2B8A3] text-white'
-                    : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-              >
-                {lang === 'pt' && '🇧🇷 PT'}
-                {lang === 'en' && '🇺🇸 EN'}
-                {lang === 'es' && '🇪🇸 ES'}
-                {lang === 'zh' && '🇨🇳 ZH'}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Filters */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-12">
+          {/* Unified Search */}
+          <div className="mb-6">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('explore.therapies.search_placeholder')}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#B2B8A3]"
+            />
+          </div>
           {/* Category Filter */}
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
-              {t.filterByCategory}
+              {t('explore.therapies.filter_by_category')}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {categories.map(category => (
@@ -166,7 +112,7 @@ export default function TherapiesPage() {
           {/* Indication Tag Filter */}
           <div>
             <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
-              {t.filterByIndication}
+              {t('explore.therapies.filter_by_indication')}
             </label>
             <div className="flex flex-wrap gap-2">
               {selectedIndicationTag && (
@@ -203,12 +149,10 @@ export default function TherapiesPage() {
             >
               {/* Image */}
               <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                <Image
-                  src={therapy.image}
-                  alt={therapy.name[language]}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-300"
-                />
+                <TherapyImage src={therapy.image} alt={therapy.name[language]} />
+                <span className="absolute top-3 left-3 text-[11px] px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm">
+                  {categories.find(c => c.id === therapy.category)?.name[language]}
+                </span>
               </div>
 
               {/* Content */}
@@ -234,7 +178,7 @@ export default function TherapiesPage() {
                   className="w-full flex items-center justify-between px-4 py-2 rounded-lg bg-[#F0EBE3] dark:bg-gray-700 hover:bg-[#E5DED5] dark:hover:bg-gray-600 transition-colors"
                 >
                   <span className="font-medium text-gray-900 dark:text-white text-sm">
-                    {expandedTherapy === therapy.id ? 'Menos info' : 'Mais info'}
+                    {expandedTherapy === therapy.id ? t('explore.therapies.less_info') : t('explore.therapies.more_info')}
                   </span>
                   <ChevronDown
                     size={18}
@@ -250,7 +194,7 @@ export default function TherapiesPage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                         <Star size={16} className="text-[#D99A8B]" />
-                        {t.indications}
+                        {t('explore.therapies.indications')}
                       </h4>
                       <ul className="list-disc list-inside space-y-1">
                         {therapy.indications[language].map((indication, idx) => (
@@ -261,7 +205,7 @@ export default function TherapiesPage() {
 
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                        {t.contraindications}
+                        {t('explore.therapies.contraindications')}
                       </h4>
                       <ul className="list-disc list-inside space-y-1">
                         {therapy.contraindications[language].map((contra, idx) => (
@@ -271,7 +215,7 @@ export default function TherapiesPage() {
                     </div>
 
                     <button className="w-full mt-4 px-4 py-2 rounded-lg bg-[#B2B8A3] text-white font-medium hover:bg-[#A0A78F] transition-colors">
-                      {t.findTherapist}
+                      {t('explore.therapies.find_therapist')}
                     </button>
                   </div>
                 )}
@@ -284,7 +228,7 @@ export default function TherapiesPage() {
         {filteredTherapies.length === 0 && (
           <div className="text-center py-12">
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-              {t.noResults}
+              {t('explore.therapies.no_results')}
             </p>
             <button
               onClick={() => {
@@ -293,7 +237,7 @@ export default function TherapiesPage() {
               }}
               className="px-6 py-2 rounded-lg bg-[#B2B8A3] text-white font-medium hover:bg-[#A0A78F] transition-colors"
             >
-              {t.clearFilters}
+              {t('explore.therapies.clear_filters')}
             </button>
           </div>
         )}

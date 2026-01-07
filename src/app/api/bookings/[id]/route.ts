@@ -4,6 +4,73 @@ import { prisma } from '@/lib/prisma'
 import { sendCancellationEmail } from '@/lib/email'
 
 /**
+ * GET /api/bookings/[id]
+ * 
+ * Retorna detalhes do agendamento para o usuário autenticado
+ */
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Autenticação necessária' },
+        { status: 401 }
+      )
+    }
+
+    const bookingId = parseInt(params.id)
+    if (isNaN(bookingId)) {
+      return NextResponse.json(
+        { error: 'ID inválido' },
+        { status: 400 }
+      )
+    }
+
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        service: { select: { name: true } },
+        therapist: { include: { user: { select: { name: true, email: true } } } }
+      }
+    })
+
+    if (!booking) {
+      return NextResponse.json(
+        { error: 'Agendamento não encontrado' },
+        { status: 404 }
+      )
+    }
+
+    // Autorizar: cliente dono ou terapeuta do agendamento
+    const isClientOwner = session.user.role === 'CLIENT' && booking.clientId === parseInt(session.user.id)
+    const therapistProfile = session.user.role === 'THERAPIST'
+      ? await prisma.therapistProfile.findUnique({ where: { userId: parseInt(session.user.id) } })
+      : null
+    const isTherapistOwner = therapistProfile?.id === booking.therapistId
+
+    if (!isClientOwner && !isTherapistOwner) {
+      return NextResponse.json(
+        { error: 'Sem permissão para visualizar este agendamento' },
+        { status: 403 }
+      )
+    }
+
+    // Retornar objeto diretamente (compatível com BookingSuccessPage)
+    return NextResponse.json(booking)
+  } catch (error) {
+    console.error('Erro ao obter agendamento:', error)
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    )
+  }
+}
+
+/**
  * PATCH /api/bookings/[id]
  * 
  * Atualiza status do agendamento

@@ -2,6 +2,7 @@
 
 import { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Props {
   services: Service[]
@@ -10,9 +11,11 @@ interface Props {
 
 export default function TherapistServices({ services, therapistId }: Props) {
   const router = useRouter()
+  const { t } = useLanguage()
+
   return (
     <section>
-      <h2 className="text-2xl font-serif text-gray-900 mb-6">Serviços</h2>
+      <h2 className="text-2xl font-serif text-gray-900 mb-6">{t('therapist.services')}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
@@ -35,14 +38,14 @@ export default function TherapistServices({ services, therapistId }: Props) {
             {/* Info Footer */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
               <div>
-                <p className="text-xs text-gray-500 mb-1">Duração</p>
+                <p className="text-xs text-gray-500 mb-1">{t('therapist.duration')}</p>
                 <p className="font-medium text-gray-900">
-                  {service.duration}min
+                  {service.duration}{t('therapist.minutes')}
                 </p>
               </div>
 
               <div className="text-right">
-                <p className="text-xs text-gray-500 mb-1">A partir de</p>
+                <p className="text-xs text-gray-500 mb-1">{t('therapist.from')}</p>
                 <p className="text-xl font-serif text-[#B2B8A3]">
                   R$ {service.price.toFixed(2)}
                 </p>
@@ -56,7 +59,7 @@ export default function TherapistServices({ services, therapistId }: Props) {
                          hover:from-[#9da390] hover:to-[#8a9280] text-white font-medium py-2.5 rounded-lg
                          transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              Agendar {service.name}
+              {t('therapist.schedule')} {service.name}
             </button>
           </div>
         ))}

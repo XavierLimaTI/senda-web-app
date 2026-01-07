@@ -1,10 +1,12 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-
 import TherapistsGrid from './TherapistsGrid'
 import TherapistsHeader from './TherapistsHeader'
-import TherapistSearchBar from '@/components/TherapistSearchBar'
+import TherapistsFilters from './TherapistsFilters'
+import TherapistsPageClient from './TherapistsPageClient'
+import TherapistsPagination from './TherapistsPagination'
+import TherapistsEmptyState from './TherapistsEmptyState'
 
 interface SearchParams {
   q?: string              // Busca textual
@@ -40,6 +42,20 @@ export default async function TherapistsPage({
   const page = parseInt(searchParams.page || '1')
   const limit = 12
   const skip = (page - 1) * limit
+
+  // Trilhas em destaque (publicadas)
+  const featuredTrails = await prisma.trail.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    take: 6,
+    include: {
+      author: {
+        include: {
+          user: { select: { name: true, avatar: true } }
+        }
+      }
+    }
+  })
 
   // Função Haversine para cálculo de distância
   function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -235,93 +251,40 @@ export default async function TherapistsPage({
       <TherapistsHeader />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Barra de Busca Inteligente */}
+        {/* Client Component with featured trails, search bar, and info */}
+        <TherapistsPageClient
+          featuredTrails={featuredTrails}
+          q={q}
+          specialty={specialty}
+          city={city}
+          lat={lat}
+          lng={lng}
+          maxDistance={maxDistance}
+          filteredCount={filteredTherapists.length}
+          sort={sort}
+          sortOptions={sortOptions}
+          buildSortUrl={buildSortUrl}
+        />
+
+        {/* Filtros */}
         <div className="mb-8">
-          <TherapistSearchBar />
+          <TherapistsFilters />
         </div>
 
-        {/* Info e Contadores */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-serif text-gray-900 mb-1">
-              {q ? `Resultados para "${q}"` : 'Terapeutas Verificados'}
-            </h2>
-            <p className="text-gray-600">
-              {filteredTherapists.length} profissionais encontrados
-              {specialty && ` em ${specialty}`}
-              {city && ` em ${city}`}
-              {lat && lng && maxDistance && ` em um raio de ${maxDistance}km`}
-            </p>
-          </div>
-
-          {/* Ordenação rápida */}
-          <div className="hidden md:flex items-center gap-2">
-            <span className="text-sm text-gray-600">Ordenar:</span>
-            <div className="flex items-center gap-2">
-              {sortOptions.map((option) => (
-                <a
-                  key={option.value}
-                  href={buildSortUrl(option.value)}
-                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
-                    sort === option.value
-                      ? 'bg-[#B2B8A3] border-[#B2B8A3] text-white'
-                      : 'border-gray-300 text-gray-700 hover:border-[#B2B8A3] hover:text-[#B2B8A3]'
-                  }`}
-                >
-                  {option.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
         {/* Grid */}
         {filteredTherapists.length > 0 ? (
           <>
             <TherapistsGrid therapists={filteredTherapists} userFavorites={userFavorites} />
 
             {/* Paginação */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-12">
-                {page > 1 && (
-                  <a
-                    href={`/explore/therapists?specialty=${specialty}&page=${page - 1}`}
-                    className="px-4 py-2 border border-[#B2B8A3] text-[#B2B8A3] rounded-lg hover:bg-[#B2B8A3] hover:text-white transition-colors"
-                  >
-                    ← Anterior
-                  </a>
-                )}
-
-                <div className="text-gray-600">
-                  Página {page} de {totalPages}
-                </div>
-
-                {page < totalPages && (
-                  <a
-                    href={`/explore/therapists?specialty=${specialty}&page=${page + 1}`}
-                    className="px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
-                  >
-                    Próxima →
-                  </a>
-                )}
-              </div>
-            )}
+            <TherapistsPagination 
+              page={page} 
+              totalPages={totalPages} 
+              specialty={specialty} 
+            />
           </>
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum terapeuta encontrado</h3>
-            <p className="text-gray-600 mb-4">
-              Tente ajustar seus filtros ou volte em breve
-            </p>
-            <a
-              href="/explore/therapists"
-              className="inline-block px-6 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
-            >
-              Ver Todos
-            </a>
-          </div>
+          <TherapistsEmptyState />
         )}
       </div>
     </div>

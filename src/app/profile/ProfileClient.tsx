@@ -359,6 +359,50 @@ export default function ProfileClient({ user }: ProfileClientProps) {
           </div>
         )}
 
+        {/* Documentos para verificação */}
+        <div id="docs" className="bg-white rounded-2xl shadow-md p-8 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-serif text-gray-900">Documentos para verificação</h2>
+              <p className="text-sm text-gray-600">Envie RG/CPF, comprovante profissional ou licença do espaço.</p>
+            </div>
+            <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors cursor-pointer text-sm font-medium">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              {isDocUploading ? 'Enviando...' : 'Enviar documento'}
+              <input
+                type="file"
+                accept=".pdf,image/png,image/jpeg"
+                className="hidden"
+                onChange={handleDocumentUpload}
+                disabled={isDocUploading}
+              />
+            </label>
+          </div>
+
+          {docUploads.length === 0 ? (
+            <p className="text-gray-600 text-sm">Nenhum documento enviado ainda.</p>
+          ) : (
+            <div className="space-y-3">
+              {docUploads.map((doc, idx) => (
+                <div key={`${doc.url}-${idx}`} className="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-[#B2B8A3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5.586a2 2 0 011.414.586l4.414 4.414A2 2 0 0119 9.414V18a2 2 0 01-2 2z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+                      <a href={doc.url} target="_blank" className="text-xs text-[#B2B8A3] hover:underline">Ver documento</a>
+                    </div>
+                  </div>
+                  <span className="text-xs px-2 py-1 rounded bg-green-50 text-green-700 border border-green-200">Enviado</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Password Section */}
         <div className="bg-white rounded-2xl shadow-md p-8">
           <div className="flex items-center justify-between mb-6">

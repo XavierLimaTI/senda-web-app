@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, ChevronUp, Play } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Lesson {
   id: number
@@ -47,6 +48,7 @@ export function TrailPlayerClient({
   isLoggedIn,
 }: TrailPlayerClientProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null)
   const [isEnrolling, setIsEnrolling] = useState(false)
   const [progress, setProgress] = useState(clientProgress)
@@ -71,7 +73,7 @@ export function TrailPlayerClient({
       setProgress(newProgress)
     } catch (error) {
       console.error('Error:', error)
-      alert('Erro ao iniciar trilha')
+      alert(t('trails.error_general'))
     } finally {
       setIsEnrolling(false)
     }
@@ -100,13 +102,13 @@ export function TrailPlayerClient({
 
         <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
           <span>📁 {trail.category}</span>
-          <span>⏱️ {trail.duration} dias</span>
-          <span>📚 {trail.lessons.length} lições</span>
+          <span>⏱️ {trail.duration} {t('trails.days')}</span>
+          <span>📚 {trail.lessons.length} {t('trails.lessons')}</span>
         </div>
 
         {trail.author && (
           <div className="mt-6 border-t pt-4">
-            <p className="text-xs text-gray-500 mb-2">Criado por</p>
+            <p className="text-xs text-gray-500 mb-2">{t('therapist.created_by')}</p>
             <div className="flex items-center gap-3">
               {trail.author.user.avatar && (
                 <img
@@ -136,12 +138,12 @@ export function TrailPlayerClient({
               className="flex items-center gap-2 rounded-lg bg-[#B2B8A3] px-6 py-3 text-white hover:bg-opacity-90 disabled:opacity-50"
             >
               <Play size={18} />
-              {isEnrolling ? 'Iniciando...' : 'Começar Trilha'}
+              {isEnrolling ? t('trails.starting') : t('trails.start_trail')}
             </button>
           ) : (
             <>
               <div className="flex-1">
-                <p className="text-sm text-gray-600 mb-2">Progresso</p>
+                <p className="text-sm text-gray-600 mb-2">{t('trails.progress')}</p>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-[#B2B8A3] h-2 rounded-full transition-all"
@@ -149,12 +151,12 @@ export function TrailPlayerClient({
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {progress.completedLessons} de {trail.lessons.length} lições
+                  {progress.completedLessons} {t('trails.of')} {trail.lessons.length} {t('trails.lessons')}
                 </p>
               </div>
               {progress.status === 'COMPLETED' && (
                 <span className="bg-green-100 text-green-800 text-xs px-3 py-2 rounded">
-                  ✓ Concluída
+                  {t('trails.completed')}
                 </span>
               )}
             </>
@@ -164,7 +166,7 @@ export function TrailPlayerClient({
 
       {/* Lessons */}
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Aulas</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('trails.lessons_title')}</h2>
         {trail.lessons.map((lesson) => (
           <div
             key={lesson.id}
@@ -180,12 +182,12 @@ export function TrailPlayerClient({
             >
               <div className="text-left">
                 <p className="font-semibold text-gray-900">
-                  Aula {lesson.order}: {lesson.title}
+                  {t('trails.lesson_number')} {lesson.order}: {lesson.title}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  Tipo: {lesson.contentType === 'text' && 'Texto'}
-                  {lesson.contentType === 'audio' && 'Áudio'}
-                  {lesson.contentType === 'video' && 'Vídeo'}
+                  {t('trails.content_type')}: {lesson.contentType === 'text' && t('trails.text')}
+                  {lesson.contentType === 'audio' && t('trails.audio')}
+                  {lesson.contentType === 'video' && t('trails.video')}
                 </p>
               </div>
               {expandedLesson === lesson.id ? (
@@ -206,7 +208,7 @@ export function TrailPlayerClient({
                 {lesson.contentType === 'audio' && lesson.mediaUrl && (
                   <audio controls className="w-full">
                     <source src={lesson.mediaUrl} type="audio/mpeg" />
-                    Seu navegador não suporta áudio
+                    {t('trails.browser_no_audio')}
                   </audio>
                 )}
 
@@ -251,7 +253,7 @@ export function TrailPlayerClient({
                     }}
                     className="mt-4 rounded bg-[#B2B8A3] px-4 py-2 text-white hover:bg-opacity-90"
                   >
-                    Marcar como Concluída
+                    {t('trails.mark_complete')}
                   </button>
                 )}
               </div>

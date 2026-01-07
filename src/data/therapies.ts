@@ -40,7 +40,7 @@ export const therapies: Therapy[] = [
       zh: ['血友病', '针头恐惧症', '皮肤感染', '怀孕（穴位限制）', '长期禁食']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop'
   },
   {
     id: 'ayurveda',
@@ -71,7 +71,7 @@ export const therapies: Therapy[] = [
       zh: ['急性消化不良', '高烧', '月经（按摩）', '高危妊娠', '极度虚弱']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1509241790015-5a0af9739d21?w=600&h=400&fit=crop'
   },
   {
     id: 'biodinamica',
@@ -102,7 +102,7 @@ export const therapies: Therapy[] = [
       zh: ['急性精神病', '急性炎症', '发烧', '怀孕初期', '深静脉血栓']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0d6fcffe7f1f?w=600&h=400&fit=crop'
   },
   {
     id: 'chi-kung',
@@ -133,7 +133,7 @@ export const therapies: Therapy[] = [
       zh: ['发烧急性感染', '极度疲劳', '饭后', '近期手术', '不稳定的精神障碍']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1544367563-12123d8965cd?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'drenagem-linfatica',
@@ -164,7 +164,7 @@ export const therapies: Therapy[] = [
       zh: ['未治疗的恶性肿瘤', '深静脉血栓', '急性感染', '充血性心力衰竭', '未控制的高血压']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1519824145371-296894a0daa9?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop'
   },
   {
     id: 'liberacao-miofascial',
@@ -195,7 +195,7 @@ export const therapies: Therapy[] = [
       zh: ['开放性伤口', '近期骨折', '血液稀释剂', '皮肤过敏', '血栓']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1549576228-d1c7ef1b3a8e?w=600&h=400&fit=crop'
   },
   {
     id: 'massagem-tantrica',
@@ -226,7 +226,7 @@ export const therapies: Therapy[] = [
       zh: ['严重性虐待史', '严重精神障碍', '生殖器感染', '高危妊娠', '极度不适裸体']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1596131397999-d4190fa72761?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0d6fcffe7f1f?w=600&h=400&fit=crop'
   },
   {
     id: 'osteopatia',
@@ -257,7 +257,7 @@ export const therapies: Therapy[] = [
       zh: ['骨癌', '骨感染', '未愈合骨折', '急性类风湿性关节炎', '严重骨质疏松症']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1509241790015-5a0af9739d21?w=600&h=400&fit=crop'
   },
   {
     id: 'quiropraxia',
@@ -288,7 +288,7 @@ export const therapies: Therapy[] = [
       zh: ['晚期骨质疏松症', '脊柱肿瘤', '近期骨折', '严重脊柱不稳定', '骨感染']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1612599720496-a97d95368a5c?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1549576228-d1c7ef1b3a8e?w=600&h=400&fit=crop'
   },
   {
     id: 'reflexologia',
@@ -319,7 +319,7 @@ export const therapies: Therapy[] = [
       zh: ['深静脉血栓', '足部伤口', '足部骨折', '怀孕（子宫穴位）', '真菌感染']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1519415387722-a1c3bbef716c?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1552196881-acf8b77b6407?w=600&h=400&fit=crop'
   },
   {
     id: 'shiatsu',
@@ -350,7 +350,7 @@ export const therapies: Therapy[] = [
       zh: ['急性炎症', '高烧', '传染病', '开放性伤口', '严重骨质疏松症', '癌症']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'access-consciousness',
@@ -381,7 +381,7 @@ export const therapies: Therapy[] = [
       zh: ['严重精神病危机', '极度抵制变化', '非常不信任', '活跃性精神分裂', '强行改变他人']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'alinhamento-energetico',
@@ -412,7 +412,7 @@ export const therapies: Therapy[] = [
       zh: ['严重人格障碍', '执着控制欲', '宗教信仰冲突', '幻觉', '躁狂状态']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1528715471579-d1226a28ca3e?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1517511620798-cdc3fbaa9900?w=600&h=400&fit=crop'
   },
   {
     id: 'reiki',
@@ -443,7 +443,7 @@ export const therapies: Therapy[] = [
       zh: ['禁忌很少', '怀疑态度', '极度不信任', '抵制', '可能强化精神症状']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1508615039623-a25605d2938d?w=600&h=400&fit=crop'
   },
   {
     id: 'thetahealing',
@@ -474,7 +474,7 @@ export const therapies: Therapy[] = [
       zh: ['严重精神病危机', '缺乏真正的改变欲望', '宗教冲突', '活跃精神病', '躁狂双相障碍']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'arteterapia',
@@ -505,7 +505,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病', '强烈视幻觉', '极度躁动', '严重强迫症', '高度自我批评']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1549887534-aae4e323f433?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1536912249291-4e5db5ff6f1a?w=600&h=400&fit=crop'
   },
   {
     id: 'constelacao-familiar',
@@ -536,7 +536,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病危机', '极端抵制', '严重未处理的创伤', '缺乏同理心的人格障碍', '拒绝接受象征']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop'
   },
   {
     id: 'hipnoterapia',
@@ -567,7 +567,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病', '癫痫', '拒绝进入催眠', '严重解离障碍', '对治疗师不信任', '物质滥用']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1505228395891-9a51e7e86e81?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1564121211835-e88c852648c0?w=600&h=400&fit=crop'
   },
   {
     id: 'meditacao',
@@ -598,7 +598,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃幻觉', '失控精神病', '严重抑郁与自杀观念', '极端不耐烦', '转换障碍']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'aromaterapia',
@@ -629,7 +629,7 @@ export const therapies: Therapy[] = [
       zh: ['精油过敏', '怀孕初期', '严重呼吸过敏', '哮喘', '皮肤敏感或受伤']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd642cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&h=400&fit=crop'
   },
   {
     id: 'fitoterapia',
@@ -660,7 +660,7 @@ export const therapies: Therapy[] = [
       zh: ['植物过敏', '药物相互作用', '怀孕（致畸）', '肾脏或肝脏功能衰竭', '哺乳期']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1583087847221-203b43e3d6ce?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1559027615-cd2628902d4a?w=600&h=400&fit=crop'
   },
   {
     id: 'naturopatia',
@@ -691,7 +691,7 @@ export const therapies: Therapy[] = [
       zh: ['需要紧急医疗干预的急性病', '阑尾炎', '严重食物中毒', '需要手术的条件', '无法停止的精神药物']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1532746796378-1a0907e3b9cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1518611505868-48510c2e022c?w=600&h=400&fit=crop'
   },
   {
     id: 'jornada-xamanica',
@@ -722,7 +722,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病', '混淆想象与现实', '未治疗幻觉', '严重解离障碍', '与现实脱节']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'sound-healing',
@@ -753,7 +753,7 @@ export const therapies: Therapy[] = [
       zh: ['严重聋子', '听觉过敏', '光敏性癫痫', '躁狂双相障碍', '对声音拒绝']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop'
   },
   {
     id: 'do-in',
@@ -784,7 +784,7 @@ export const therapies: Therapy[] = [
       zh: ['近期骨折', '开放性伤口', '无法触及自己身体', '晚期骨质疏松症', '高度炎症状态']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0d6fcffe7f1f?w=600&h=400&fit=crop'
   },
   {
     id: 'feldenkrais',
@@ -815,7 +815,7 @@ export const therapies: Therapy[] = [
       zh: ['严重急性炎症', '近期骨折', '缺乏学习兴趣', '严重认知障碍', '无法跟随指示']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1535092393751-0d6f1d0d8f2d?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'fisioterapia-integrativa',
@@ -846,7 +846,7 @@ export const therapies: Therapy[] = [
       zh: ['非常急性炎症', '近期未愈合骨折', '活跃癌症治疗', '上腔静脉综合征', '正在形成的血栓']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1576091160550-112173f31c37?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop'
   },
   {
     id: 'massagem-ayurvedica',
@@ -877,7 +877,7 @@ export const therapies: Therapy[] = [
       zh: ['急性发烧', '传染性皮肤感染', '开放性伤口', '血栓', '油类过敏']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1509241790015-5a0af9739d21?w=600&h=400&fit=crop'
   },
   {
     id: 'massagem-relaxante',
@@ -908,7 +908,7 @@ export const therapies: Therapy[] = [
       zh: ['发烧', '急性感染', '烧伤', '血栓', '急性炎症', '癌症治疗']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1522156873862-46bab61d7d8d?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0d6fcffe7f1f?w=600&h=400&fit=crop'
   },
   {
     id: 'pilates',
@@ -939,7 +939,7 @@ export const therapies: Therapy[] = [
       zh: ['非常急性关节炎症', '急性椎间盘突出', '严重骨质疏松症', '无监督妊娠', '未控制的高血压']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1518611505867-48e2b964cea5?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'rolfing',
@@ -970,7 +970,7 @@ export const therapies: Therapy[] = [
       zh: ['非常急性炎症', '开放性伤口或不适当愈合', '严重骨质疏松症', '凝血障碍', '极高触觉敏感性']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1549576228-d1c7ef1b3a8e?w=600&h=400&fit=crop'
   },
   {
     id: 'tai-chi-chuan',
@@ -1001,7 +1001,7 @@ export const therapies: Therapy[] = [
       zh: ['非常急性关节炎症', '近期骨折', '严重眩晕', '极端跌倒风险', '晚期痴呆']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'terapia-craniossacral',
@@ -1032,7 +1032,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃或疑似脑膜炎', '未控制的颅内压增加', '精神病危机', '拒绝头部接触', '极端接触恐惧']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1576091160505-2173dba999ef?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop'
   },
   {
     id: 'ventosaterapia',
@@ -1063,7 +1063,7 @@ export const therapies: Therapy[] = [
       zh: ['非常敏感的皮肤', '开放性伤口', '静脉曲张', '烧伤', '血栓', '血液稀释剂使用', '怀孕（避免腹部）']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1552196881-acbed25395b7?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'yoga',
@@ -1094,7 +1094,7 @@ export const therapies: Therapy[] = [
       zh: ['非常急性关节炎症', '急性椎间盘突出', '严重骨质疏松症', '无资格的妊娠瑜伽', '高血压倒立瑜伽']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop'
   },
   {
     id: 'apometria',
@@ -1125,7 +1125,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病', '对灵性完全怀疑', '极端操纵人格障碍', '严重抑郁与自杀观念', '宗教绝对主义']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'cromoterapia',
@@ -1156,7 +1156,7 @@ export const therapies: Therapy[] = [
       zh: ['闪烁光敏癫痫', '完全失明', '视觉精神病', '严重视力障碍', '拒绝色彩象征']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1552610553-2eea60ed60d9?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=400&fit=crop'
   },
   {
     id: 'cristaloterapia',
@@ -1187,7 +1187,7 @@ export const therapies: Therapy[] = [
       zh: ['没有绝对禁忌', '极端怀疑', '强迫症', '病态迷信']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd642cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop'
   },
   {
     id: 'cura-pranica',
@@ -1218,7 +1218,7 @@ export const therapies: Therapy[] = [
       zh: ['精神病', '极端怀疑', '排他性依赖', '严重去人格化']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1517511620798-cdc3fbaa9900?w=600&h=400&fit=crop'
   },
   {
     id: 'eft',
@@ -1249,7 +1249,7 @@ export const therapies: Therapy[] = [
       zh: ['活跃精神病', '严重解离障碍', '拒绝自我敲击', '严重神经障碍']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop'
   },
   {
     id: 'geobiologia',
@@ -1280,7 +1280,7 @@ export const therapies: Therapy[] = [
       zh: ['极端迷信', '妄想狂精神病', '清洁强迫症', '严重环境恐惧症']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1532746796378-1a0907e3b9cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?w=600&h=400&fit=crop'
   },
   {
     id: 'mesa-radionica',
@@ -1311,7 +1311,7 @@ export const therapies: Therapy[] = [
       zh: ['极端怀疑', '遥控控制思想精神病', '排他性依赖', '强迫症清洁强迫']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1578149577879-7f8f23f87db1?w=600&h=400&fit=crop'
   },
   {
     id: 'radiestesia',
@@ -1342,7 +1342,7 @@ export const therapies: Therapy[] = [
       zh: ['极端怀疑', '外部影响思想精神病', '医学诊断排他性依赖', '严重震颤']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd642cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f70570ec0?w=600&h=400&fit=crop'
   },
   {
     id: 'astrologia',
@@ -1373,7 +1373,7 @@ export const therapies: Therapy[] = [
       zh: ['宇宙迫害思想精神病', '排他性自由意志投降', '占星时机强迫症', '严重抑郁强化']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1515195905385-8961b7425e39?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1444927714806-8a3f6b9655cb?w=600&h=400&fit=crop'
   },
   {
     id: 'coaching',
@@ -1404,7 +1404,7 @@ export const therapies: Therapy[] = [
       zh: ['严重抑郁', '双相障碍危机', '活跃精神病', '完全缺乏内在动力', '缺乏个人责任']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
   },
   {
     id: 'eneagrama',
@@ -1435,7 +1435,7 @@ export const therapies: Therapy[] = [
       zh: ['固定自我观念精神病', '极度僵硬人格障碍', '病态否认拒绝模式', '严重抑郁自我批评']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1516733725897-65fc44a48f88?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
   },
   {
     id: 'mindfulness',
@@ -1466,7 +1466,7 @@ export const therapies: Therapy[] = [
       zh: ['严重抑郁麻痹', '精神病强化观念', '严重解离', '极度不安定患者']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'numerologia',
@@ -1497,7 +1497,7 @@ export const therapies: Therapy[] = [
       zh: ['数字强迫症', '妄想数字学精神病', '病态迷信', '通过数字逃避现实']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd642cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f70570ec0?w=600&h=400&fit=crop'
   },
   {
     id: 'pnl',
@@ -1528,7 +1528,7 @@ export const therapies: Therapy[] = [
       zh: ['精神病语言操纵', '严重解离障碍', '极端改变抵制', '缺乏个人责任']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1516733725897-65fc44a48f88?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
   },
   {
     id: 'terapia-floral',
@@ -1559,7 +1559,7 @@ export const therapies: Therapy[] = [
       zh: ['花粉过敏', '排他性依赖避免治疗', '极端怀疑', '肝脏问题与酒精']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1583087847221-203b43e3d6ce?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1490495967868-a84b0ee5b5c4?w=600&h=400&fit=crop'
   },
   {
     id: 'taro',
@@ -1590,7 +1590,7 @@ export const therapies: Therapy[] = [
       zh: ['参照观念精神病', '严重未来焦虑', '基于塔罗冲动决策', '病态迷信损害功能']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd642cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f70570ec0?w=600&h=400&fit=crop'
   },
   {
     id: 'homeopatia',
@@ -1621,7 +1621,7 @@ export const therapies: Therapy[] = [
       zh: ['急性医学紧急情况', '拒绝必要的医疗', '严重疾病快速治愈期望', '传染病排他性依赖']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1532746796378-1a0907e3b9cc?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=600&h=400&fit=crop'
   },
   {
     id: 'iridologia',
@@ -1652,7 +1652,7 @@ export const therapies: Therapy[] = [
       zh: ['排他性诊断', '需要紧急医学诊断', '对虹膜学不信任', '眼科疾病改变虹膜']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1576091160550-112173f31c37?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1606573261181-0e5f5c4d7846?w=600&h=400&fit=crop'
   },
   {
     id: 'nutricao-funcional',
@@ -1683,7 +1683,7 @@ export const therapies: Therapy[] = [
       zh: ['严重进食障碍', '完美饮食强迫', '正念饮食强迫症', '排他性依赖']
     },
     modality: 'presencial_online',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop'
   },
   {
     id: 'resgate-alma',
@@ -1714,7 +1714,7 @@ export const therapies: Therapy[] = [
       zh: ['失控精神病', '对灵性极端不信任', '严重抑郁危机', '人格障碍']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
   },
   {
     id: 'roda-cura',
@@ -1745,7 +1745,7 @@ export const therapies: Therapy[] = [
       zh: ['严重偏执狂恐惧', '极端控制人格障碍', '参照观念精神病', '拒绝真正参与', '严重沟通障碍']
     },
     modality: 'presencial',
-    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=500&h=300&fit=crop'
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop'
   },
 {
   id: 'dancaterapia',
@@ -1776,7 +1776,7 @@ export const therapies: Therapy[] = [
     zh: ['严重骨折', '严重精神病', '眩晕', '运动障碍', '接触恐惧症']
   },
   modality: 'presencial',
-  image: 'https://images.unsplash.com/photo-1540323751410-fbb84d1d6b25?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=600&h=400&fit=crop'
 },
 {
   id: 'johrei',
@@ -1807,7 +1807,7 @@ export const therapies: Therapy[] = [
     zh: ['极度怀疑', '未治疗的精神病', '期待魔法治愈', '不可替代医疗', '拒绝精神实践']
   },
   modality: 'presencial_online',
-  image: 'https://images.unsplash.com/photo-1532635241749-b27e2e8fac64?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
 },
 {
   id: 'magnified-healing',
@@ -1838,7 +1838,7 @@ export const therapies: Therapy[] = [
     zh: ['完全灵性断开', '急性精神病', '缺乏接受性', '期待快速解决', '替代心理治疗']
   },
   modality: 'presencial_online',
-  image: 'https://images.unsplash.com/photo-1516320318423-f06f70504504?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1517511620798-cdc3fbaa9900?w=600&h=400&fit=crop'
 },
 {
   id: 'terapia-multidimensional',
@@ -1869,7 +1869,7 @@ export const therapies: Therapy[] = [
     zh: ['完全否定非物质现实', '活跃精神病', '视幻困难', '无知情同意', '无心理支持']
   },
   modality: 'online',
-  image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
 },
 {
   id: 'musicoterapia',
@@ -1900,7 +1900,7 @@ export const therapies: Therapy[] = [
     zh: ['声音相关创伤', '重度厌音症', '声光诱发癫痫', '声敏感', '拒绝音乐治疗']
   },
   modality: 'presencial_online',
-  image: 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&h=400&fit=crop'
 },
 {
   id: 'psicanálise-integrativa',
@@ -1931,7 +1931,7 @@ export const therapies: Therapy[] = [
     zh: ['未治疗的精神病', '未用药的双极症', '自杀风险', '晚期痴呆', '无洞察力']
   },
   modality: 'online',
-  image: 'https://images.unsplash.com/photo-1516314103739-42d78c34e8fa?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop'
 },
 {
   id: 'psicologia-transpessoal',
@@ -1962,7 +1962,7 @@ export const therapies: Therapy[] = [
     zh: ['活跃精神病或精神分裂症', '未治疗的人格障碍', '重度吸毒', '情绪不稳定', '外部压力觉醒']
   },
   modality: 'online',
-  image: 'https://images.unsplash.com/photo-1533995857466-d0a080b38aea?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1528809332179-6db94df7e121?w=600&h=400&fit=crop'
 },
 {
   id: 'terapia-ortomolecular',
@@ -1993,7 +1993,7 @@ export const therapies: Therapy[] = [
     zh: ['重度肾功能不全', '血友病', '抗凝血剂使用', '预先存在的维生素过剩', '补充剂过敏']
   },
   modality: 'online',
-  image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=500&h=300&fit=crop'
+  image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=600&h=400&fit=crop'
 }
 ]
 

@@ -1,22 +1,31 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, MapPin, X, Loader2, Sparkles } from 'lucide-react'
 
 const SPECIALTIES = [
+  'Psicologia',
+  'Psicanálise',
+  'Terapia Cognitivo-Comportamental',
+  'Terapia de Casal',
+  'Mindfulness',
+  'Meditação',
+  'Yoga',
   'Reiki',
   'Acupuntura',
   'Massagem Terapêutica',
-  'Psicologia',
-  'Coaching',
-  'Meditação',
-  'Yoga',
-  'Reflexologia',
+  'Fisioterapia',
+  'Quiropraxia',
   'Aromaterapia',
+  'Homeopatia',
+  'Hipnoterapia',
+  'Coaching',
+  'Reflexologia',
+  'Musicoterapia',
+  'Arteterapia',
   'Ayurveda',
-  'Shiatsu',
-  'Quiropraxia'
+  'Shiatsu'
 ]
 
 const CITIES = [
@@ -29,7 +38,12 @@ const CITIES = [
   'Salvador',
   'Fortaleza',
   'Recife',
-  'Florianópolis'
+  'Florianópolis',
+  'Campinas',
+  'Santos',
+  'Niterói',
+  'Vitória',
+  'Goiânia'
 ]
 
 export default function TherapistSearchBar() {
@@ -43,6 +57,12 @@ export default function TherapistSearchBar() {
   const [useLocation, setUseLocation] = useState(false)
   const [gettingLocation, setGettingLocation] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+
+  // Live suggestions
+  const [openSuggest, setOpenSuggest] = useState(false)
+  const [loadingSuggest, setLoadingSuggest] = useState(false)
+  const [suggestions, setSuggestions] = useState<{therapists:any[]; therapies:any[]; specialties:string[]; cities:string[]}>({therapists:[], therapies:[], specialties:[], cities:[]})
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   // Geolocalização
   const handleGetLocation = () => {
@@ -69,13 +89,49 @@ export default function TherapistSearchBar() {
     )
   }
 
-  // Executar busca
+  // Debounced suggestions fetch
+  useEffect(() => {
+    const q = query.trim()
+    if (q.length < 2) {
+      setSuggestions({therapists:[], therapies:[], specialties:[], cities:[]})
+      setLoadingSuggest(false)
+      return
+    }
+    setLoadingSuggest(true)
+    const id = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`)
+        const data = await res.json()
+        setSuggestions(data)
+      } catch (e) {
+        setSuggestions({therapists:[], therapies:[], specialties:[], cities:[]})
+      } finally {
+        setLoadingSuggest(false)
+      }
+    }, 250)
+    return () => clearTimeout(id)
+  }, [query])
+
+  // Executar busca (com inferência de cidade/especialidade pela query)
   const handleSearch = () => {
     const params = new URLSearchParams()
-    
+
+    // Inferência inteligente
+    let inferredCity = city
+    let inferredSpecialty = specialty
+    const qLower = query.toLowerCase()
+    if (!inferredCity) {
+      const foundCity = CITIES.find(c => qLower.includes(c.toLowerCase()))
+      if (foundCity) inferredCity = foundCity
+    }
+    if (!inferredSpecialty) {
+      const foundSpec = SPECIALTIES.find(s => qLower.includes(s.toLowerCase()))
+      if (foundSpec) inferredSpecialty = foundSpec
+    }
+
     if (query) params.set('q', query)
-    if (city) params.set('city', city)
-    if (specialty) params.set('specialty', specialty)
+    if (inferredCity) params.set('city', inferredCity)
+    if (inferredSpecialty) params.set('specialty', inferredSpecialty)
     if (onlineOnly) params.set('onlineOnly', 'true')
     
     if (useLocation && userLocation) {
@@ -120,13 +176,74 @@ export default function TherapistSearchBar() {
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
+              ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Nome do terapeuta, especialidade..."
+              onFocus={() => setOpenSuggest(true)}
+              onBlur={() => setTimeout(() => setOpenSuggest(false), 120)}
+              placeholder="Busque por local, especialidade, terapeuta..."
               className="w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-white focus:outline-none"
             />
+            {openSuggest && (
+              <div className="absolute mt-2 left-0 right-0 bg-white text-gray-900 rounded-xl shadow-lg border border-gray-200 z-20 max-h-80 overflow-auto">
+                {loadingSuggest ? (
+                  <div className="p-4 text-sm text-gray-500 flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin"/> Carregando...</div>
+                ) : (
+                  <div className="p-2">
+                    {/* Therapists */}
+                    {suggestions.therapists.length > 0 && (
+                      <div className="mb-2">
+                        <p className="px-2 py-1 text-xs text-gray-500">Terapeutas</p>
+                        {suggestions.therapists.map((t:any) => (
+                          <button key={t.id} onMouseDown={() => { setQuery(t.user.name); setSpecialty(t.specialty || ''); setCity(t.city || ''); handleSearch(); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg">
+                            <div className="text-sm font-medium">{t.user.name}</div>
+                            <div className="text-xs text-gray-500">{[t.specialty, t.city].filter(Boolean).join(' • ')}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {/* Therapies */}
+                    {suggestions.therapies.length > 0 && (
+                      <div className="mb-2">
+                        <p className="px-2 py-1 text-xs text-gray-500">Terapias</p>
+                        {suggestions.therapies.map((th:any) => (
+                          <button key={th.id} onMouseDown={() => { setQuery(th.name.pt); setSpecialty(th.name.pt); handleSearch(); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg">
+                            <div className="text-sm">{th.name.pt}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {/* Specialties */}
+                    {suggestions.specialties.length > 0 && (
+                      <div className="mb-2">
+                        <p className="px-2 py-1 text-xs text-gray-500">Especialidades</p>
+                        {suggestions.specialties.map((s:string) => (
+                          <button key={s} onMouseDown={() => { setQuery(s); setSpecialty(s); handleSearch(); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg">
+                            <div className="text-sm">{s}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {/* Cities */}
+                    {suggestions.cities.length > 0 && (
+                      <div className="mb-1">
+                        <p className="px-2 py-1 text-xs text-gray-500">Cidades</p>
+                        {suggestions.cities.map((c:string) => (
+                          <button key={c} onMouseDown={() => { setQuery(c); setCity(c); handleSearch(); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg">
+                            <div className="text-sm">{c}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {suggestions.therapists.length + suggestions.therapies.length + suggestions.specialties.length + suggestions.cities.length === 0 && (
+                      <div className="p-3 text-xs text-gray-500">Sem sugestões</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <button
             onClick={handleSearch}

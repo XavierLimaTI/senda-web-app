@@ -211,6 +211,7 @@ export default function AdminUsersClient({ users }: { users: AdminUser[] }) {
                                 src={user.avatar}
                                 alt={user.name}
                                 fill
+                                sizes="40px"
                                 className="object-cover"
                               />
                             ) : (
@@ -293,6 +294,7 @@ export default function AdminUsersClient({ users }: { users: AdminUser[] }) {
                         src={selectedUser.avatar}
                         alt={selectedUser.name}
                         fill
+                        sizes="80px"
                         className="object-cover"
                       />
                     ) : (

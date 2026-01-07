@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import FavoriteButton from '@/components/FavoriteButton'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface FavoritesClientProps {
   favorites: any[]
@@ -10,6 +11,7 @@ interface FavoritesClientProps {
 
 export default function FavoritesClient({ favorites: initialFavorites }: FavoritesClientProps) {
   const [favorites, setFavorites] = useState(initialFavorites)
+  const { t } = useLanguage()
 
   const handleRemoveFavorite = (therapistId: number) => {
     setFavorites(favorites.filter(fav => fav.therapistId !== therapistId))
@@ -26,8 +28,8 @@ export default function FavoritesClient({ favorites: initialFavorites }: Favorit
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-serif text-gray-900 mb-2">Meus Favoritos</h1>
-          <p className="text-gray-600">Terapeutas que você salvou para agendar depois</p>
+          <h1 className="text-4xl font-serif text-gray-900 mb-2">{t('favorites.title')}</h1>
+          <p className="text-gray-600">{t('favorites.subtitle')}</p>
         </div>
 
         {/* Lista de Favoritos */}
@@ -36,15 +38,15 @@ export default function FavoritesClient({ favorites: initialFavorites }: Favorit
             <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <h2 className="text-2xl font-serif text-gray-900 mb-2">Nenhum favorito ainda</h2>
+            <h2 className="text-2xl font-serif text-gray-900 mb-2">{t('favorites.empty_title')}</h2>
             <p className="text-gray-600 mb-6">
-              Explore terapeutas e salve seus favoritos clicando no ícone de coração
+              {t('favorites.empty_desc')}
             </p>
             <Link
-              href="/client/gallery"
+              href="/explore/therapists"
               className="inline-block px-6 py-3 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
             >
-              Explorar Terapeutas
+              {t('favorites.explore_button')}
             </Link>
           </div>
         ) : (
@@ -104,14 +106,14 @@ export default function FavoritesClient({ favorites: initialFavorites }: Favorit
                       )}
 
                       <span className="text-lg font-semibold text-[#C8963E]">
-                        A partir de R$ {minPrice.toFixed(2)}
+                        {t('favorites.from_price')} {minPrice.toFixed(2)}
                       </span>
                     </div>
 
                     {/* Serviços */}
                     {therapist.services.length > 0 && (
                       <div className="mb-4">
-                        <p className="text-xs text-gray-500 mb-2">Serviços:</p>
+                        <p className="text-xs text-gray-500 mb-2">{t('favorites.services')}</p>
                         <div className="flex flex-wrap gap-2">
                           {therapist.services.slice(0, 2).map((service: any) => (
                             <span
@@ -123,7 +125,7 @@ export default function FavoritesClient({ favorites: initialFavorites }: Favorit
                           ))}
                           {therapist.services.length > 2 && (
                             <span className="text-xs px-2 py-1 text-gray-500">
-                              +{therapist.services.length - 2} mais
+                              {t('favorites.more_services', { count: String(therapist.services.length - 2) })}
                             </span>
                           )}
                         </div>
@@ -135,7 +137,7 @@ export default function FavoritesClient({ favorites: initialFavorites }: Favorit
                       href={`/client/therapist/${therapist.id}`}
                       className="block w-full text-center px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
                     >
-                      Ver Perfil e Agendar
+                      {t('favorites.view_profile')}
                     </Link>
                   </div>
                 </div>

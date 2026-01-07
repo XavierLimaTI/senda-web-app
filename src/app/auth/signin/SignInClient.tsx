@@ -69,16 +69,21 @@ export default function SignInClient() {
     { code: 'zh', label: '中文', flag: '🇨🇳' },
   ]
 
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLang = e.target.value as 'pt' | 'en' | 'es' | 'zh'
+    setLanguage(newLang)
+  }
+
   return (
     <div className="min-h-screen flex">
       {/* Left side - Login Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24">
         {/* Language Selector */}
-        <div className="absolute top-6 right-6">
+        <div className="absolute top-6 right-6 z-10">
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value as any)}
-            className="px-4 py-2 border border-neutral-300 rounded-lg bg-white text-sm font-medium text-neutral-700 hover:border-salvia focus:outline-none focus:ring-2 focus:ring-salvia/20 transition-all cursor-pointer"
+            onChange={handleLanguageChange}
+            className="px-4 py-2 border border-neutral-300 rounded-lg bg-white text-sm font-medium text-neutral-700 hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B2B8A3]/30 focus:border-[#B2B8A3] transition-all cursor-pointer"
           >
             {languages.map((lang) => (
               <option key={lang.code} value={lang.code}>
@@ -230,7 +235,7 @@ export default function SignInClient() {
       </div>
 
       {/* Right side - Hero Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-salvia via-salvia/90 to-[#2D5A3D] relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#B2B8A3] via-[#9da390] to-[#6b705c] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-20 w-64 h-64 bg-white rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -246,21 +251,21 @@ export default function SignInClient() {
           
           {/* Stats */}
           <div className="grid grid-cols-2 gap-8 mt-8">
-            <div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-4xl font-bold mb-2">10k+</div>
-              <div className="text-white/80">{t('auth.signin.stat_users')}</div>
+              <div className="text-white/90">{t('auth.signin.stat_users')}</div>
             </div>
-            <div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-4xl font-bold mb-2">50k+</div>
-              <div className="text-white/80">{t('auth.signin.stat_sessions')}</div>
+              <div className="text-white/90">{t('auth.signin.stat_sessions')}</div>
             </div>
-            <div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-4xl font-bold mb-2">64</div>
-              <div className="text-white/80">{t('auth.signin.stat_therapies')}</div>
+              <div className="text-white/90">{t('auth.signin.stat_therapies')}</div>
             </div>
-            <div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
               <div className="text-4xl font-bold mb-2">4.9★</div>
-              <div className="text-white/80">{t('auth.signin.stat_rating')}</div>
+              <div className="text-white/90">{t('auth.signin.stat_rating')}</div>
             </div>
           </div>
         </div>

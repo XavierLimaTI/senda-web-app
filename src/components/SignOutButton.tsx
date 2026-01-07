@@ -6,8 +6,7 @@ export default function SignOutButton() {
   const router = useRouter()
   
   const handleSignOut = async () => {
-    await signOut({ redirect: false })
-    router.push('/')
+    await signOut({ callbackUrl: '/auth/signin' })
   }
   
   return (

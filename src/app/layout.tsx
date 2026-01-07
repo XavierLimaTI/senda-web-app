@@ -7,6 +7,9 @@ import { useSentryErrorTracking } from '@/lib/sentry-error-tracking'
 export const metadata: Metadata = {
   title: 'Senda - Sua Jornada de Bem-Estar',
   description: 'Plataforma de conexão entre clientes e terapeutas integradores',
+  icons: {
+    icon: '/images/senda/logo.png',
+  },
 }
 
 // Disable static generation for pages using client providers
@@ -18,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR">
-      <body>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           <ClientLayout>{children}</ClientLayout>
         </Providers>

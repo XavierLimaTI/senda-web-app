@@ -31,6 +31,7 @@ export default function TherapistHeader({ therapist, therapistId, isFavorite = f
             src={therapist.user.avatar}
             alt=""
             fill
+            sizes="100vw"
             className="object-cover blur-sm"
           />
         </div>
@@ -51,6 +52,7 @@ export default function TherapistHeader({ therapist, therapistId, isFavorite = f
                   src={therapist.user.avatar}
                   alt={therapist.user.name}
                   fill
+                  sizes="(max-width: 768px) 128px, 160px"
                   className="rounded-full object-cover border-4 border-[#B2B8A3] shadow-lg"
                 />
               </div>

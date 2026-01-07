@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { AlertCircle, ArrowLeft, Clock, User } from 'lucide-react';
 import Toast from '@/components/Toast';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface OrderData {
   therapistId: number;
@@ -19,6 +20,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const { t } = useLanguage();
 
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -33,55 +35,53 @@ export default function CheckoutPage() {
     }
 
     const therapistId = searchParams.get('therapistId');
+    const therapistName = searchParams.get('therapistName');
     const serviceId = searchParams.get('serviceId');
+    const serviceName = searchParams.get('serviceName');
     const datetime = searchParams.get('datetime');
     const price = searchParams.get('price');
+    const duration = searchParams.get('duration');
 
-    if (!therapistId || !serviceId || !datetime || !price) {
-      setToast({ message: 'Dados de agendamento incompletos', type: 'error' });
+    if (!therapistId || !serviceId || !datetime || !price || !therapistName || !serviceName) {
+      setToast({ message: t('checkout.incomplete'), type: 'error' });
       setTimeout(() => router.back(), 2000);
       return;
     }
 
     fetchOrderData({
       therapistId: parseInt(therapistId),
+      therapistName,
       serviceId: parseInt(serviceId),
+      serviceName,
       datetime,
-      price: parseFloat(price)
+      price: parseFloat(price),
+      duration: duration ? parseInt(duration) : undefined
     });
   }, [session, searchParams, router]);
 
   const fetchOrderData = async (params: {
     therapistId: number;
+    therapistName: string;
     serviceId: number;
+    serviceName: string;
     datetime: string;
     price: number;
+    duration?: number;
   }) => {
     try {
       setLoading(true);
-
-      // Fetch therapist info
-      const therapistRes = await fetch(`/api/therapists/${params.therapistId}`);
-      if (!therapistRes.ok) throw new Error('Falha ao carregar informações do terapeuta');
-      const therapist = await therapistRes.json();
-
-      // Fetch service info
-      const serviceRes = await fetch(`/api/services/${params.serviceId}`);
-      if (!serviceRes.ok) throw new Error('Falha ao carregar informações do serviço');
-      const service = await serviceRes.json();
-
       setOrderData({
         therapistId: params.therapistId,
-        therapistName: therapist.user?.name || 'Terapeuta',
+        therapistName: params.therapistName || 'Terapeuta',
         serviceId: params.serviceId,
-        serviceName: service.name || 'Serviço',
+        serviceName: params.serviceName || 'Serviço',
         servicePrice: params.price,
         datetime: params.datetime
       });
     } catch (error) {
-      console.error('Error fetching order data:', error);
+      console.error('Error preparing order data:', error);
       setToast({
-        message: error instanceof Error ? error.message : 'Erro ao carregar dados do pedido',
+        message: t('common.error'),
         type: 'error'
       });
     } finally {
@@ -108,11 +108,11 @@ export default function CheckoutPage() {
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error || 'Erro ao processar pagamento');
+        throw new Error(error.error || t('checkout.error'));
       }
 
       const result = await res.json();
-      setToast({ message: 'Pagamento realizado com sucesso!', type: 'success' });
+      setToast({ message: t('checkout.success_message'), type: 'success' });
 
       setTimeout(() => {
         router.push(`/booking/success?bookingId=${result.id}`);
@@ -120,7 +120,7 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error('Error processing payment:', error);
       setToast({
-        message: error instanceof Error ? error.message : 'Erro ao processar pagamento',
+        message: error instanceof Error ? error.message : t('checkout.error'),
         type: 'error'
       });
     } finally {
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-[#F0EBE3] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block w-8 h-8 border-4 border-[#B2B8A3] border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Carregando detalhes do agendamento...</p>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -144,13 +144,13 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-[#F0EBE3] flex items-center justify-center px-4">
         <div className="bg-white rounded-lg shadow-sm p-8 max-w-md w-full text-center">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <h2 className="text-xl font-serif mb-2">Erro ao carregar</h2>
-          <p className="text-gray-600 mb-6">Não foi possível carregar os dados do agendamento.</p>
+          <h2 className="text-xl font-serif mb-2">{t('common.error')}</h2>
+          <p className="text-gray-600 mb-6">{t('checkout.incomplete')}</p>
           <button
             onClick={() => router.back()}
             className="px-6 py-2 bg-[#B2B8A3] text-white rounded-lg font-medium hover:bg-[#9CA89F] transition-colors"
           >
-            Voltar
+            {t('checkout.back')}
           </button>
         </div>
       </div>
@@ -170,14 +170,14 @@ export default function CheckoutPage() {
           className="flex items-center gap-2 text-[#B2B8A3] hover:text-[#9CA89F] mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Voltar</span>
+          <span>{t('checkout.back')}</span>
         </button>
 
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-[#F0EBE3] to-white p-8 border-b border-gray-200">
-            <h1 className="text-3xl font-serif text-gray-900 mb-2">Confirme seu agendamento</h1>
-            <p className="text-gray-600">Revise os detalhes antes de finalizar</p>
+            <h1 className="text-3xl font-serif text-gray-900 mb-2">{t('checkout.title')}</h1>
+            <p className="text-gray-600">{t('checkout.subtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8">
@@ -193,7 +193,7 @@ export default function CheckoutPage() {
 
               {/* Appointment Details */}
               <div className="space-y-4">
-                <h2 className="font-serif text-xl text-gray-900">Detalhes do Agendamento</h2>
+                <h2 className="font-serif text-xl text-gray-900">{t('checkout.appointment_details')}</h2>
 
                 {/* Therapist Card */}
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -203,24 +203,24 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900">{orderData.therapistName}</h3>
-                      <p className="text-sm text-gray-600">Terapeuta</p>
+                      <p className="text-sm text-gray-600">{t('checkout.therapist')}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Service Card */}
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-sm text-gray-600 mb-1">Serviço</p>
+                  <p className="text-sm text-gray-600 mb-1">{t('checkout.service')}</p>
                   <h3 className="font-medium text-gray-900 mb-3">{orderData.serviceName}</h3>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock className="w-4 h-4" />
-                    <span>60 minutos</span>
+                    <span>{searchParams.get('duration') || '60'} {t('therapist.minutes')}</span>
                   </div>
                 </div>
 
                 {/* Date & Time Card */}
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-sm text-gray-600 mb-1">Data e Hora</p>
+                  <p className="text-sm text-gray-600 mb-1">{t('checkout.date_time')}</p>
                   <h3 className="font-medium text-gray-900">
                     {appointmentDate.toLocaleDateString('pt-BR', {
                       weekday: 'long',
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
 
               {/* Payment Method */}
               <div className="space-y-4 border-t border-gray-200 pt-6">
-                <h2 className="font-serif text-xl text-gray-900">Forma de Pagamento</h2>
+                <h2 className="font-serif text-xl text-gray-900">{t('checkout.payment_method')}</h2>
 
                 <div className="space-y-3">
                   {/* Cartão */}
@@ -257,7 +257,7 @@ export default function CheckoutPage() {
                       onChange={() => setPaymentMethod('card')}
                       className="w-4 h-4"
                     />
-                    <span className="ml-3 font-medium text-gray-900">Cartão de Crédito</span>
+                    <span className="ml-3 font-medium text-gray-900">{t('checkout.credit_card')}</span>
                   </label>
 
                   {/* PIX */}
@@ -274,17 +274,17 @@ export default function CheckoutPage() {
                       onChange={() => setPaymentMethod('pix')}
                       className="w-4 h-4"
                     />
-                    <span className="ml-3 font-medium text-gray-900">PIX (em breve)</span>
+                    <span className="ml-3 font-medium text-gray-900">{t('checkout.pix')}</span>
                   </label>
                 </div>
               </div>
 
               {/* Terms */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
-                <strong>Política de Cancelamento:</strong>
+                <strong>{t('checkout.cancellation_policy')}:</strong>
                 <ul className="mt-2 space-y-1 text-xs">
-                  <li>• Cancelamentos com <strong>24h+</strong> de antecedência: reembolso <strong>100%</strong></li>
-                  <li>• Cancelamentos com <strong>até 24h</strong>: taxa de <strong>50%</strong></li>
+                  <li>• {t('checkout.cancellation_24h')}</li>
+                  <li>• {t('checkout.cancellation_less24h')}</li>
                 </ul>
               </div>
             </div>
@@ -292,17 +292,17 @@ export default function CheckoutPage() {
             {/* Summary Sidebar */}
             <div>
               <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 sticky top-4">
-                <h2 className="font-serif text-lg text-gray-900 mb-6">Resumo</h2>
+                <h2 className="font-serif text-lg text-gray-900 mb-6">{t('checkout.summary')}</h2>
 
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Valor da sessão</span>
+                    <span className="text-gray-600">{t('checkout.session_value')}</span>
                     <span className="font-medium text-gray-900">
                       R$ {orderData.servicePrice.toFixed(2).replace('.', ',')}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Taxa Senda (15%)</span>
+                    <span className="text-gray-600">{t('checkout.senda_fee')}</span>
                     <span className="text-gray-600">
                       -R$ {sendaFee.toFixed(2).replace('.', ',')}
                     </span>
@@ -314,7 +314,7 @@ export default function CheckoutPage() {
                     R$ {orderData.servicePrice.toFixed(2).replace('.', ',')}
                   </div>
                   <p className="text-xs text-gray-600 mt-2">
-                    O terapeuta receberá R$ {therapistAmount.toFixed(2).replace('.', ',')} após a sessão ser realizada
+                    {t('checkout.therapist_receives').replace('{amount}', therapistAmount.toFixed(2).replace('.', ','))}
                   </p>
                 </div>
 
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
                   disabled={processing || paymentMethod === 'pix'}
                   className="w-full px-6 py-3 bg-[#B2B8A3] text-white rounded-lg font-medium hover:bg-[#9CA89F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-2"
                 >
-                  {processing ? 'Processando...' : 'Confirmar Pagamento'}
+                  {processing ? t('checkout.processing') : t('checkout.confirm_payment')}
                 </button>
 
                 <button
@@ -331,7 +331,7 @@ export default function CheckoutPage() {
                   disabled={processing}
                   className="w-full px-6 py-3 border border-gray-300 text-gray-900 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
-                  Voltar
+                  {t('checkout.back')}
                 </button>
               </div>
             </div>
