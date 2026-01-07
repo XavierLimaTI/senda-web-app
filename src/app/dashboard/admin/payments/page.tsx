@@ -14,55 +14,52 @@ export default async function PaymentsPage() {
     redirect('/')
   }
 
-  // Get all payments - using raw query to handle complex relations
-  const paymentsData = await prisma.$queryRaw`
-    SELECT 
-      p.id,
-      p.amount,
-      p.status,
-      p.createdAt,
-      p.refundedAt,
-      p.stripePaymentIntentId,
-      p.transactionId,
-      p.description,
-      p.bookingId,
-      b.therapistId,
-      b.clientId,
-      tp.userId as therapistUserId,
-      u1.name as therapistName,
-      u2.name as clientName
-    FROM Payment p
-    JOIN Booking b ON p.bookingId = b.id
-    JOIN TherapistProfile tp ON b.therapistId = tp.id
-    JOIN User u1 ON tp.userId = u1.id
-    JOIN User u2 ON b.clientId = u2.id
-    ORDER BY p.createdAt DESC
-  ` as any[]
+  // Get all payments using Prisma relations (sem raw SQL)
+  const paymentsData = await prisma.payment.findMany({
+    include: {
+      booking: {
+        include: {
+          therapist: {
+            include: {
+              user: {
+                select: { name: true }
+              }
+            }
+          },
+          client: {
+            select: { name: true }
+          }
+        }
+      }
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 500 // Limitar para performance
+  })
 
   const payments = paymentsData.map((p) => ({
     id: p.id,
-    amount: p.amount,
+    amount: p.amount, // Já em reais (float)
     status: p.status,
-    createdAt: new Date(p.createdAt),
-    refundedAt: p.refundedAt ? new Date(p.refundedAt) : null,
+    createdAt: p.createdAt,
+    refundedAt: p.refundedAt,
     stripePaymentIntentId: p.stripePaymentIntentId,
     transactionId: p.transactionId,
     description: p.description,
     bookingId: p.bookingId,
-    therapistName: p.therapistName || 'Desconhecido',
-    clientName: p.clientName || 'Desconhecido',
+    therapistName: p.booking?.therapist?.user?.name || 'Desconhecido',
+    clientName: p.booking?.client?.name || 'Desconhecido',
   }))
 
-  // Calculate stats
+  // Calculate stats - valores em reais (não centavos)
   const stats = {
     totalTransactions: payments.length,
-    totalRevenue: payments.reduce((sum, p) => sum + p.amount, 0) * 100, // Converter para centavos
+    totalRevenue: payments.reduce((sum, p) => sum + p.amount, 0),
     pendingAmount: payments
       .filter((p) => p.status === 'PENDING')
-      .reduce((sum, p) => sum + p.amount, 0) * 100,
+      .reduce((sum, p) => sum + p.amount, 0),
     refundedAmount: payments
       .filter((p) => p.status === 'REFUNDED')
-      .reduce((sum, p) => sum + p.amount, 0) * 100,
+      .reduce((sum, p) => sum + p.amount, 0),
     statusCounts: {
       completed: payments.filter((p) => p.status === 'APPROVED').length,
       pending: payments.filter((p) => p.status === 'PENDING').length,
@@ -75,7 +72,7 @@ export default async function PaymentsPage() {
     <PaymentsClient
       payments={payments.map((p) => ({
         id: p.id,
-        amount: p.amount * 100, // Converter para centavos
+        amount: p.amount, // Já em reais
         status: (p.status === 'APPROVED' ? 'completed' : p.status === 'PENDING' ? 'pending' : p.status === 'FAILED' ? 'failed' : 'refunded') as any,
         therapist: p.therapistName,
         client: p.clientName,

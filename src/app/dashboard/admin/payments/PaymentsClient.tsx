@@ -55,7 +55,7 @@ export default function PaymentsClient({ payments: initialPayments, stats }: Pay
   })
 
   const handleRefund = async (id: number, amount: number) => {
-    if (!confirm(`Tem certeza que deseja reembolsar R$ ${(amount / 100).toLocaleString('pt-BR')}`)) {
+    if (!confirm(`Tem certeza que deseja reembolsar R$ ${amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`)) {
       return
     }
 
@@ -131,7 +131,7 @@ export default function PaymentsClient({ payments: initialPayments, stats }: Pay
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Total em Transações</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              R$ {(stats.totalRevenue / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {stats.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               {stats.totalTransactions} transações
@@ -141,7 +141,7 @@ export default function PaymentsClient({ payments: initialPayments, stats }: Pay
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Pendentes</p>
             <p className="text-2xl font-bold text-yellow-600 mt-1">
-              R$ {(stats.pendingAmount / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {stats.pendingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               {stats.statusCounts.pending} pagamentos
@@ -151,7 +151,7 @@ export default function PaymentsClient({ payments: initialPayments, stats }: Pay
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Reembolsados</p>
             <p className="text-2xl font-bold text-blue-600 mt-1">
-              R$ {(stats.refundedAmount / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {stats.refundedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               {stats.statusCounts.refunded} reembolsos
@@ -276,7 +276,7 @@ export default function PaymentsClient({ payments: initialPayments, stats }: Pay
                       </td>
                       <td className="px-6 py-4 text-right">
                         <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                          R$ {(payment.amount / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          R$ {payment.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </p>
                       </td>
                       <td className="px-6 py-4">

@@ -14,38 +14,37 @@ export default async function ReviewsPage() {
     redirect('/')
   }
 
-  // Get all reviews with related data - raw SQL would be simpler but using Prisma relations
-  // We need to fetch therapist.user to get the name, so include the entire user object via relation chain
-  const reviewsData = await prisma.$queryRaw`
-    SELECT 
-      r.id,
-      r.rating,
-      r.comment,
-      r.flagged,
-      r.createdAt,
-      r.bookingId,
-      b.therapistId,
-      b.clientId,
-      tp.userId as therapistUserId,
-      u1.name as therapistName,
-      u2.name as clientName
-    FROM Review r
-    JOIN Booking b ON r.bookingId = b.id
-    JOIN TherapistProfile tp ON b.therapistId = tp.id
-    JOIN User u1 ON tp.userId = u1.id
-    JOIN User u2 ON b.clientId = u2.id
-    ORDER BY r.createdAt DESC
-  ` as any[]
+  // Get all reviews using Prisma relations (sem raw SQL)
+  const reviewsData = await prisma.review.findMany({
+    include: {
+      booking: {
+        include: {
+          therapist: {
+            include: {
+              user: {
+                select: { name: true }
+              }
+            }
+          },
+          client: {
+            select: { name: true }
+          }
+        }
+      }
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 500
+  })
 
-  // Transform the raw data
+  // Transform the data
   const reviews = reviewsData.map((r) => ({
     id: r.id,
     rating: r.rating,
     comment: r.comment || '',
     flagged: r.flagged,
-    createdAt: new Date(r.createdAt),
-    therapistName: r.therapistName || 'Desconhecido',
-    clientName: r.clientName || 'Desconhecido',
+    createdAt: r.createdAt,
+    therapistName: r.booking?.therapist?.user?.name || 'Desconhecido',
+    clientName: r.booking?.client?.name || 'Desconhecido',
   }))
 
   // Calculate stats
