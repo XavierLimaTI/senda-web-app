@@ -219,3 +219,75 @@ Sempre que o agente solicitar que o analista execute uma ação e o analista con
 Quando o agente oferecer opções de próximo passo, ele deve automaticamente seguir com a opção mais recomendada para o projeto (ou seja, a ação que maximiza progresso e minimiza risco), salvo instrução contrária do analista. O agente deve registrar brevemente por que escolheu essa opção ao reportar progresso.
 
 Essas regras ajudam a manter autonomia do agente com transparência e controle pelo analista.
+
+---
+
+## 9. Sistema de Internacionalização (i18n)
+
+### Configuração Atual (next-intl)
+
+O projeto agora utiliza **next-intl** para traduções, com arquivos JSON organizados:
+
+```
+messages/
+├── pt.json  (Português - idioma padrão)
+├── en.json  (Inglês)
+├── es.json  (Espanhol)
+└── zh.json  (Chinês)
+```
+
+### Como Usar
+
+```tsx
+// Em componentes client:
+import { useTranslations } from 'next-intl';
+
+export function MyComponent() {
+  const t = useTranslations('bookings');
+  return <button>{t('cancel_booking')}</button>;
+}
+```
+
+### Relatório de Migração
+
+Consulte [I18N_REPORT.md](I18N_REPORT.md) para lista completa de arquivos que ainda precisam de tradução (~200+ strings).
+
+---
+
+## 10. Galeria de Terapias
+
+### Categorias Principais
+- **Corporais (body):** 25 terapias - massagens, medicina tradicional, movimento
+- **Mente (mind):** 17 terapias - psicoterapia, técnicas cognitivas, meditação
+- **Energéticas (energy):** 14 terapias - reiki, cristaloterapia, sound healing
+- **Naturais (natural):** 8 terapias - fitoterapia, nutrição, homeopatia
+
+### Subcategorias (novo)
+Cada categoria principal agora tem subcategorias para navegação mais precisa:
+- Body: Massagem & Toque, Medicina Tradicional, Manipulação Estrutural, Movimento
+- Mind: Psicoterapia, Técnicas Cognitivas, Expressão Criativa, Meditação, Autoconhecimento
+- Energy: Imposição de Mãos, Frequência & Vibração, Reprogramação Energética
+- Natural: Fitoterapia, Nutrição, Diagnóstico Natural
+
+### Arquivos Relacionados
+- `src/data/therapies.ts` - Definição de terapias, categorias e subcategorias
+- `src/data/therapyImages.ts` - Mapeamento de imagens do Unsplash
+- `src/app/explore/therapies/page.tsx` - Galeria com filtros
+
+---
+
+## 11. Pesquisa e Inspiração
+
+Ao implementar novas funcionalidades, consultar:
+
+### Casos de Sucesso no Mercado
+- **Calm / Headspace** - UX de meditação e bem-estar
+- **ClassPass** - Marketplace de fitness e wellness
+- **Doctolib** - Agendamento médico europeu
+- **ZenBusiness** - Onboarding simplificado
+
+### Padrões de Design
+- **Calendly** - UX de seleção de horários
+- **Airbnb** - Vitrine de profissionais e avaliações
+- **Fiverr** - Marketplace de serviços
+

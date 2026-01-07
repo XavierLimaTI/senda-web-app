@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
-import { therapies, categories } from '@/data/therapies'
+import { therapies, categories, subcategories } from '@/data/therapies'
 import { getTherapyImage } from '@/data/therapyImages'
 import { ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
-const ITEMS_PER_PAGE = 9 // 3x3 grid
+const ITEMS_PER_PAGE = 12 // 4x3 grid - mais terapias visíveis
 
 export default function TherapiesPage() {
   const { language, setLanguage, t } = useLanguage()
-  const [selectedCategory, setSelectedCategory] = useState<string>('body')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [selectedIndicationTag, setSelectedIndicationTag] = useState<string | null>(null)
   const [expandedTherapy, setExpandedTherapy] = useState<string | null>(null)
   const [query, setQuery] = useState('')
@@ -31,10 +32,21 @@ export default function TherapiesPage() {
     )
   }
 
-  // Filtrar terapias por categoria e indicação
+  // Filtrar terapias por categoria, subcategoria e indicação
   const filteredTherapies = useMemo(() => {
     return therapies.filter(therapy => {
-      const matchesCategory = therapy.category === selectedCategory
+      const matchesCategory = selectedCategory === 'all' || therapy.category === selectedCategory
+      
+      // Verificar subcategoria se selecionada
+      let matchesSubcategory = true
+      if (selectedSubcategory && selectedCategory !== 'all') {
+        const subs = subcategories[selectedCategory]
+        if (subs) {
+          const sub = subs.find(s => s.id === selectedSubcategory)
+          matchesSubcategory = sub ? sub.therapyIds.includes(therapy.id) : true
+        }
+      }
+      
       const matchesIndicationTag = !selectedIndicationTag || therapy.indicationTags.includes(selectedIndicationTag)
       const q = query.trim().toLowerCase()
       const matchesQuery = q.length === 0 || [
@@ -44,9 +56,15 @@ export default function TherapiesPage() {
         therapy.indicationTags.join(' '),
         therapy.modality,
       ].some(v => v?.toLowerCase().includes(q))
-      return matchesCategory && matchesIndicationTag && matchesQuery
+      return matchesCategory && matchesSubcategory && matchesIndicationTag && matchesQuery
     })
-  }, [selectedCategory, selectedIndicationTag, query, language])
+  }, [selectedCategory, selectedSubcategory, selectedIndicationTag, query, language])
+
+  // Subcategorias disponíveis para a categoria selecionada
+  const availableSubcategories = useMemo(() => {
+    if (selectedCategory === 'all') return []
+    return subcategories[selectedCategory] || []
+  }, [selectedCategory])
 
   // Paginação
   const totalPages = Math.ceil(filteredTherapies.length / ITEMS_PER_PAGE)
@@ -58,7 +76,12 @@ export default function TherapiesPage() {
   // Reset da página ao mudar filtros
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedCategory, selectedIndicationTag, query])
+  }, [selectedCategory, selectedSubcategory, selectedIndicationTag, query])
+
+  // Reset subcategoria quando mudar categoria
+  useEffect(() => {
+    setSelectedSubcategory(null)
+  }, [selectedCategory])
 
   // Obter tags únicas de indicação da categoria selecionada
   const availableTags = Array.from(
@@ -126,6 +149,40 @@ export default function TherapiesPage() {
               ))}
             </div>
           </div>
+
+          {/* Subcategory Filter - appears when a category is selected */}
+          {availableSubcategories.length > 0 && (
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                {t('explore.therapies.filter_by_subcategory') || 'Filtrar por subcategoria'}
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedSubcategory(null)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedSubcategory === null
+                      ? 'bg-[#C8963E] text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {t('explore.therapies.all_subcategories') || 'Todas'}
+                </button>
+                {availableSubcategories.map(sub => (
+                  <button
+                    key={sub.id}
+                    onClick={() => setSelectedSubcategory(sub.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      selectedSubcategory === sub.id
+                        ? 'bg-[#C8963E] text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {sub.name[language]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Indication Tag Filter */}
           <div>
@@ -332,8 +389,9 @@ export default function TherapiesPage() {
             </p>
             <button
               onClick={() => {
-                setSelectedCategory('body')
+                setSelectedCategory('all')
                 setSelectedIndicationTag(null)
+                setQuery('')
               }}
               className="px-6 py-2 rounded-lg bg-[#B2B8A3] text-white font-medium hover:bg-[#A0A78F] transition-colors"
             >

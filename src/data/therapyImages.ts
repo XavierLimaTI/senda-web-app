@@ -2,10 +2,11 @@
  * Mapeamento de imagens únicas para cada terapia
  * Todas as imagens são do Unsplash e representam visualmente cada terapia
  * NOTA: Cada imagem é ÚNICA - nenhuma repetição permitida
+ * Total: 64 terapias mapeadas
  */
 
 export const therapyImages: Record<string, string> = {
-  // === TERAPIAS CORPORAIS ===
+  // === TERAPIAS CORPORAIS (22) ===
   'acupuntura': 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&h=400&fit=crop', // Acupuncture needles
   'ayurveda': 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=600&h=400&fit=crop', // Ayurvedic herbs and oils
   'biodinamica': 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&h=400&fit=crop', // Gentle bodywork
@@ -25,11 +26,11 @@ export const therapyImages: Record<string, string> = {
   'pilates': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop', // Pilates reformer
   'rolfing': 'https://images.unsplash.com/photo-1573821663912-6df460f9c684?w=600&h=400&fit=crop', // Structural bodywork
   'tai-chi-chuan': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop', // Tai chi practice
-  'terapia-craniossacral': 'https://images.unsplash.com/photo-1516728043026-7c19ce7c8d71?w=600&h=400&fit=crop', // Craniosacral therapy
+  'terapia-craniossacral': 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=400&fit=crop', // Craniosacral therapy - gentle touch
   'ventosaterapia': 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&h=400&fit=crop', // Cupping therapy
   'yoga': 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=600&h=400&fit=crop', // Yoga pose
 
-  // === TERAPIAS ENERGÉTICAS ===
+  // === TERAPIAS ENERGÉTICAS (10) ===
   'access-consciousness': 'https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=600&h=400&fit=crop', // Consciousness meditation
   'alinhamento-energetico': 'https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?w=600&h=400&fit=crop', // Energy chakras
   'reiki': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&h=400&fit=crop', // Healing hands
@@ -41,7 +42,7 @@ export const therapyImages: Record<string, string> = {
   'magnified-healing': 'https://images.unsplash.com/photo-1505455184862-554165e5f6ba?w=600&h=400&fit=crop', // Light energy hands
   'johrei': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop', // Light healing
 
-  // === TERAPIAS DA MENTE ===
+  // === TERAPIAS DA MENTE (13) ===
   'arteterapia': 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&h=400&fit=crop', // Art therapy painting
   'constelacao-familiar': 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop', // Family constellation group
   'hipnoterapia': 'https://images.unsplash.com/photo-1564121211835-e88c852648c0?w=600&h=400&fit=crop', // Hypnotherapy relaxation
@@ -50,11 +51,13 @@ export const therapyImages: Record<string, string> = {
   'eneagrama': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop', // Personality work
   'mindfulness': 'https://images.unsplash.com/photo-1528319725582-ddc096101511?w=600&h=400&fit=crop', // Mindful presence lotus
   'pnl': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop', // NLP coaching
-  'psicanálise-integrativa': 'https://images.unsplash.com/photo-1590650153855-d9e808231d41?w=600&h=400&fit=crop', // Therapy session couch
+  'psicanalise-integrativa': 'https://images.unsplash.com/photo-1590650153855-d9e808231d41?w=600&h=400&fit=crop', // Therapy session couch
   'psicologia-transpessoal': 'https://images.unsplash.com/photo-1516321318423-f06f70570ec0?w=600&h=400&fit=crop', // Transpersonal work
   'terapia-multidimensional': 'https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=600&h=400&fit=crop', // Multidimensional cosmos
+  'eft': 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=400&fit=crop', // EFT tapping points
+  'iridologia': 'https://images.unsplash.com/photo-1494869042583-f6c911f04b4c?w=600&h=400&fit=crop', // Eye examination
 
-  // === TERAPIAS NATURAIS ===
+  // === TERAPIAS NATURAIS (9) ===
   'aromaterapia': 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&h=400&fit=crop', // Essential oils
   'fitoterapia': 'https://images.unsplash.com/photo-1559027615-cd2fb8e29f3d?w=600&h=400&fit=crop', // Herbal medicine
   'naturopatia': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=400&fit=crop', // Natural healing herbs
@@ -65,21 +68,19 @@ export const therapyImages: Record<string, string> = {
   'nutricao-funcional': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop', // Functional nutrition
   'terapia-ortomolecular': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&h=400&fit=crop', // Vitamins supplements
 
-  // === TERAPIAS DIVINATÓRIAS/SIMBÓLICAS ===
+  // === TERAPIAS DIVINATÓRIAS/SIMBÓLICAS (6) ===
   'astrologia': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&h=400&fit=crop', // Astrology zodiac
   'numerologia': 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&h=400&fit=crop', // Numbers patterns
   'taro': 'https://images.unsplash.com/photo-1601065758612-ea2a69f8d3b4?w=600&h=400&fit=crop', // Tarot cards
-  'eft': 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=400&fit=crop', // EFT tapping points
   'geobiologia': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop', // Earth energy
   'mesa-radionica': 'https://images.unsplash.com/photo-1578149577879-7f8f23f87db1?w=600&h=400&fit=crop', // Radionic table
   'radiestesia': 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&h=400&fit=crop', // Dowsing pendulum
-  'iridologia': 'https://images.unsplash.com/photo-1494869042583-f6c911f04b4c?w=600&h=400&fit=crop', // Eye examination
 
-  // === TERAPIAS EXPRESSIVAS/MOVIMENTO ===
+  // === TERAPIAS EXPRESSIVAS/MOVIMENTO (2) ===
   'dancaterapia': 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=600&h=400&fit=crop', // Dance therapy movement
   'musicoterapia': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&h=400&fit=crop', // Music therapy
 
-  // === TERAPIAS ESPIRITUAIS ===
+  // === TERAPIAS ESPIRITUAIS (2) ===
   'resgate-alma': 'https://images.unsplash.com/photo-1502139214982-d0ad755818d8?w=600&h=400&fit=crop', // Soul retrieval spiritual
   'roda-cura': 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop', // Healing circle
 }

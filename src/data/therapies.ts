@@ -1903,7 +1903,7 @@ export const therapies: Therapy[] = [
   image: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&h=400&fit=crop'
 },
 {
-  id: 'psicanálise-integrativa',
+  id: 'psicanalise-integrativa',
   name: { 
     pt: 'Psicanálise Integrativa', 
     en: 'Integrative Psychoanalysis', 
@@ -1998,8 +1998,120 @@ export const therapies: Therapy[] = [
 ]
 
 export const categories = [
-  { id: 'body', name: { pt: 'Terapias Corporais', en: 'Body Therapies', es: 'Terapias Corporales', zh: '身体疗法' } },
-  { id: 'energy', name: { pt: 'Terapias Energéticas', en: 'Energy Therapies', es: 'Terapias Energéticas', zh: '能量疗法' } },
-  { id: 'mind', name: { pt: 'Terapias da Mente', en: 'Mind Therapies', es: 'Terapias Mentales', zh: '心灵疗法' } },
-  { id: 'natural', name: { pt: 'Terapias Naturais', en: 'Natural Therapies', es: 'Terapias Naturales', zh: '自然疗法' } }
+  { id: 'all', name: { pt: 'Todas', en: 'All', es: 'Todas', zh: '所有' } },
+  { id: 'body', name: { pt: 'Corporais', en: 'Body', es: 'Corporales', zh: '身体' } },
+  { id: 'energy', name: { pt: 'Energéticas', en: 'Energy', es: 'Energéticas', zh: '能量' } },
+  { id: 'mind', name: { pt: 'Mente', en: 'Mind', es: 'Mentales', zh: '心灵' } },
+  { id: 'natural', name: { pt: 'Naturais', en: 'Natural', es: 'Naturales', zh: '自然' } }
 ]
+
+/**
+ * Subcategorias para organização mais detalhada da galeria
+ * Mapeia cada categoria principal para suas subcategorias com traduções
+ */
+export const subcategories: Record<string, Array<{ id: string; name: Record<'pt' | 'en' | 'es' | 'zh', string>; therapyIds: string[] }>> = {
+  body: [
+    { 
+      id: 'massage', 
+      name: { pt: 'Massagem & Toque', en: 'Massage & Touch', es: 'Masaje y Tacto', zh: '按摩与触摸' },
+      therapyIds: ['biodinamica', 'drenagem-linfatica', 'liberacao-miofascial', 'massagem-tantrica', 'massagem-ayurvedica', 'massagem-relaxante', 'rolfing', 'shiatsu']
+    },
+    { 
+      id: 'traditional', 
+      name: { pt: 'Medicina Tradicional', en: 'Traditional Medicine', es: 'Medicina Tradicional', zh: '传统医学' },
+      therapyIds: ['acupuntura', 'ayurveda', 'chi-kung', 'do-in', 'ventosaterapia', 'reflexologia']
+    },
+    { 
+      id: 'structural', 
+      name: { pt: 'Manipulação Estrutural', en: 'Structural Manipulation', es: 'Manipulación Estructural', zh: '结构调整' },
+      therapyIds: ['osteopatia', 'quiropraxia', 'terapia-craniossacral']
+    },
+    { 
+      id: 'movement', 
+      name: { pt: 'Movimento & Exercício', en: 'Movement & Exercise', es: 'Movimiento y Ejercicio', zh: '运动与锻炼' },
+      therapyIds: ['yoga', 'pilates', 'tai-chi-chuan', 'feldenkrais', 'dancaterapia']
+    }
+  ],
+  mind: [
+    { 
+      id: 'psychotherapy', 
+      name: { pt: 'Psicoterapia Integrativa', en: 'Integrative Psychotherapy', es: 'Psicoterapia Integrativa', zh: '整合心理治疗' },
+      therapyIds: ['psicanalise-integrativa', 'psicologia-transpessoal', 'constelacao-familiar']
+    },
+    { 
+      id: 'cognitive', 
+      name: { pt: 'Técnicas Cognitivas', en: 'Cognitive Techniques', es: 'Técnicas Cognitivas', zh: '认知技术' },
+      therapyIds: ['coaching', 'pnl', 'eft', 'hipnoterapia']
+    },
+    { 
+      id: 'creative', 
+      name: { pt: 'Expressão Criativa', en: 'Creative Expression', es: 'Expresión Creativa', zh: '创意表达' },
+      therapyIds: ['arteterapia', 'musicoterapia']
+    },
+    { 
+      id: 'meditation', 
+      name: { pt: 'Meditação & Presença', en: 'Meditation & Presence', es: 'Meditación y Presencia', zh: '冥想与觉知' },
+      therapyIds: ['meditacao', 'mindfulness', 'jornada-xamanica']
+    },
+    { 
+      id: 'selfknowledge', 
+      name: { pt: 'Autoconhecimento', en: 'Self-Knowledge', es: 'Autoconocimiento', zh: '自我认知' },
+      therapyIds: ['eneagrama', 'numerologia', 'astrologia', 'taro']
+    }
+  ],
+  energy: [
+    { 
+      id: 'hands', 
+      name: { pt: 'Imposição de Mãos', en: 'Hands-on Healing', es: 'Imposición de Manos', zh: '手疗' },
+      therapyIds: ['reiki', 'johrei', 'cura-pranica', 'magnified-healing']
+    },
+    { 
+      id: 'vibration', 
+      name: { pt: 'Frequência & Vibração', en: 'Frequency & Vibration', es: 'Frecuencia y Vibración', zh: '频率与振动' },
+      therapyIds: ['sound-healing', 'cromoterapia', 'cristaloterapia']
+    },
+    { 
+      id: 'reprogramming', 
+      name: { pt: 'Reprogramação Energética', en: 'Energy Reprogramming', es: 'Reprogramación Energética', zh: '能量重编程' },
+      therapyIds: ['access-consciousness', 'thetahealing', 'alinhamento-energetico', 'terapia-multidimensional']
+    },
+    { 
+      id: 'radiesthesia', 
+      name: { pt: 'Radiestesia & Diagnóstico', en: 'Radiesthesia & Diagnosis', es: 'Radiestesia y Diagnóstico', zh: '灵摆与诊断' },
+      therapyIds: ['mesa-radionica', 'radiestesia']
+    }
+  ],
+  natural: [
+    { 
+      id: 'phytotherapy', 
+      name: { pt: 'Fitoterapia & Ervas', en: 'Phytotherapy & Herbs', es: 'Fitoterapia y Hierbas', zh: '草药疗法' },
+      therapyIds: ['fitoterapia', 'aromaterapia', 'terapia-floral', 'homeopatia']
+    },
+    { 
+      id: 'nutrition', 
+      name: { pt: 'Nutrição & Suplementação', en: 'Nutrition & Supplementation', es: 'Nutrición y Suplementación', zh: '营养与补充' },
+      therapyIds: ['nutricao-funcional', 'terapia-ortomolecular', 'naturopatia']
+    },
+    { 
+      id: 'diagnosis', 
+      name: { pt: 'Diagnóstico Natural', en: 'Natural Diagnosis', es: 'Diagnóstico Natural', zh: '自然诊断' },
+      therapyIds: ['iridologia', 'geobiologia']
+    }
+  ]
+}
+
+/**
+ * Encontra a subcategoria de uma terapia pelo seu ID
+ */
+export function getTherapySubcategory(therapyId: string, category: string): string | null {
+  const subs = subcategories[category]
+  if (!subs) return null
+  
+  for (const sub of subs) {
+    if (sub.therapyIds.includes(therapyId)) {
+      return sub.id
+    }
+  }
+  return null
+}
+

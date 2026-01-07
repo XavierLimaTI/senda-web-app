@@ -67,7 +67,17 @@ Fluxos Críticos:
 
     Documentação: Ao alterar código core, atualize os arquivos em /docs e os resumos de implementação.
 
-🤖 5. Comportamento do Agente de IA
+    Internacionalização: Use os arquivos JSON em /messages (pt.json, en.json, es.json, zh.json) com next-intl.
+
+🔍 5. Pesquisa e Inspiração
+
+    Casos de Sucesso: Ao implementar, revisar ou modificar funcionalidades, avalie casos de sucesso e iniciativas semelhantes no mercado de bem-estar e healthtech para fins de inspiração. Exemplos: Calm, Headspace, ClassPass, ZenBusiness.
+
+    Benchmarking: Compare com apps de agendamento de alto padrão (Calendly, Doctolib) para UX de calendários e booking.
+
+    Melhores Práticas: Consulte padrões de design de marketplaces (Airbnb, Fiverr) para vitrines de profissionais.
+
+🤖 6. Comportamento do Agente de IA
 
     Autonomia com Transparência: Execute comandos de terminal automaticamente, analise a saída e reporte erros.
 
