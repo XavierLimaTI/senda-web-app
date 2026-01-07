@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { therapies, categories } from '@/data/therapies'
-import { ChevronDown, Star } from 'lucide-react'
+import { getTherapyImage } from '@/data/therapyImages'
+import { ChevronDown, Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
+
+const ITEMS_PER_PAGE = 9 // 3x3 grid
 
 export default function TherapiesPage() {
   const { language, setLanguage, t } = useLanguage()
@@ -12,6 +15,7 @@ export default function TherapiesPage() {
   const [selectedIndicationTag, setSelectedIndicationTag] = useState<string | null>(null)
   const [expandedTherapy, setExpandedTherapy] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   function TherapyImage({ src, alt }: { src: string; alt: string }) {
     const [currentSrc, setCurrentSrc] = useState(src)
@@ -28,19 +32,33 @@ export default function TherapiesPage() {
   }
 
   // Filtrar terapias por categoria e indicação
-  const filteredTherapies = therapies.filter(therapy => {
-    const matchesCategory = therapy.category === selectedCategory
-    const matchesIndicationTag = !selectedIndicationTag || therapy.indicationTags.includes(selectedIndicationTag)
-    const q = query.trim().toLowerCase()
-    const matchesQuery = q.length === 0 || [
-      therapy.name[language],
-      therapy.description[language],
-      ...therapy.indications[language],
-      therapy.indicationTags.join(' '),
-      therapy.modality,
-    ].some(v => v?.toLowerCase().includes(q))
-    return matchesCategory && matchesIndicationTag && matchesQuery
-  })
+  const filteredTherapies = useMemo(() => {
+    return therapies.filter(therapy => {
+      const matchesCategory = therapy.category === selectedCategory
+      const matchesIndicationTag = !selectedIndicationTag || therapy.indicationTags.includes(selectedIndicationTag)
+      const q = query.trim().toLowerCase()
+      const matchesQuery = q.length === 0 || [
+        therapy.name[language],
+        therapy.description[language],
+        ...therapy.indications[language],
+        therapy.indicationTags.join(' '),
+        therapy.modality,
+      ].some(v => v?.toLowerCase().includes(q))
+      return matchesCategory && matchesIndicationTag && matchesQuery
+    })
+  }, [selectedCategory, selectedIndicationTag, query, language])
+
+  // Paginação
+  const totalPages = Math.ceil(filteredTherapies.length / ITEMS_PER_PAGE)
+  const paginatedTherapies = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredTherapies.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  }, [filteredTherapies, currentPage])
+
+  // Reset da página ao mudar filtros
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedCategory, selectedIndicationTag, query])
 
   // Obter tags únicas de indicação da categoria selecionada
   const availableTags = Array.from(
@@ -140,16 +158,28 @@ export default function TherapiesPage() {
           </div>
         </div>
 
+        {/* Results count and pagination info */}
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t('explore.therapies.showing')} {paginatedTherapies.length} {t('explore.therapies.of')} {filteredTherapies.length} {t('explore.therapies.therapies_count')}
+          </p>
+          {totalPages > 1 && (
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {t('explore.therapies.page')} {currentPage} {t('explore.therapies.of')} {totalPages}
+            </p>
+          )}
+        </div>
+
         {/* Therapies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTherapies.map(therapy => (
+          {paginatedTherapies.map(therapy => (
             <div
               key={therapy.id}
               className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
             >
               {/* Image */}
               <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                <TherapyImage src={therapy.image} alt={therapy.name[language]} />
+                <TherapyImage src={getTherapyImage(therapy.id)} alt={therapy.name[language]} />
                 <span className="absolute top-3 left-3 text-[11px] px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm">
                   {categories.find(c => c.id === therapy.category)?.name[language]}
                 </span>
@@ -223,6 +253,76 @@ export default function TherapiesPage() {
             </div>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-2">
+            {/* Previous Button */}
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${
+                currentPage === 1
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'
+              }`}
+              aria-label={t('explore.therapies.previous_page')}
+            >
+              <ChevronLeft size={18} />
+              <span className="hidden sm:inline">{t('explore.therapies.previous')}</span>
+            </button>
+
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(page => {
+                  // Show first, last, current, and pages adjacent to current
+                  return page === 1 || 
+                         page === totalPages || 
+                         Math.abs(page - currentPage) <= 1
+                })
+                .map((page, idx, arr) => {
+                  // Add ellipsis if there's a gap
+                  const showEllipsisBefore = idx > 0 && arr[idx - 1] !== page - 1
+
+                  return (
+                    <div key={page} className="flex items-center">
+                      {showEllipsisBefore && (
+                        <span className="px-2 text-gray-400">...</span>
+                      )}
+                      <button
+                        onClick={() => setCurrentPage(page)}
+                        className={`min-w-[40px] h-10 px-3 rounded-lg font-medium transition-all ${
+                          currentPage === page
+                            ? 'bg-[#B2B8A3] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'
+                        }`}
+                        aria-label={`${t('explore.therapies.page')} ${page}`}
+                        aria-current={currentPage === page ? 'page' : undefined}
+                      >
+                        {page}
+                      </button>
+                    </div>
+                  )
+                })}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-all ${
+                currentPage === totalPages
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700'
+              }`}
+              aria-label={t('explore.therapies.next_page')}
+            >
+              <span className="hidden sm:inline">{t('explore.therapies.next')}</span>
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredTherapies.length === 0 && (

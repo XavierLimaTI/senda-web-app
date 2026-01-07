@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface SubscriptionPlan {
   id: number
@@ -23,6 +24,7 @@ interface Subscription {
 
 export function SubscriptionDashboard() {
   const { data: session } = useSession()
+  const { t } = useLanguage()
   const [plans, setPlans] = useState<SubscriptionPlan[]>([])
   const [currentSubscription, setCurrentSubscription] =
     useState<Subscription | null>(null)
@@ -62,7 +64,7 @@ export function SubscriptionDashboard() {
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="text-[#B2B8A3]">Carregando planos...</div>
+        <div className="text-salvia">{t('subscription.loading')}</div>
       </div>
     )
   }
@@ -70,7 +72,7 @@ export function SubscriptionDashboard() {
   if (error) {
     return (
       <div className="text-center py-8">
-        <div className="text-[#D99A8B]">{error}</div>
+        <div className="text-terracota">{error}</div>
       </div>
     )
   }
@@ -98,7 +100,7 @@ export function SubscriptionDashboard() {
             onClick={() => setCurrentSubscription(null)}
             className="text-sm px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
           >
-            Cancelar Assinatura
+            {t('subscription.cancel')}
           </button>
         </div>
       )}
@@ -123,6 +125,7 @@ export function SubscriptionDashboard() {
               // Reload subscription data after subscribing
               fetchSubscriptionData()
             }}
+            t={t}
           />
         ))}
       </div>
@@ -134,12 +137,14 @@ interface PlanCardProps {
   plan: SubscriptionPlan
   isCurrentPlan?: boolean
   onSubscribe?: () => void
+  t: (key: string, params?: Record<string, string | number>) => string
 }
 
 function SubscriptionPlanCard({
   plan,
   isCurrentPlan = false,
   onSubscribe,
+  t,
 }: PlanCardProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -162,8 +167,7 @@ function SubscriptionPlanCard({
       // Success - reload data
       onSubscribe?.()
     } catch (err) {
-      setError('Erro ao contratar plano')
-      console.error(err)
+      setError(t('subscription.contractError'))
     } finally {
       setLoading(false)
     }
@@ -173,12 +177,12 @@ function SubscriptionPlanCard({
     <div
       className={`rounded-lg overflow-hidden flex flex-col ${
         isCurrentPlan
-          ? 'bg-[#B2B8A3] text-white shadow-lg border-2 border-[#C8963E]'
+          ? 'bg-salvia text-white shadow-lg border-2 border-dourado'
           : 'bg-white shadow-sm hover:shadow-md transition-shadow border border-gray-200'
       }`}
     >
       {/* Header */}
-      <div className={`p-6 ${isCurrentPlan ? 'bg-[#B2B8A3]' : 'bg-gray-50'}`}>
+      <div className={`p-6 ${isCurrentPlan ? 'bg-salvia' : 'bg-gray-50'}`}>
         <h3
           className={`text-2xl font-serif mb-2 ${
             isCurrentPlan ? 'text-white' : 'text-gray-900'
@@ -246,7 +250,7 @@ function SubscriptionPlanCard({
               </li>
             ))
           ) : (
-            <li className="text-sm">Sem recursos adicionais</li>
+            <li className="text-sm">{t('subscription.noFeatures')}</li>
           )}
         </ul>
       </div>
@@ -270,11 +274,11 @@ function SubscriptionPlanCard({
               disabled={loading}
               className={`w-full py-2 px-4 rounded font-medium transition-colors ${
                 isCurrentPlan
-                  ? 'bg-white text-[#B2B8A3] hover:bg-gray-100'
-                  : 'bg-[#B2B8A3] text-white hover:bg-[#C8963E]'
+                  ? 'bg-white text-salvia hover:bg-gray-100'
+                  : 'bg-salvia text-white hover:bg-dourado'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {loading ? 'Processando...' : 'Contratar'}
+              {loading ? t('actions.processing') : t('actions.book')}
             </button>
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Therapist {
   id: number
@@ -26,6 +27,7 @@ interface TherapistsCarouselProps {
 }
 
 export default function TherapistsCarousel({ therapists }: TherapistsCarouselProps) {
+  const { t } = useLanguage()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const itemsPerView = 4
@@ -82,17 +84,17 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-3xl font-serif text-gray-900 dark:text-white">
-            Descubra Terapeutas Verificados
+            {t('carousel.discoverVerified')}
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Explore profissionais especializados em bem-estar e terapias integrativas
+            {t('carousel.subtitle')}
           </p>
         </div>
         <Link
           href="/explore/therapists"
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-all duration-300 transform hover:scale-105 dark:bg-[#9da390] dark:hover:bg-[#8a9478]"
         >
-          Ver Galeria Completa
+          {t('carousel.viewFullGallery')}
           <ExternalLink className="w-4 h-4" />
         </Link>
       </div>
@@ -103,7 +105,7 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
         <button
           onClick={handlePrev}
           className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-[#B2B8A3] text-white hover:bg-[#9da390] transition-all duration-200 transform hover:scale-110 dark:bg-[#9da390] dark:hover:bg-[#8a9478] shadow-lg"
-          aria-label="Anterior"
+          aria-label={t('carousel.previous')}
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
@@ -111,7 +113,7 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
         <button
           onClick={handleNext}
           className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-[#B2B8A3] text-white hover:bg-[#9da390] transition-all duration-200 transform hover:scale-110 dark:bg-[#9da390] dark:hover:bg-[#8a9478] shadow-lg"
-          aria-label="Próximo"
+          aria-label={t('carousel.next')}
         >
           <ChevronRight className="w-6 h-6" />
         </button>
@@ -153,7 +155,7 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
                     {therapist.verified && (
                       <div className="absolute top-3 right-3 bg-[#C8963E] text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-lg">
                         <Star className="w-3 h-3 fill-current" />
-                        Verificado
+                        {t('carousel.verified')}
                       </div>
                     )}
                   </div>
@@ -190,13 +192,13 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
                     {/* Preço */}
                     {therapist.services.length > 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-500 mt-3">
-                        A partir de <span className="font-medium text-[#B2B8A3]">R$ {(therapist.services[0].price / 100).toFixed(2)}</span>
+                        {t('carousel.startingFrom')} <span className="font-medium text-[#B2B8A3]">R$ {(therapist.services[0].price / 100).toFixed(2)}</span>
                       </p>
                     )}
 
                     {/* CTA Button */}
                     <button className="w-full mt-4 px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-all duration-200 text-sm font-medium dark:bg-[#9da390] dark:hover:bg-[#8a9478]">
-                      Ver Perfil
+                      {t('carousel.viewProfile')}
                     </button>
                   </div>
                 </div>
@@ -219,7 +221,7 @@ export default function TherapistsCarousel({ therapists }: TherapistsCarouselPro
                   ? 'bg-[#B2B8A3] w-8'
                   : 'bg-gray-300 dark:bg-gray-600 w-2 hover:bg-gray-400 dark:hover:bg-gray-500'
               }`}
-              aria-label={`Ir para página ${i + 1}`}
+              aria-label={`${t('carousel.goToPage')} ${i + 1}`}
             />
           ))}
         </div>

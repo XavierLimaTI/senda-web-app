@@ -143,29 +143,26 @@ export default async function TherapistsPage({
     }
   }
 
-  const buildSortUrl = (sortOption: string) => {
-    const params = new URLSearchParams()
-    if (q) params.set('q', q)
-    if (specialty) params.set('specialty', specialty)
-    if (searchParams.minRating) params.set('minRating', searchParams.minRating)
-    if (maxPrice) params.set('maxPrice', String(maxPrice))
-    if (city) params.set('city', city)
-    if (state) params.set('state', state)
-    if (lat !== undefined) params.set('lat', String(lat))
-    if (lng !== undefined) params.set('lng', String(lng))
-    if (maxDistance !== undefined) params.set('maxDistance', String(maxDistance))
-    if (onlineOnly) params.set('onlineOnly', 'true')
-    params.set('sort', sortOption)
-    params.set('page', '1')
-    return `/explore/therapists?${params.toString()}`
-  }
-
   const sortOptions = [
     { value: 'rating', label: 'Avaliação' },
     { value: 'price', label: 'Menor preço' },
     ...(lat && lng ? [{ value: 'distance', label: 'Distância' }] : []),
     { value: 'recent', label: 'Mais recentes' },
   ]
+
+  // Prepare serializable searchParams for client component
+  const clientSearchParams = {
+    q: searchParams.q,
+    specialty: searchParams.specialty,
+    minRating: searchParams.minRating,
+    maxPrice: searchParams.maxPrice,
+    city: searchParams.city,
+    state: searchParams.state,
+    lat: searchParams.lat,
+    lng: searchParams.lng,
+    maxDistance: searchParams.maxDistance,
+    onlineOnly: searchParams.onlineOnly
+  }
 
   // Processar e filtrar resultados client-side
   let results = therapists.map(t => {
@@ -263,7 +260,7 @@ export default async function TherapistsPage({
           filteredCount={filteredTherapists.length}
           sort={sort}
           sortOptions={sortOptions}
-          buildSortUrl={buildSortUrl}
+          searchParams={clientSearchParams}
         />
 
         {/* Filtros */}

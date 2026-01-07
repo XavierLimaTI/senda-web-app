@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useLanguage } from '@/context/LanguageContext'
+import { useToast } from '@/context/ToastContext'
 
 interface ProfileClientProps {
   user: any
@@ -12,6 +14,8 @@ interface ProfileClientProps {
 export default function ProfileClient({ user }: ProfileClientProps) {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const { t } = useLanguage()
+  const { showToast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [formData, setFormData] = useState({
@@ -44,12 +48,12 @@ export default function ProfileClient({ user }: ProfileClientProps) {
 
     // Validar tipo e tamanho
     if (!file.type.startsWith('image/')) {
-      alert('Por favor, selecione uma imagem válida')
+      showToast(t('profile.selectValidImage'), 'error')
       return
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('A imagem deve ter no máximo 5MB')
+      showToast(t('profile.imageTooLarge'), 'error')
       return
     }
 
@@ -72,7 +76,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
       })
 
       if (!response.ok) {
-        throw new Error('Erro ao fazer upload')
+        throw new Error('Upload error')
       }
 
       const data = await response.json()
@@ -80,11 +84,11 @@ export default function ProfileClient({ user }: ProfileClientProps) {
       // Atualizar sessão com novo avatar
       await update({ avatar: data.url })
       
-      alert('Foto atualizada com sucesso!')
+      showToast(t('profile.photoUpdated'), 'success')
       router.refresh()
     } catch (error) {
       console.error('Erro ao fazer upload:', error)
-      alert('Erro ao fazer upload da foto. Tente novamente.')
+      showToast(t('profile.photoError'), 'error')
       setUploadPreview(null)
     } finally {
       setIsUploading(false)
@@ -97,12 +101,12 @@ export default function ProfileClient({ user }: ProfileClientProps) {
 
     const allowed = ['application/pdf', 'image/png', 'image/jpeg']
     if (!allowed.includes(file.type)) {
-      alert('Envie PDF, PNG ou JPG')
+      showToast(t('profile.uploadPdfPngJpg'), 'error')
       return
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      alert('O arquivo deve ter no máximo 10MB')
+      showToast(t('profile.imageTooLarge'), 'error')
       return
     }
 
@@ -116,14 +120,14 @@ export default function ProfileClient({ user }: ProfileClientProps) {
         body: formData,
       })
 
-      if (!response.ok) throw new Error('Falha ao enviar documento')
+      if (!response.ok) throw new Error('Document upload failed')
 
       const data = await response.json()
       setDocUploads((prev) => [{ name: file.name, url: data.url }, ...prev])
-      alert('Documento enviado com sucesso!')
+      showToast(t('profile.docSent'), 'success')
     } catch (error) {
-      console.error('Erro ao enviar documento', error)
-      alert('Erro ao enviar documento. Tente novamente.')
+      console.error('Document upload error', error)
+      showToast(t('profile.docError'), 'error')
     } finally {
       setIsDocUploading(false)
     }
@@ -138,27 +142,27 @@ export default function ProfileClient({ user }: ProfileClientProps) {
       })
 
       if (!response.ok) {
-        throw new Error('Erro ao salvar perfil')
+        throw new Error('Profile save error')
       }
 
       await update({ name: formData.name })
-      alert('Perfil atualizado com sucesso!')
+      showToast(t('profile.saved'), 'success')
       setIsEditing(false)
       router.refresh()
     } catch (error) {
-      console.error('Erro ao salvar:', error)
-      alert('Erro ao salvar perfil. Tente novamente.')
+      console.error('Save error:', error)
+      showToast(t('profile.saveError'), 'error')
     }
   }
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('As senhas não coincidem')
+      showToast(t('profile.passwordMismatch'), 'error')
       return
     }
 
     if (passwordData.newPassword.length < 8) {
-      alert('A nova senha deve ter no mínimo 8 caracteres')
+      showToast(t('profile.minChars'), 'error')
       return
     }
 
@@ -174,15 +178,15 @@ export default function ProfileClient({ user }: ProfileClientProps) {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || 'Erro ao alterar senha')
+        throw new Error(data.error || 'Password change error')
       }
 
-      alert('Senha alterada com sucesso!')
+      showToast(t('profile.passwordChanged'), 'success')
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
       setShowPasswordForm(false)
     } catch (error: any) {
-      console.error('Erro ao alterar senha:', error)
-      alert(error.message || 'Erro ao alterar senha. Tente novamente.')
+      console.error('Password change error:', error)
+      showToast(t('profile.passwordError'), 'error')
     }
   }
 
@@ -227,7 +231,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  {avatarUrl ? 'Trocar foto' : 'Adicionar foto'}
+                  {avatarUrl ? t('profile.changePhoto') : t('profile.addPhoto')}
                 </span>
               </label>
             </div>
@@ -238,10 +242,10 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                 <div>
                   <h1 className="text-3xl font-serif text-gray-900">{user.name}</h1>
                   <p className="text-gray-600 mt-1">
-                    {user.role === 'CLIENT' && 'Cliente'}
-                    {user.role === 'THERAPIST' && 'Terapeuta'}
-                    {user.role === 'SPACE' && 'Espaço Terapêutico'}
-                    {user.role === 'ADMIN' && 'Administrador'}
+                    {user.role === 'CLIENT' && t('profile.roleClient')}
+                    {user.role === 'THERAPIST' && t('profile.roleTherapist')}
+                    {user.role === 'SPACE' && t('profile.roleSpace')}
+                    {user.role === 'ADMIN' && t('profile.roleAdmin')}
                   </p>
                 </div>
                 
@@ -250,7 +254,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                     onClick={() => setIsEditing(true)}
                     className="px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
                   >
-                    Editar Perfil
+                    {t('profile.edit')}
                   </button>
                 )}
               </div>
@@ -278,11 +282,11 @@ export default function ProfileClient({ user }: ProfileClientProps) {
         {/* Edit Form */}
         {isEditing && (
           <div className="bg-white rounded-2xl shadow-md p-8 mb-6">
-            <h2 className="text-2xl font-serif text-gray-900 mb-6">Editar Informações</h2>
+            <h2 className="text-2xl font-serif text-gray-900 mb-6">{t('profile.editInfo')}</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.name')}</label>
                 <input
                   type="text"
                   name="name"
@@ -293,7 +297,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.email')}</label>
                 <input
                   type="email"
                   name="email"
@@ -302,11 +306,11 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B2B8A3] focus:border-transparent"
                   disabled
                 />
-                <p className="text-xs text-gray-500 mt-1">O email não pode ser alterado</p>
+                <p className="text-xs text-gray-500 mt-1">{t('profile.emailCannotChange')}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.phone')}</label>
                 <input
                   type="tel"
                   name="phone"
@@ -320,7 +324,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
               {(user.role === 'THERAPIST' || user.role === 'SPACE') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {user.role === 'THERAPIST' ? 'Bio Profissional' : 'Descrição'}
+                    {user.role === 'THERAPIST' ? t('profile.bioProfessional') : t('profile.description')}
                   </label>
                   <textarea
                     name="bio"
@@ -328,7 +332,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                     onChange={handleInputChange}
                     rows={4}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B2B8A3] focus:border-transparent"
-                    placeholder={user.role === 'THERAPIST' ? 'Conte sobre sua experiência e abordagem...' : 'Descreva seu espaço...'}
+                    placeholder={user.role === 'THERAPIST' ? t('profile.bioPlaceholder') : t('profile.spacePlaceholder')}
                   />
                 </div>
               )}
@@ -339,7 +343,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                 onClick={handleSaveProfile}
                 className="px-6 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
               >
-                Salvar Alterações
+                {t('profile.saveChanges')}
               </button>
               <button
                 onClick={() => {
@@ -353,7 +357,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                 }}
                 className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
-                Cancelar
+                {t('profile.cancel')}
               </button>
             </div>
           </div>
@@ -363,14 +367,14 @@ export default function ProfileClient({ user }: ProfileClientProps) {
         <div id="docs" className="bg-white rounded-2xl shadow-md p-8 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-2xl font-serif text-gray-900">Documentos para verificação</h2>
-              <p className="text-sm text-gray-600">Envie RG/CPF, comprovante profissional ou licença do espaço.</p>
+              <h2 className="text-2xl font-serif text-gray-900">{t('profile.docsTitle')}</h2>
+              <p className="text-sm text-gray-600">{t('profile.docsSubtitle')}</p>
             </div>
             <label className="inline-flex items-center gap-2 px-4 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors cursor-pointer text-sm font-medium">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              {isDocUploading ? 'Enviando...' : 'Enviar documento'}
+              {isDocUploading ? t('profile.uploading') : t('profile.uploadDoc')}
               <input
                 type="file"
                 accept=".pdf,image/png,image/jpeg"
@@ -382,7 +386,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
           </div>
 
           {docUploads.length === 0 ? (
-            <p className="text-gray-600 text-sm">Nenhum documento enviado ainda.</p>
+            <p className="text-gray-600 text-sm">{t('profile.noDocuments')}</p>
           ) : (
             <div className="space-y-3">
               {docUploads.map((doc, idx) => (
@@ -393,10 +397,10 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                     </svg>
                     <div>
                       <p className="text-sm font-medium text-gray-900">{doc.name}</p>
-                      <a href={doc.url} target="_blank" className="text-xs text-[#B2B8A3] hover:underline">Ver documento</a>
+                      <a href={doc.url} target="_blank" className="text-xs text-[#B2B8A3] hover:underline">{t('profile.viewDoc')}</a>
                     </div>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded bg-green-50 text-green-700 border border-green-200">Enviado</span>
+                  <span className="text-xs px-2 py-1 rounded bg-green-50 text-green-700 border border-green-200">{t('profile.docSent')}</span>
                 </div>
               ))}
             </div>
@@ -406,13 +410,13 @@ export default function ProfileClient({ user }: ProfileClientProps) {
         {/* Password Section */}
         <div className="bg-white rounded-2xl shadow-md p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-serif text-gray-900">Segurança</h2>
+            <h2 className="text-2xl font-serif text-gray-900">{t('profile.security')}</h2>
             {!showPasswordForm && (
               <button
                 onClick={() => setShowPasswordForm(true)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
               >
-                Alterar Senha
+                {t('profile.changePassword')}
               </button>
             )}
           </div>
@@ -420,7 +424,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
           {showPasswordForm && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Senha Atual</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.currentPassword')}</label>
                 <input
                   type="password"
                   name="currentPassword"
@@ -431,7 +435,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.newPassword')}</label>
                 <input
                   type="password"
                   name="newPassword"
@@ -439,11 +443,11 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                   onChange={handlePasswordChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B2B8A3] focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">Mínimo de 8 caracteres</p>
+                <p className="text-xs text-gray-500 mt-1">{t('profile.minChars')}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar Nova Senha</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.confirmNewPassword')}</label>
                 <input
                   type="password"
                   name="confirmPassword"
@@ -458,7 +462,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                   onClick={handleChangePassword}
                   className="px-6 py-2 bg-[#B2B8A3] text-white rounded-lg hover:bg-[#9da390] transition-colors"
                 >
-                  Salvar Nova Senha
+                  {t('profile.saveNewPassword')}
                 </button>
                 <button
                   onClick={() => {
@@ -467,7 +471,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                   }}
                   className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                 >
-                  Cancelar
+                  {t('profile.cancel')}
                 </button>
               </div>
             </div>

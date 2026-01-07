@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface PrivacyDashboardProps {
   initialConsents: {
@@ -15,6 +16,9 @@ interface PrivacyDashboardProps {
 }
 
 export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardProps) {
+  const { t, language } = useLanguage();
+  const locale = language === 'pt' ? 'pt-BR' : language === 'es' ? 'es-ES' : language === 'zh' ? 'zh-CN' : 'en-US';
+  
   const [consents, setConsents] = useState(initialConsents);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -26,7 +30,7 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
     if (field === 'dataProcessingConsent' && !value) {
       setMessage({
         type: 'error',
-        text: 'O consentimento de processamento de dados é obrigatório para usar a plataforma.',
+        text: t('privacy.dataProcessingRequired'),
       });
       return;
     }
@@ -47,18 +51,18 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
         setConsents((prev) => ({ ...prev, [field]: value }));
         setMessage({
           type: 'success',
-          text: 'Preferências atualizadas com sucesso.',
+          text: t('privacy.preferencesUpdated'),
         });
       } else {
         setMessage({
           type: 'error',
-          text: data.error || 'Erro ao atualizar preferências.',
+          text: data.error || t('privacy.preferencesError'),
         });
       }
     } catch (error) {
       setMessage({
         type: 'error',
-        text: 'Erro ao conectar com o servidor.',
+        text: t('errors.server'),
       });
     } finally {
       setLoading(false);
@@ -86,18 +90,18 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
 
         setMessage({
           type: 'success',
-          text: 'Dados exportados com sucesso!',
+          text: t('privacy.exportSuccess'),
         });
       } else {
         setMessage({
           type: 'error',
-          text: 'Erro ao exportar dados.',
+          text: t('privacy.exportError'),
         });
       }
     } catch (error) {
       setMessage({
         type: 'error',
-        text: 'Erro ao conectar com o servidor.',
+        text: t('errors.server'),
       });
     } finally {
       setLoading(false);
@@ -109,7 +113,7 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
     if (deleteConfirmEmail !== consents.email) {
       setMessage({
         type: 'error',
-        text: 'O email informado não corresponde ao da sua conta.',
+        text: t('privacy.emailMismatch'),
       });
       return;
     }
@@ -129,7 +133,7 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
       if (res.ok) {
         setMessage({
           type: 'success',
-          text: 'Conta deletada. Redirecionando...',
+          text: t('privacy.accountDeleted'),
         });
         setTimeout(() => {
           window.location.href = '/';
@@ -138,13 +142,13 @@ export default function PrivacyDashboard({ initialConsents }: PrivacyDashboardPr
         const data = await res.json();
         setMessage({
           type: 'error',
-          text: data.error || 'Erro ao deletar conta.',
+          text: data.error || t('privacy.deleteError'),
         });
       }
     } catch (error) {
       setMessage({
         type: 'error',
-        text: 'Erro ao conectar com o servidor.',
+        text: t('errors.server'),
       });
     } finally {
       setLoading(false);

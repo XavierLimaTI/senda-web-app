@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface CookiePreferences {
   essential: boolean; // Sempre true (cookies necessários)
@@ -10,6 +11,7 @@ interface CookiePreferences {
 }
 
 export default function CookieConsent() {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
@@ -92,7 +94,7 @@ export default function CookieConsent() {
               <p className="text-sm text-gray-700 leading-relaxed">
                 Usamos cookies essenciais para o funcionamento da plataforma e cookies opcionais
                 para melhorar sua experiência. Você pode escolher quais aceitar.{' '}
-                <Link href="/legal/privacy" className="text-[#C8963E] hover:underline font-medium">
+                <Link href="/legal/privacy" className="text-dourado hover:underline font-medium">
                   Saiba mais
                 </Link>
               </p>
@@ -101,7 +103,7 @@ export default function CookieConsent() {
 
           {/* Configurações Detalhadas (Expansível) */}
           {showDetails && (
-            <div className="mb-4 p-4 bg-[#F0EBE3] rounded-lg border border-gray-200 space-y-3">
+            <div className="mb-4 p-4 bg-areia rounded-lg border border-gray-200 space-y-3">
               {/* Essenciais (sempre ativo) */}
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -141,7 +143,7 @@ export default function CookieConsent() {
                     onChange={(e) =>
                       setPreferences({ ...preferences, analytics: e.target.checked })
                     }
-                    className="w-5 h-5 text-[#B2B8A3] focus:ring-2 focus:ring-[#B2B8A3] cursor-pointer"
+                    className="w-5 h-5 text-salvia focus:ring-2 focus:ring-salvia cursor-pointer"
                   />
                 </div>
               </div>
@@ -163,7 +165,7 @@ export default function CookieConsent() {
                     onChange={(e) =>
                       setPreferences({ ...preferences, marketing: e.target.checked })
                     }
-                    className="w-5 h-5 text-[#B2B8A3] focus:ring-2 focus:ring-[#B2B8A3] cursor-pointer"
+                    className="w-5 h-5 text-salvia focus:ring-2 focus:ring-salvia cursor-pointer"
                   />
                 </div>
               </div>
@@ -176,36 +178,36 @@ export default function CookieConsent() {
               <>
                 <button
                   onClick={handleSaveCustom}
-                  className="flex-1 px-4 py-2.5 bg-[#B2B8A3] text-white font-medium rounded-lg hover:bg-[#9FA593] transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-salvia text-white font-medium rounded-lg hover:bg-salvia/80 transition-colors"
                 >
-                  Salvar Preferências
+                  {t('cookies.savePreferences')}
                 </button>
                 <button
                   onClick={() => setShowDetails(false)}
                   className="px-4 py-2.5 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Voltar
+                  {t('actions.back')}
                 </button>
               </>
             ) : (
               <>
                 <button
                   onClick={handleAcceptAll}
-                  className="flex-1 px-4 py-2.5 bg-[#B2B8A3] text-white font-medium rounded-lg hover:bg-[#9FA593] transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-salvia text-white font-medium rounded-lg hover:bg-salvia/80 transition-colors"
                 >
-                  Aceitar Todos
+                  {t('cookies.acceptAll')}
                 </button>
                 <button
                   onClick={handleRejectNonEssential}
                   className="px-4 py-2.5 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Apenas Essenciais
+                  {t('cookies.rejectAll')}
                 </button>
                 <button
                   onClick={() => setShowDetails(true)}
-                  className="px-4 py-2.5 border-2 border-[#C8963E] text-[#C8963E] font-medium rounded-lg hover:bg-[#F0EBE3] transition-colors"
+                  className="px-4 py-2.5 border-2 border-dourado text-dourado font-medium rounded-lg hover:bg-areia transition-colors"
                 >
-                  Gerenciar
+                  {t('actions.manage')}
                 </button>
               </>
             )}
@@ -214,7 +216,7 @@ export default function CookieConsent() {
           {/* Rodapé */}
           <div className="mt-3 text-xs text-gray-500 text-center">
             Suas preferências podem ser alteradas a qualquer momento em{' '}
-            <Link href="/dashboard/settings/privacy" className="text-[#C8963E] hover:underline">
+            <Link href="/dashboard/settings/privacy" className="text-dourado hover:underline">
               Configurações de Privacidade
             </Link>
           </div>

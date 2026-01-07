@@ -17,6 +17,19 @@ interface Trail {
   } | null
 }
 
+interface SearchParams {
+  q?: string
+  specialty?: string
+  minRating?: string
+  maxPrice?: string
+  city?: string
+  state?: string
+  lat?: string
+  lng?: string
+  maxDistance?: string
+  onlineOnly?: string
+}
+
 interface Props {
   featuredTrails: Trail[]
   q?: string
@@ -28,7 +41,7 @@ interface Props {
   filteredCount: number
   sort: string
   sortOptions: Array<{ value: string; label: string }>
-  buildSortUrl: (sortOption: string) => string
+  searchParams: SearchParams
 }
 
 export default function TherapistsPageClient({
@@ -42,9 +55,27 @@ export default function TherapistsPageClient({
   filteredCount,
   sort,
   sortOptions,
-  buildSortUrl
+  searchParams
 }: Props) {
   const { t } = useLanguage()
+
+  // Build sort URL inside the client component
+  const buildSortUrl = (sortOption: string) => {
+    const params = new URLSearchParams()
+    if (searchParams.q) params.set('q', searchParams.q)
+    if (searchParams.specialty) params.set('specialty', searchParams.specialty)
+    if (searchParams.minRating) params.set('minRating', searchParams.minRating)
+    if (searchParams.maxPrice) params.set('maxPrice', searchParams.maxPrice)
+    if (searchParams.city) params.set('city', searchParams.city)
+    if (searchParams.state) params.set('state', searchParams.state)
+    if (searchParams.lat) params.set('lat', searchParams.lat)
+    if (searchParams.lng) params.set('lng', searchParams.lng)
+    if (searchParams.maxDistance) params.set('maxDistance', searchParams.maxDistance)
+    if (searchParams.onlineOnly) params.set('onlineOnly', searchParams.onlineOnly)
+    params.set('sort', sortOption)
+    params.set('page', '1')
+    return `/explore/therapists?${params.toString()}`
+  }
 
   return (
     <>

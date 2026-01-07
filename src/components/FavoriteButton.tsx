@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { useLanguage } from '@/context/LanguageContext'
+import { useToast } from '@/context/ToastContext'
 
 interface FavoriteButtonProps {
   therapistId: number
@@ -15,6 +17,8 @@ export default function FavoriteButton({
   onToggle 
 }: FavoriteButtonProps) {
   const { data: session } = useSession()
+  const { t } = useLanguage()
+  const { showToast } = useToast()
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -35,7 +39,7 @@ export default function FavoriteButton({
         })
 
         if (!response.ok) {
-          throw new Error('Erro ao remover favorito')
+          throw new Error(t('errors.deleteFailed'))
         }
 
         setIsFavorite(false)
@@ -50,15 +54,14 @@ export default function FavoriteButton({
 
         if (!response.ok) {
           const data = await response.json()
-          throw new Error(data.error || 'Erro ao adicionar favorito')
+          throw new Error(data.error || t('errors.saveFailed'))
         }
 
         setIsFavorite(true)
         onToggle?.(true)
       }
     } catch (error: any) {
-      console.error('Erro ao alterar favorito:', error)
-      alert(error.message || 'Erro ao alterar favorito')
+      showToast({ message: error.message || t('errors.updateFailed'), type: 'error' })
     } finally {
       setIsLoading(false)
     }
@@ -70,10 +73,10 @@ export default function FavoriteButton({
       disabled={isLoading}
       className={`p-2 rounded-full transition-all ${
         isFavorite
-          ? 'bg-[#D99A8B] text-white hover:bg-[#c88878]'
-          : 'bg-white text-gray-400 hover:text-[#D99A8B] border border-gray-200'
+          ? 'bg-terracota text-white hover:bg-terracota/80'
+          : 'bg-white text-gray-400 hover:text-terracota border border-gray-200'
       } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-      title={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+      title={isFavorite ? t('therapist.remove_from_favorites') : t('therapist.add_to_favorites')}
     >
       <svg 
         className="w-5 h-5" 

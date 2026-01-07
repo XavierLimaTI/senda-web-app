@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Bell, Calendar, Clock, AlertCircle, X, CheckSquare2 } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Notification {
   id: number
@@ -15,10 +16,13 @@ interface Notification {
 }
 
 export default function NotificationBell() {
+  const { t, language } = useLanguage()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [showDropdown, setShowDropdown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const locale = language === 'pt' ? 'pt-BR' : language === 'es' ? 'es-ES' : language === 'zh' ? 'zh-CN' : 'en-US'
 
   useEffect(() => {
     fetchNotifications()
@@ -33,7 +37,7 @@ export default function NotificationBell() {
         setUnreadCount(data.unreadCount)
       }
     } catch (error) {
-      console.error('Erro ao buscar notificações:', error)
+      console.error(t('notifications.fetchError'), error)
     }
   }
 
@@ -50,7 +54,7 @@ export default function NotificationBell() {
         setUnreadCount(Math.max(0, unreadCount - 1))
       }
     } catch (error) {
-      console.error('Erro ao marcar como lida:', error)
+      console.error(t('notifications.markError'), error)
     }
   }
 
@@ -68,7 +72,7 @@ export default function NotificationBell() {
         setUnreadCount(0)
       }
     } catch (error) {
-      console.error('Erro ao marcar todas como lidas:', error)
+      console.error(t('notifications.markError'), error)
     } finally {
       setIsLoading(false)
     }
@@ -77,11 +81,11 @@ export default function NotificationBell() {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'FAVORITE_AVAILABILITY':
-        return <Calendar className="w-5 h-5 text-[#B2B8A3]" />
+        return <Calendar className="w-5 h-5 text-salvia" />
       case 'BOOKING_REMINDER':
-        return <Clock className="w-5 h-5 text-[#C8963E]" />
+        return <Clock className="w-5 h-5 text-dourado" />
       default:
-        return <AlertCircle className="w-5 h-5 text-[#D99A8B]" />
+        return <AlertCircle className="w-5 h-5 text-terracota" />
     }
   }
 
@@ -91,13 +95,13 @@ export default function NotificationBell() {
       <button
         onClick={() => setShowDropdown(!showDropdown)}
         className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
-        title="Notificações"
+        aria-label={t('notifications.title')}
       >
         <Bell className="w-6 h-6 text-gray-700" />
         
         {/* Badge de contador */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#D99A8B] text-white text-xs font-bold rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-terracota text-white text-xs font-bold rounded-full flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -114,16 +118,16 @@ export default function NotificationBell() {
           
           <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-20 max-h-96 overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-[#F0EBE3]">
-              <h3 className="font-semibold text-gray-900">Notificações</h3>
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-areia">
+              <h3 className="font-semibold text-gray-900">{t('notifications.title')}</h3>
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
                   disabled={isLoading}
-                  className="text-xs text-[#B2B8A3] hover:underline flex items-center gap-1"
+                  className="text-xs text-salvia hover:underline flex items-center gap-1"
                 >
                   <CheckSquare2 className="w-4 h-4" />
-                  Marcar todas
+                  {t('notifications.markAllRead')}
                 </button>
               )}
             </div>
@@ -133,7 +137,7 @@ export default function NotificationBell() {
               {notifications.length === 0 ? (
                 <div className="px-4 py-8 text-center text-gray-500">
                   <Bell className="w-12 h-12 mx-auto text-gray-300 mb-2" />
-                  <p className="text-sm">Nenhuma notificação nova</p>
+                  <p className="text-sm">{t('notifications.noNew')}</p>
                 </div>
               ) : (
                 notifications.map((notification) => (
@@ -154,7 +158,7 @@ export default function NotificationBell() {
                           {notification.message}
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {new Date(notification.createdAt).toLocaleDateString('pt-BR', {
+                          {new Date(notification.createdAt).toLocaleDateString(locale, {
                             day: '2-digit',
                             month: 'short',
                             hour: '2-digit',
@@ -173,10 +177,10 @@ export default function NotificationBell() {
               <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
                 <Link
                   href="/notifications"
-                  className="text-xs text-[#B2B8A3] hover:underline block text-center"
+                  className="text-xs text-salvia hover:underline block text-center"
                   onClick={() => setShowDropdown(false)}
                 >
-                  Ver todas as notificações
+                  {t('actions.seeMore')}
                 </Link>
               </div>
             )}
